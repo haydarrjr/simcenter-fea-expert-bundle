@@ -4,7 +4,7 @@
     {
       "repository": "https://github.com/haydarrjr/fea_expert_agent_plugin.git",
       "path": "vendor/fea-expert-agent-plugin",
-      "commit": "e0e78c4c93345f51c9a3cc86f710dec30f37de85",
+      "commit": "8139e9f4ec4feddf13c7f270ae8745850fbdf706",
       "canonical_tree": "skills/",
       "expected_skill_directories": 20,
       "expected_skill_files": 52,
