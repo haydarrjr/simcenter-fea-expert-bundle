@@ -1,0 +1,15 @@
+.work/
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+dist/*/
+!dist/docs/
+*.bundle
+*.zip
+.env
+# Authorized local payload only. Publish provenance, never proprietary bytes.
+/integration/simcenter-3d/*
+!/integration/simcenter-3d/source.json
+# Submodules are recorded as gitlinks, never vendor source files.
+/vendor/
