@@ -22,7 +22,7 @@ Six FEA subagents remain available to the coordinator: model inspector, journal 
 
 ## Skills
 
-35 skills: 20 canonical FEA specialists, the Parametric SOL101 and tool-routing overlays, plus 13 official Simcenter 3D/Designcenter Open/BatchPost skills with their references. Official bytes are hash-pinned in the source receipt.
+38 skills: 20 canonical FEA specialists, the Parametric SOL101, Airframe Structural Verification (`simcenter-airframe-structural-verification`), Aerostructures Load Case Filtering (`simcenter-aerostructures-load-filtering`), Aerostructures Margin of Safety (`simcenter-aerostructures-margin-of-safety`) and tool-routing overlays, plus 13 official Simcenter 3D/Designcenter Open/BatchPost skills with their references. Official bytes are hash-pinned in the source receipt.
 
 ## External integrations
 

@@ -2,7 +2,7 @@
 
 **Source of truth:** <https://github.com/haydarrjr/simcenter-fea-expert-bundle>
 
-Version **0.1.2** packages a Simcenter Agent Workspace FEA coordinator, six specialist subagents, 35 skills, and the existing Siemens integrations. It does **not** implement a new MCP server, solver, or resident bridge.
+Version **0.1.2** packages a Simcenter Agent Workspace FEA coordinator, six specialist subagents, 38 skills, and the existing Siemens integrations. It does **not** implement a new MCP server, solver, or resident bridge.
 
 ## Integrated local bundle
 
@@ -11,7 +11,7 @@ Version **0.1.2** packages a Simcenter Agent Workspace FEA coordinator, six spec
 | MCP declarations and actual launchers | Simcenter 3D, Batch Post, Designcenter Open |
 | Top-level agents | Simcenter 3D FEA Expert; BatchPost Agent; Designcenter Open Journal Agent; Simcenter 3D Documentation Agent; Simcenter 3D Assistant |
 | Six specialist subagents | Model inspection; journal authoring; solver diagnostics; results/post; independent verification; product support |
-| 35 skills | 20 canonical FEA + adapted parametric SOL101 + SC3D routing + 13 official integration skills |
+| 38 skills | 20 canonical FEA + adapted parametric SOL101 + 3 Airframe/Aerostructures overlays + SC3D routing + 13 official integration skills |
 
 Product Support and Simcenter Nastran MCP remain external host-managed dependencies. The existing product connectors launch installed product binaries; no product executables or DLLs are shipped. This is a **local custom bundle**, not an officially cleared public Siemens distribution.
 

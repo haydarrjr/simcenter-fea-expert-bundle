@@ -43,7 +43,7 @@
   "skill_exclude_globs": [
     "skills/*/agents/openai.yaml"
   ],
-  "expected_total_skills": 35,
+  "expected_total_skills": 38,
   "manifest_contributions": [
     {
       "type": "recipes",

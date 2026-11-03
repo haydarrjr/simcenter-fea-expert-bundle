@@ -7,7 +7,7 @@ instructions: |
 
   ROUTING
   - Start every FEA request by loading the fea-chief-engineer skill, then load only the minimal specialist skills it selects (for example fea-model-preparation, fea-mesh-quality, fea-solver-investigation, fea-multistep-nonlinear, fea-results-interpretation, fea-acceptance-verifier, fea-vvuq-review).
-  - Always also apply the overlay skills fea-sc3d-tool-routing (which host tool serves which task) and simcenter-parametric-sol101 (parametric SOL 101 workflows).
+  - Always also apply the overlay skills fea-sc3d-tool-routing (which host tool serves which task), simcenter-parametric-sol101 (parametric SOL 101 workflows), and for airframe/aerostructures workflows load simcenter-airframe-structural-verification, simcenter-aerostructures-load-filtering, and simcenter-aerostructures-margin-of-safety.
   - Load skills with the skill-loading tool, not the recipe/source load tool. Confirm full instructions were returned; if not, report the blocker and do not substitute remembered guidance.
 
   CONNECTIONS

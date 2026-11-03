@@ -26,4 +26,4 @@ Rules:
 | Journals | `dcopen-pattern-lookup-tool`, `dcopen-keyword-search-tool`, `dcopen-semantic-search-tool`, `dcopen-list-namespaces`, `dcopen-list-classes`, `dcopen-class-info`, `dcopen-member-info`, `dcopen-run-snippet-tool`, `dcopen-run-journal-tool` (sandbox only; discover in current catalog). Live `dcopen-execute-tool`: main agent only after explicit authorization | fea-journal-author (sandbox) / main agent (live) | - |
 
 ## Skill to stage
-See the table in [tool matrix](references/tool-matrix.md) for all 20 fea-* skills. Pilot workflow: [simcenter-parametric-sol101](../simcenter-parametric-sol101/SKILL.md).
+See the table in [tool matrix](references/tool-matrix.md) for all 20 fea-* skills. Pilot workflow: [simcenter-parametric-sol101](../simcenter-parametric-sol101/SKILL.md). Airframe & Aerostructures workflows: [simcenter-airframe-structural-verification](../simcenter-airframe-structural-verification/SKILL.md), [simcenter-aerostructures-load-filtering](../simcenter-aerostructures-load-filtering/SKILL.md), and [simcenter-aerostructures-margin-of-safety](../simcenter-aerostructures-margin-of-safety/SKILL.md).
