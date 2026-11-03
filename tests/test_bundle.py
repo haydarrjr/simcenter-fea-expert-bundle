@@ -4,6 +4,8 @@ sys.path.insert(0, str(_P(__file__).resolve().parents[1]))
 import hashlib
 import json
 import re
+import shutil
+import subprocess
 import tempfile
 import unittest
 import zipfile
@@ -61,7 +63,6 @@ class ScanChecks(unittest.TestCase):
         self.assertIn("credential_literal", bundle.scan_content("a.md", "ghp_" + "a" * 25)["issues"])
         with patch.object(bundle, "ALLOWLIST_RES", [re.compile(r"C:\\Users\\x")]):
             self.assertEqual(bundle.scan_content("a.md", "see C:\\Users\\x")["issues"], [])
-
 
     def test_new_local_path_patterns(self):
         for bad in ("%USERPROFILE%\\x", "see ~/notes", "file:///c/x", "/mnt/data/x", "/opt/tool", "/etc/passwd"):
@@ -271,39 +272,59 @@ class ArchiveAuditChecks(FixtureBase):
 
 
 def git_init(path: Path):
-    import subprocess
-    subprocess.run(["git", "init", "-q", str(path)], check=True)
-    subprocess.run(["git", "-C", str(path), "config", "user.email", "t@t"], check=True)
-    subprocess.run(["git", "-C", str(path), "config", "user.name", "t"], check=True)
+    subprocess.run(["git", "-c", "core.autocrlf=false", "init", "-q", str(path)], check=True)
+    cfg = path / ".git" / "config"
+    cfg.write_text(cfg.read_text(encoding="utf-8") + "[user]\n\temail = t@t\n\tname = t\n[core]\n\tautocrlf = false\n", encoding="utf-8")
 
 
 def git_add(path: Path, *extra: str):
-    import subprocess
-    subprocess.run(["git", "-C", str(path), "add", "-A", "--", *extra], check=True)
+    subprocess.run(["git", "-C", str(path), "-c", "core.autocrlf=false", "add", "-A", "--", *extra], check=True)
 
 
 class CollectSkillsChecks(FixtureBase):
-    """Uses real git temp repos for a source and the overlay."""
+    """Uses a pre-built git source repo template and fast local copies."""
 
-    def build(self, *, overlay=("o1",), replaces=("rep",), src_skills=("s1", "rep"), exclude_files=1, lock_dirs=None, overlay_dir_name="overlay/skills/"):
-        git_init(self.root)
-        src = self.root / "vendor" / "src"
-        for n in src_skills:
+    _template_td: tempfile.TemporaryDirectory[str] | None = None
+    _template_src: Path
+    _template_commit: str
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls._template_td = tempfile.TemporaryDirectory()
+        src = Path(cls._template_td.name) / "src"
+        for n in ("s1", "rep"):
             d = src / "skills" / n
             (d / "agents").mkdir(parents=True)
             (d / "SKILL.md").write_bytes(skill_md(n, "SRC"))
             (d / "agents" / "openai.yaml").write_text("x: 1\n", encoding="utf-8")
         git_init(src)
         git_add(src)
-        import subprocess
         subprocess.run(["git", "-C", str(src), "commit", "-q", "-m", "s"], check=True)
-        commit = subprocess.run(["git", "-C", str(src), "rev-parse", "HEAD"], check=True, capture_output=True, text=True).stdout.strip()
+        cls._template_commit = subprocess.run(
+            ["git", "-C", str(src), "rev-parse", "HEAD"], check=True, capture_output=True, text=True
+        ).stdout.strip()
+        cls._template_src = src
+
+    @classmethod
+    def tearDownClass(cls):
+        if cls._template_td is not None:
+            cls._template_td.cleanup()
+        super().tearDownClass()
+
+    def build(self, *, overlay=("o1",), replaces=("rep",), src_skills=("s1", "rep"), exclude_files=1, lock_dirs=None, overlay_dir_name="overlay/skills/"):
+        git_init(self.root)
+        src = self.root / "vendor" / "src"
+        src.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copytree(self._template_src, src)
+        commit = self._template_commit
         self.src, self.commit = src, commit
         for n in overlay:
             d = self.root / "overlay" / "skills" / n
             d.mkdir(parents=True)
             (d / "SKILL.md").write_bytes(skill_md(n, "OVL"))
-        git_add(self.root, ".", ":!vendor")
+        if overlay:
+            git_add(self.root, ".", ":!vendor")
         lock = {"sources": [{
             "path": "vendor/src", "commit": commit, "canonical_tree": "skills/",
             "expected_skill_directories": len(src_skills if lock_dirs is None else range(lock_dirs)),

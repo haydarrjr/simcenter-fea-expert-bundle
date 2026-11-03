@@ -153,6 +153,37 @@ def git_bytes(repo: Path, spec: str) -> bytes:
     return raw.stdout
 
 
+def git_bytes_many(repo: Path, specs: dict[str, str]) -> dict[str, bytes]:
+    """Read multiple git blob specs (`key -> spec`) in a single `git cat-file --batch` subprocess."""
+    if not specs:
+        return {}
+    keys = list(specs.keys())
+    stdin_payload = "".join(f"{specs[k]}\n" for k in keys).encode("utf-8")
+    raw = subprocess.run(
+        ["git", "-C", str(repo), "cat-file", "--batch"],
+        input=stdin_payload,
+        capture_output=True,
+        check=False,
+    )
+    if raw.returncode != 0:
+        fail(f"Could not batch-read git objects in {repo}: {raw.stderr.decode('utf-8', 'replace').strip()}")
+    buf = raw.stdout
+    pos = 0
+    out: dict[str, bytes] = {}
+    for key in keys:
+        nl = buf.find(b"\n", pos)
+        if nl < 0:
+            fail(f"Truncated git cat-file header for {specs[key]!r} in {repo}")
+        header = buf[pos:nl].decode("utf-8", "replace").split()
+        pos = nl + 1
+        if len(header) < 3 or header[1] != "blob":
+            fail(f"Could not read git object {specs[key]!r} in {repo}: {' '.join(header)}")
+        size = int(header[2])
+        out[key] = buf[pos : pos + size]
+        pos += size + 1
+    return out
+
+
 def tracked_paths(repo: Path, *patterns: str) -> list[str]:
     raw = subprocess.run(
         ["git", "-C", str(repo), "ls-files", "-z", "--", *patterns],
@@ -251,6 +282,7 @@ def collect_skills(development: bool = False) -> dict[str, bytes]:
             fail(f"{source['path']}: expected {source['expected_skill_directories']} skill directories, found {len(_skill_dir_names(files))}.")
         if len(files) != int(source["expected_skill_files"]):
             fail(f"{source['path']}: expected {source['expected_skill_files']} skill files, found {len(files)}.")
+        batch_specs: dict[str, str] = {}
         for rel in files:
             path = repo.joinpath(*PurePosixPath(rel).parts)
             if path.is_symlink() or not path.is_file():
@@ -259,7 +291,9 @@ def collect_skills(development: bool = False) -> dict[str, bytes]:
                 fail(f"Unsupported skill file type: {source['path']}/{rel}")
             if not rel.startswith("skills/"):
                 fail(f"Skill path outside skills/: {rel}")
-            staged[rel] = apply_transform(rel, git_bytes(repo, f"{source['commit']}:{rel}"), transform)
+            batch_specs[rel] = f"{source['commit']}:{rel}"
+        for rel, blob in git_bytes_many(repo, batch_specs).items():
+            staged[rel] = apply_transform(rel, blob, transform)
             owner[rel] = source["path"]
     replaces = set(CFG.get("overlay_replaces", []))
     source_names = {PurePosixPath(p).parts[1] for p in staged}
@@ -283,6 +317,7 @@ def collect_skills(development: bool = False) -> dict[str, bytes]:
             fail(f"overlay_replaces names a skill not present in any source: {name}")
         for key in [k for k in staged if k.startswith(f"skills/{name}/")]:
             del staged[key]
+    ovl_specs: dict[str, str] = {}
     for rel in overlay:
         sub = PurePosixPath(rel).relative_to(base)
         path = ROOT.joinpath(*PurePosixPath(rel).parts)
@@ -291,7 +326,9 @@ def collect_skills(development: bool = False) -> dict[str, bytes]:
         if path.suffix.lower() not in ALLOWED_SOURCE_SUFFIXES:
             fail(f"Unsupported overlay file type: {rel}")
         arc = "skills/" + sub.as_posix()
-        staged[arc] = apply_transform(arc, git_bytes(ROOT, f":{rel}"), transform)
+        ovl_specs[arc] = f":{rel}"
+    for arc, blob in git_bytes_many(ROOT, ovl_specs).items():
+        staged[arc] = apply_transform(arc, blob, transform)
     for name, path in integration_files().items():
         if name.startswith("skills/"):
             if name in staged:
