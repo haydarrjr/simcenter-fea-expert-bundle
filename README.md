@@ -9,11 +9,11 @@ Version **0.1.2** packages a Simcenter Agent Workspace FEA coordinator, six spec
 | Contribution | Contents |
 |---|---|
 | Referenced MCP servers (`type: ref`) | Simcenter 3D, Batch Post, Designcenter Open, Product Support, Simcenter Nastran MCP (provided by official/host bundles; no duplicate `[[mcps]]` launchers shipped) |
-| Top-level agents | Simcenter 3D FEA Expert; BatchPost Agent; Designcenter Open Journal Agent; Simcenter 3D Documentation Agent; Simcenter 3D Assistant |
-| Six specialist subagents | Model inspection; journal authoring; solver diagnostics; results/post; independent verification; product support |
+| Top-level agent | Simcenter 3D FEA Expert (`fea-expert-agent`) — single top-level orchestrator |
+| Six specialist subagents (`sub_recipes`) | `fea-model-inspector` (Simcenter 3D Assistant); `fea-journal-author` (Designcenter Open Journal); `fea-solver-diagnostics` (Nastran Deck/F06/Log); `fea-results-post` (BatchPost); `fea-verifier` (Independent Analytical Verifier); `product-support-agent` (Simcenter 3D Documentation & Product Support) |
 | 38 skills | 20 canonical FEA + adapted parametric SOL101 + 3 Airframe/Aerostructures overlays + SC3D routing + 13 official integration skills |
 
-All MCP servers (`Simcenter 3D`, `Batch Post`, `Designcenter Open`, `Product Support`, and optional `Simcenter Nastran MCP`) are referenced by name via `type: ref` in the agent recipes and supplied by the official installed bundles or host configuration; no duplicate `[[mcps]]` launcher scripts, product executables, or DLLs are shipped in this bundle. This is a **local custom bundle**, not an officially cleared public Siemens distribution.
+All MCP servers (`Simcenter 3D`, `Batch Post`, `Designcenter Open`, `Product Support`, and optional `Simcenter Nastran MCP`) are referenced by name via `type: ref` in the agent recipes and supplied by the official installed bundles or host configuration; no duplicate `[[mcps]]` launcher scripts, duplicate top-level agents, product executables, or DLLs are shipped in this bundle. This is a **local custom bundle**, not an officially cleared public Siemens distribution.
 
 ## Public source versus authorized local inputs
 

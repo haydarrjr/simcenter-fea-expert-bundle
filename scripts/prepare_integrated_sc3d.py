@@ -20,7 +20,7 @@ def main():
             p = PurePosixPath(n)
             if n.endswith('/'):
                 continue
-            if n.startswith(('recipes/', 'skills/')):
+            if n.startswith('skills/'):
                 if '..' in p.parts or p.is_absolute() or '\\' in n:
                     raise RuntimeError('Unsafe upstream archive entry')
                 dst = args.destination.joinpath(*p.parts)

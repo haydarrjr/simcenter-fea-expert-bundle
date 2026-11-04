@@ -109,7 +109,7 @@
   "fail_on_copyright_marker": false,
   "integration_root": "integration/simcenter-3d",
   "integration_receipt": "integration/simcenter-3d/source.json",
-  "expected_visible_agents": 5,
+  "expected_visible_agents": 1,
   "integration_mcp_map": {},
   "manifest_mcp_names": []
 }

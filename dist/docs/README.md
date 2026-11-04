@@ -12,15 +12,15 @@ Version 0.1.2 integrates the official Simcenter 3D service bundle with the FEA e
 
 All MCP servers are referenced by name (`type: ref`) in the agent recipes and provided by the official Simcenter 3D / Product Support bundles or host configuration. No duplicate `[[mcps]]` launcher scripts, product executables, or new MCP implementations are shipped in this bundle.
 
-## Included agents
+## Included agent & specialist subagents
 
-- **Simcenter 3D FEA Expert** (coordinator)
-- **BatchPost Agent** (official)
-- **Designcenter Open Journal Agent** (official)
-- **Simcenter 3D Documentation Agent** (official)
-- **Simcenter 3D Assistant** (official)
-
-Six FEA subagents remain available to the coordinator: model inspector, journal author, solver diagnostics, result post-processing, independent verifier and Product Support documentation.
+- **Simcenter 3D FEA Expert** (`fea-expert-agent`) — single top-level orchestrator that delegates to six specialized subagents (`sub_recipes`):
+  1. `fea-model-inspector` (Simcenter 3D Assistant subagent — read-only FEM/SIM/CAD model and mesh inspection)
+  2. `fea-journal-author` (Designcenter Open Journal subagent — 8-step NXOpen API discovery and sandbox snippet/journal testing)
+  3. `fea-solver-diagnostics` (Simcenter Nastran Solver Diagnostics subagent — read-only deck, `.f06`, `_contact.log`, and SOL 101/144/401 triage)
+  4. `fea-results-post` (BatchPost subagent — `.op2`/`.rst`/`.odb`/`.bun`/`.scd5` contour, XY graph, and CSV post-processing with model context)
+  5. `fea-verifier` (Independent analytical falsification & VVUQ subagent)
+  6. `product-support-agent` (Simcenter 3D Documentation & Product Support subagent — dual-route cited documentation lookup)
 
 ## Skills
 

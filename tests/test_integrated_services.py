@@ -12,26 +12,24 @@ from scripts import bundle
 
 
 class IntegrationChecks(unittest.TestCase):
-    @unittest.skipUnless((bundle.ROOT / bundle.CFG["integration_root"] / "recipes").is_dir(), "authorized local Siemens payload not hydrated")
+    @unittest.skipUnless((bundle.ROOT / bundle.CFG["integration_root"] / "skills").is_dir(), "authorized local Siemens payload not hydrated")
     def test_official_capture_counts_and_titles(self):
         files = bundle.integration_files()
-        self.assertEqual(len(files), 23)
+        self.assertEqual(len(files), 19)
         self.assertEqual(sum(n.endswith('/SKILL.md') for n in files), 13)
         self.assertEqual(sum(n.startswith('mcps/') for n in files), 0)
-        recipes = [p.read_text(encoding='utf-8') for n, p in files.items() if n.startswith('recipes/')]
-        self.assertEqual(len(recipes), 4)
-        for title in ['BatchPost Agent', 'Designcenter Open Journal Agent', 'Simcenter 3D Documentation Agent', 'Simcenter 3D Assistant']:
-            self.assertTrue(any(f'title: "{title}"' in t for t in recipes), title)
+        self.assertEqual(sum(n.startswith('recipes/') for n in files), 0)
 
-    @unittest.skipUnless((bundle.ROOT / bundle.CFG["integration_root"] / "recipes").is_dir(), "authorized local Siemens payload not hydrated")
+    @unittest.skipUnless((bundle.ROOT / bundle.CFG["integration_root"] / "skills").is_dir(), "authorized local Siemens payload not hydrated")
     def test_no_bundled_mcp_launchers(self):
         payload = bundle.archive_payload_map()
         self.assertEqual(bundle.CFG['integration_mcp_map'], {})
         self.assertEqual(bundle.CFG['manifest_mcp_names'], [])
+        self.assertEqual([k for k in payload if k.startswith('recipes/') and not k.startswith('recipes/subrecipes/')], ['recipes/fea-expert-agent.yaml'])
         self.assertFalse(any(k.startswith('mcps/') for k in payload))
         self.assertFalse(any(p.suffix.lower() in ('.bat', '.exe', '.dll') for p in payload.values()))
 
-    @unittest.skipUnless((bundle.ROOT / bundle.CFG["integration_root"] / "recipes").is_dir(), "authorized local Siemens payload not hydrated")
+    @unittest.skipUnless((bundle.ROOT / bundle.CFG["integration_root"] / "skills").is_dir(), "authorized local Siemens payload not hydrated")
     def test_real_packaged_policy_and_provenance(self):
         files = bundle.integration_files()
         before = {n: hashlib.sha256(p.read_bytes()).hexdigest() for n, p in files.items()}
@@ -49,7 +47,7 @@ class IntegrationChecks(unittest.TestCase):
                 self.assertIn(b'overrides conflicting legacy guidance', packaged)
             else:
                 self.assertEqual(item['source_sha256'], item['packaged_sha256'])
-        self.assertEqual(changed, 17)
+        self.assertEqual(changed, 13)
         self.assertNotIn(b'    import sys', staged['skills/designcenter-open-journal-authoring/SKILL.md'])
         self.assertEqual(before, {n: hashlib.sha256(p.read_bytes()).hexdigest() for n, p in files.items()})
 
