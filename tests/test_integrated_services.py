@@ -15,23 +15,21 @@ class IntegrationChecks(unittest.TestCase):
     @unittest.skipUnless((bundle.ROOT / bundle.CFG["integration_root"] / "recipes").is_dir(), "authorized local Siemens payload not hydrated")
     def test_official_capture_counts_and_titles(self):
         files = bundle.integration_files()
-        self.assertEqual(len(files), 26)
+        self.assertEqual(len(files), 23)
         self.assertEqual(sum(n.endswith('/SKILL.md') for n in files), 13)
-        self.assertEqual(sum(n.startswith('mcps/') for n in files), 3)
+        self.assertEqual(sum(n.startswith('mcps/') for n in files), 0)
         recipes = [p.read_text(encoding='utf-8') for n, p in files.items() if n.startswith('recipes/')]
         self.assertEqual(len(recipes), 4)
         for title in ['BatchPost Agent', 'Designcenter Open Journal Agent', 'Simcenter 3D Documentation Agent', 'Simcenter 3D Assistant']:
             self.assertTrue(any(f'title: "{title}"' in t for t in recipes), title)
 
     @unittest.skipUnless((bundle.ROOT / bundle.CFG["integration_root"] / "recipes").is_dir(), "authorized local Siemens payload not hydrated")
-    def test_launchers_are_official_bytes_and_namespaced(self):
-        files = bundle.integration_files()
+    def test_no_bundled_mcp_launchers(self):
         payload = bundle.archive_payload_map()
-        self.assertEqual(len(bundle.CFG['integration_mcp_map']), 3)
-        for original, target in bundle.CFG['integration_mcp_map'].items():
-            self.assertTrue(target.startswith('mcps/fea-'))
-            self.assertEqual(payload[target].read_bytes(), files[original].read_bytes())
-        self.assertFalse(any(p.suffix.lower() in ('.exe', '.dll') for p in payload.values()))
+        self.assertEqual(bundle.CFG['integration_mcp_map'], {})
+        self.assertEqual(bundle.CFG['manifest_mcp_names'], [])
+        self.assertFalse(any(k.startswith('mcps/') for k in payload))
+        self.assertFalse(any(p.suffix.lower() in ('.bat', '.exe', '.dll') for p in payload.values()))
 
     @unittest.skipUnless((bundle.ROOT / bundle.CFG["integration_root"] / "recipes").is_dir(), "authorized local Siemens payload not hydrated")
     def test_real_packaged_policy_and_provenance(self):
@@ -75,12 +73,10 @@ class IntegrationChecks(unittest.TestCase):
                     with self.assertRaises(RuntimeError):
                         bundle.integration_files()
 
-    def test_three_mcp_names_exact(self):
+    def test_manifest_declares_no_duplicate_mcps(self):
         m = bundle.validate_manifest()
-        self.assertEqual([x['name'] for x in m['mcps']], ['Simcenter 3D', 'Batch Post', 'Designcenter Open'])
-        self.assertEqual([x['timeout'] for x in m['mcps']], [180, 180, 180])
-        for x in m['mcps']:
-            self.assertTrue(x['script_windows'].startswith('mcps/fea-'))
+        self.assertEqual(m.get('mcps', []), [])
+        self.assertFalse(any(c.get('type') == 'mcps' for c in m.get('contributions', [])))
 
 
 if __name__ == '__main__':

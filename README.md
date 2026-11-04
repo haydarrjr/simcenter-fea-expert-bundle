@@ -8,12 +8,12 @@ Version **0.1.2** packages a Simcenter Agent Workspace FEA coordinator, six spec
 
 | Contribution | Contents |
 |---|---|
-| MCP declarations and actual launchers | Simcenter 3D, Batch Post, Designcenter Open |
+| Referenced MCP servers (`type: ref`) | Simcenter 3D, Batch Post, Designcenter Open, Product Support, Simcenter Nastran MCP (provided by official/host bundles; no duplicate `[[mcps]]` launchers shipped) |
 | Top-level agents | Simcenter 3D FEA Expert; BatchPost Agent; Designcenter Open Journal Agent; Simcenter 3D Documentation Agent; Simcenter 3D Assistant |
 | Six specialist subagents | Model inspection; journal authoring; solver diagnostics; results/post; independent verification; product support |
 | 38 skills | 20 canonical FEA + adapted parametric SOL101 + 3 Airframe/Aerostructures overlays + SC3D routing + 13 official integration skills |
 
-Product Support and Simcenter Nastran MCP remain external host-managed dependencies. The existing product connectors launch installed product binaries; no product executables or DLLs are shipped. This is a **local custom bundle**, not an officially cleared public Siemens distribution.
+All MCP servers (`Simcenter 3D`, `Batch Post`, `Designcenter Open`, `Product Support`, and optional `Simcenter Nastran MCP`) are referenced by name via `type: ref` in the agent recipes and supplied by the official installed bundles or host configuration; no duplicate `[[mcps]]` launcher scripts, product executables, or DLLs are shipped in this bundle. This is a **local custom bundle**, not an officially cleared public Siemens distribution.
 
 ## Public source versus authorized local inputs
 
@@ -58,7 +58,7 @@ Build output is `dist/simcenter-fea-expert/0.1.2/agents-artefact-windows.zip` wi
 
 The optional local release installer backs up enabled state, uses the supported bundle CLI, and verifies every unrelated enabled ID/version is preserved. It never restores an old `enabled-bundles.json` wholesale after an app update. Existing same-version differing archives are refused. This release does not silently change the user's installed bundles, including NX Expert 0.1.2.
 
-Namespaced `mcps/fea-*` folders avoid flat-file collisions. They do **not** prove display-name resolution precedence when the official Simcenter 3D bundle is also enabled. Resolve duplicate MCP/agent/skill names explicitly in a new session; never silently disable another bundle.
+Because MCP servers are referenced via `type: ref` rather than re-declared in `.sim-ai-agents.toml`, enabling this bundle alongside the official Simcenter 3D bundle creates no duplicate MCP server configurations or custom `productdata/mcps/fea-*` folders. Resolve duplicate agent/skill names explicitly in a new session; never silently disable another bundle.
 
 ## Engineering evidence boundary
 

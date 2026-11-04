@@ -56,36 +56,6 @@
     {
       "type": "readme",
       "source": "dist/docs/"
-    },
-    {
-      "type": "mcps",
-      "source": "integration/simcenter-3d/mcps/model-inspection",
-      "os": [
-        "windows"
-      ],
-      "include": [
-        "launch-simcenter3d-mcp.bat"
-      ]
-    },
-    {
-      "type": "mcps",
-      "source": "integration/simcenter-3d/mcps/batchpost",
-      "os": [
-        "windows"
-      ],
-      "include": [
-        "launch-batchpost-mcp.bat"
-      ]
-    },
-    {
-      "type": "mcps",
-      "source": "integration/simcenter-3d/mcps/designcenter-open",
-      "os": [
-        "windows"
-      ],
-      "include": [
-        "launch-designcenter-mcp.bat"
-      ]
     }
   ],
   "allowed_suffixes": [
@@ -94,8 +64,7 @@
     ".json",
     ".yaml",
     ".yml",
-    ".xsd",
-    ".bat"
+    ".xsd"
   ],
   "forbidden_suffixes": [
     ".prt",
@@ -141,14 +110,6 @@
   "integration_root": "integration/simcenter-3d",
   "integration_receipt": "integration/simcenter-3d/source.json",
   "expected_visible_agents": 5,
-  "integration_mcp_map": {
-    "mcps/model-inspection/launch-simcenter3d-mcp.bat": "mcps/fea-model-inspection/launch-simcenter3d-mcp.bat",
-    "mcps/batchpost/launch-batchpost-mcp.bat": "mcps/fea-batchpost/launch-batchpost-mcp.bat",
-    "mcps/designcenter-open/launch-designcenter-mcp.bat": "mcps/fea-designcenter-open/launch-designcenter-mcp.bat"
-  },
-  "manifest_mcp_names": [
-    "Simcenter 3D",
-    "Batch Post",
-    "Designcenter Open"
-  ]
+  "integration_mcp_map": {},
+  "manifest_mcp_names": []
 }

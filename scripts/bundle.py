@@ -104,7 +104,7 @@ def archive_payload_map() -> dict[str, Path]:
     for name, path in integration_files().items():
         if name.startswith("recipes/"):
             mapping[name] = path
-        elif name.startswith("mcps/"):
+        elif name.startswith("mcps/") and name in CFG.get("integration_mcp_map", {}):
             mapping[CFG["integration_mcp_map"][name]] = path
     return mapping
 
@@ -928,7 +928,11 @@ def local_test(cli: Path, development: bool = False) -> dict[str, Any]:
         "skills_discovered_in_productdata": len(discovered),
         "skill_names_match_expected": True,
         "productdata_isolated": True,
-        "host_mcp_registration": "CONFIG_AND_LAUNCHERS_VERIFIED_HANDSHAKE_NOT_RUN",
+        "host_mcp_registration": (
+            "REFERENCED_VIA_RECIPE_EXT_REFS_NO_BUNDLED_MCPS"
+            if not configs
+            else "CONFIG_AND_LAUNCHERS_VERIFIED_HANDSHAKE_NOT_RUN"
+        ),
         "mcp_names": [m["name"] for m in configs],
         "agentai_new_session_ui": "NOT_RUN",
         "host_settings_modified": False,

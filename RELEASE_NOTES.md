@@ -1,7 +1,7 @@
 # 0.1.2 — Integration skill hardening and canonical public repository
 
 - Make https://github.com/haydarrjr/simcenter-fea-expert-bundle the source of truth, preserving its initial main history.
-- Integrate three existing Siemens MCP declarations and local captured launchers, four official agents, six FEA subagents and 38 skills (including 3 Airframe Structural Verification & Aerostructures overlay skills: `simcenter-airframe-structural-verification`, `simcenter-aerostructures-load-filtering`, and `simcenter-aerostructures-margin-of-safety`). No new MCP implementation.
+- Reference official host MCP servers (`Simcenter 3D`, `Batch Post`, `Designcenter Open`, `Product Support`, `Simcenter Nastran MCP`) via `type: ref` in agent recipes without packaging duplicate `[[mcps]]` declarations or `mcps/fea-*` launcher scripts; integrate four official agents, six FEA subagents and 38 skills (including 3 Airframe Structural Verification & Aerostructures overlay skills: `simcenter-airframe-structural-verification`, `simcenter-aerostructures-load-filtering`, and `simcenter-aerostructures-margin-of-safety`). No new MCP implementation.
 - Preserve proprietary source hashes and apply deterministic safety policy to packaged skills and agent instructions; expose source/packaged digests in build evidence.
 - Gate documentation by the current catalog and pagination by exact input schemas; make Product Support fallback reachable.
 - Remove contradictory standard-library import from the packaged journal example; distinguish transport SUCCESS from observable test results.

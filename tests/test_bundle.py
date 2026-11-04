@@ -36,7 +36,7 @@ class ConfigChecks(unittest.TestCase):
 
     def test_real_manifest_valid(self):
         manifest = bundle.validate_manifest()
-        self.assertEqual([m["name"] for m in manifest["mcps"]], CFG["manifest_mcp_names"])
+        self.assertEqual([m["name"] for m in manifest.get("mcps", [])], CFG["manifest_mcp_names"])
         self.assertEqual(manifest["dependencies"]["products"], ["Simcenter 3D 2612"])
 
     def test_manifest_with_mcps_rejected(self):

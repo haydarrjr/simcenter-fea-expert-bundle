@@ -29,57 +29,6 @@ source = ".agents/skills/"
 type = "readme"
 source = "dist/docs/"
 
-[[contributions]]
-type = "mcps"
-source = "integration/simcenter-3d/mcps/model-inspection"
-os = ["windows"]
-include = ["launch-simcenter3d-mcp.bat"]
-
-[[contributions]]
-type = "mcps"
-source = "integration/simcenter-3d/mcps/batchpost"
-os = ["windows"]
-include = ["launch-batchpost-mcp.bat"]
-
-[[contributions]]
-type = "mcps"
-source = "integration/simcenter-3d/mcps/designcenter-open"
-os = ["windows"]
-include = ["launch-designcenter-mcp.bat"]
-
-[[mcps]]
-id = "model-inspection"
-name = "Simcenter 3D"
-description = "Official Simcenter 3D 2612 product connector; no product executable is redistributed."
-type = "stdio"
-enabled = true
-script_windows = "mcps/fea-model-inspection/launch-simcenter3d-mcp.bat"
-env = { DC_CONNECT_TIMEOUT = "10000", UGII_BASE_DIR = "C:\\Siemens\\Simcenter3D_2612" }
-timeout = 180
-os = ["windows"]
-
-[[mcps]]
-id = "batchpost"
-name = "Batch Post"
-description = "Official Simcenter 3D 2612 product connector; no product executable is redistributed."
-type = "stdio"
-enabled = true
-script_windows = "mcps/fea-batchpost/launch-batchpost-mcp.bat"
-env = { DC_CONNECT_TIMEOUT = "10000", UGII_BASE_DIR = "C:\\Siemens\\Simcenter3D_2612" }
-timeout = 180
-os = ["windows"]
-
-[[mcps]]
-id = "designcenter-open"
-name = "Designcenter Open"
-description = "Official Simcenter 3D 2612 product connector; no product executable is redistributed."
-type = "stdio"
-enabled = true
-script_windows = "mcps/fea-designcenter-open/launch-designcenter-mcp.bat"
-env = { DC_CONNECT_TIMEOUT = "10000", UGII_BASE_DIR = "C:\\Siemens\\Simcenter3D_2612" }
-timeout = 180
-os = ["windows"]
-
 [compat]
 product = "Simcenter 3D 2612"
 shell = "*"

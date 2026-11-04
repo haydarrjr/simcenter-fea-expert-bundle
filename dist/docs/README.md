@@ -2,13 +2,15 @@
 
 Version 0.1.2 integrates the official Simcenter 3D service bundle with the FEA expert skills.
 
-## Included MCP services
+## Referenced MCP services (`type: ref`)
 
 - **Simcenter 3D**: model inspection, mesh generation and visibility.
 - **Batch Post**: result post-processing connector.
 - **Designcenter Open**: API discovery, journals and model reads.
+- **Product Support**: Siemens documentation search.
+- **Simcenter Nastran MCP** (optional): Nastran deck and solver output diagnostics.
 
-The three launchers invoke the existing Simcenter 3D 2612 installation. No product executable or new MCP implementation is shipped. Configure `UGII_BASE_DIR` for the actual product installation. The local manifest default mirrors the corrected installed official connector configuration.
+All MCP servers are referenced by name (`type: ref`) in the agent recipes and provided by the official Simcenter 3D / Product Support bundles or host configuration. No duplicate `[[mcps]]` launcher scripts, product executables, or new MCP implementations are shipped in this bundle.
 
 ## Included agents
 
@@ -26,9 +28,7 @@ Six FEA subagents remain available to the coordinator: model inspector, journal 
 
 ## External integrations
 
-Product Support is still supplied by the Product Support bundle. Simcenter Nastran MCP remains an optional external solver-diagnostic integration. The official Simcenter 3D bundle is no longer required to supply the three MCP configurations or the four agents listed above.
-
-The official Simcenter 3D bundle and this package expose the same MCP display names and official agent/skill names. If both remain enabled, do not assume which definition takes precedence. The FEA launcher folders are namespaced to avoid file overwrite, but that does not eliminate name-resolution ambiguity. Review enabled bundles before starting a new session; do not delete the shared MCP folders manually.
+MCP servers (`Simcenter 3D`, `Batch Post`, `Designcenter Open`, `Product Support`, and optional `Simcenter Nastran MCP`) are supplied by the official installed bundles or host MCP configuration and bound by name via `type: ref`. Because this bundle does not re-declare `[[mcps]]` launchers, no duplicate MCP server entries or custom `mcps/fea-*` folders are created in `productdata`.
 
 ## Safety and evidence
 
@@ -38,4 +38,4 @@ Evidence classes: SOURCE_TESTED, DOCUMENTED_2606_CANDIDATE, MCP_2612_DISCOVERED,
 
 ## Local distribution scope
 
-Official service recipes, skills and launcher scripts were captured from the installed Simcenter 3D bundle for this local custom package. Siemens notices remain unchanged. Public redistribution, signing, registry release and OSS/legal clearance are not established.
+Official service recipes and skills were captured from the installed Simcenter 3D bundle for this local custom package. Siemens notices remain unchanged. Public redistribution, signing, registry release and OSS/legal clearance are not established.
