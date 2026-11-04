@@ -4,10 +4,6 @@
   "source_archive_name": "simcenter-3d-1.0.0-canary.30.bundle",
   "source_archive_sha256": "bd224756f3aee93486f6206fe4c8d075e1801a044322757c506e50d38c5cb001",
   "files": {
-    "recipes/simcenter-3d-batchpost-agent.yaml": "f2ba3b9e7daea8a18231d031789dbbafb329aeee5f8a768afba9c57b5bba4e26",
-    "recipes/simcenter-3d-designcenter-open-agent.yaml": "1d3582f855eb6e6b7f59058dff919c47e6431889ed1c5578a400e726fde2d327",
-    "recipes/simcenter-3d-doc-agent.yaml": "fee748fe9de4d5bbeacf33dc39eb17821413d9232a1e3cfe3abf18f8aeb61019",
-    "recipes/simcenter-3d-model-inspection-agent.yaml": "3c1d4679d6750716536befe24fabeb473b3032ad5343f249337d73dd12a7d727",
     "skills/batchpost-actions/SKILL.md": "79405729d68eae5bc8780a92994258494dd44f19bb3553e740c9ef26ca826fb2",
     "skills/batchpost-actions/references/PostTemplate.xsd": "4a8990505449e6537bd277f1402a61392b8ecb18b1e5196dc73af302bb6a96eb",
     "skills/batchpost-actions/references/camera-file.md": "83e1e0d737a8849f8d3f6e1b980314a9c09b1a806fcc137013ddf04c0984c2a8",
