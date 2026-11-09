@@ -1,6 +1,0 @@
-[submodule "vendor/fea-expert-agent-plugin"]
-	path = vendor/fea-expert-agent-plugin
-	url = https://github.com/haydarrjr/fea_expert_agent_plugin.git
-[submodule "vendor/siemens-help-skills"]
-	path = vendor/siemens-help-skills
-	url = https://github.com/haydarrjr/siemens-help-skills.git

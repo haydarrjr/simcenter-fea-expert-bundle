@@ -19,15 +19,15 @@ url = "https://github.com/haydarrjr/simcenter-fea-expert-bundle"
 
 [[contributions]]
 type = "recipes"
-source = ".agents/recipes/"
+source = "recipes/"
 
 [[contributions]]
 type = "skills"
-source = ".agents/skills/"
+source = "skills/"
 
 [[contributions]]
 type = "readme"
-source = "dist/docs/"
+source = "README.md"
 
 [compat]
 product = "Simcenter 3D 2612"
