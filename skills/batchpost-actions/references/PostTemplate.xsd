@@ -1,0 +1,2089 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+=======================================================================
+
+    Copyright (c) 2026 Siemens Industrial Software Inc.
+                     Unpublished - All rights reserved
+
+=======================================================================
+
+    Filename: PostTemplate.xsd
+
+    This is the XML schema definition file for template XML file, which describes
+    the keywords used to generate the description for template nodes.
+
+    The schema definition complies with the w3c standard. The XML 
+    standard can be found in http://www.w3.org/XML/Schema.
+
+=======================================================================
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <!-- Strict Boolean helper to match read_logical_node / read_logical_int_node -->
+  <xs:simpleType name="sppBoolean">
+    <xs:annotation>
+      <xs:documentation>
+        Strict Boolean type allowing only '0' or '1'.
+        Using 'true' or 'false' will trigger warnings in the NX Post Template parser and unset apply-clean mode.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:integer">
+      <xs:enumeration value="0"/>
+      <xs:enumeration value="1"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- Color index constraint [0..216] helper -->
+  <xs:simpleType name="colorIndex">
+    <xs:annotation>
+      <xs:documentation>
+        Integer color index from the default 216-color table. Range: [0..216].
+        Color index 0 is a special value meaning "not set"/"implied".
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:integer">
+      <xs:minInclusive value="0"/>
+      <xs:maxInclusive value="216"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- Vector3D helper used for vectors and origins -->
+  <xs:complexType name="vector3D">
+    <xs:sequence>
+      <xs:element name="i" type="xs:double" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>X or i component of the 3D coordinate/direction vector.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="j" type="xs:double" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Y or j component of the 3D coordinate/direction vector.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="k" type="xs:double" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Z or k component of the 3D coordinate/direction vector.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- HeaderLineType representing custom tokens and counts on a custom legend line -->
+  <xs:complexType name="headerLineType">
+    <xs:annotation>
+      <xs:documentation>
+        Represents a single customized line of the legend header, made up of multiple tokens.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="TokenCount" type="xs:integer" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>The number of active annotation tokens in this line.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Token0" type="xs:string" minOccurs="0"/>
+      <xs:element name="Token1" type="xs:string" minOccurs="0"/>
+      <xs:element name="Token2" type="xs:string" minOccurs="0"/>
+      <xs:element name="Token3" type="xs:string" minOccurs="0"/>
+      <xs:element name="Token4" type="xs:string" minOccurs="0"/>
+      <xs:element name="Token5" type="xs:string" minOccurs="0"/>
+      <xs:element name="Token6" type="xs:string" minOccurs="0"/>
+      <xs:element name="Token7" type="xs:string" minOccurs="0"/>
+      <xs:element name="Token8" type="xs:string" minOccurs="0"/>
+      <xs:element name="Token9" type="xs:string" minOccurs="0"/>
+      <xs:element name="UserDefinedCustomText" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>User custom text, used when the token enum is 'User Text'.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:element name="NXPostProcessingTemplate">
+    <xs:annotation>
+      <xs:documentation>
+        Root element for NX/BatchPost Post-Processing XML Templates.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="PostView" minOccurs="0">
+          <xs:annotation>
+            <xs:documentation>
+              The postview definition. Currently supports exactly one PostView per template.
+            </xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:sequence>
+              <!-- General Display Options -->
+              <xs:element name="Lighted" type="sppBoolean" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>
+                    Render with lighting enabled (0/1). Consider disabling this (0) when taking view projections for hardcopy printing/publishing.
+                  </xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="ColorScheme" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>
+                    Color distribution scheme of the postview.
+                    Allowed: "Contour" (fringe display), "Mid", "Pid" (Physical Property ID), "Mesh".
+                    Note: "Contour" replaces the legacy "Fringe" value.
+                  </xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:enumeration value="Contour"/>
+                    <xs:enumeration value="Mid"/>
+                    <xs:enumeration value="Pid"/>
+                    <xs:enumeration value="Mesh"/>
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="Compress" type="sppBoolean" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>Toggle display compression (0/1).</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="FaceNormalTolerance" type="xs:double" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>Angle tolerance (in degrees) for feature/coplanar elements.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="ValueBandTolerance" type="xs:double" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>Tolerance for values within the same contour band.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+
+              <xs:element name="ResultDisplayOptions" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>Visual and plot display styling settings.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="ResultDisplay" type="sppBoolean" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Toggle result display on/off (0/1).</xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+                    <xs:element name="DisplayStyle" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>
+                          Defines the plot style.
+                          Allowed: "Contour" (Smooth/Banded), "Iso-Line", "Iso-Surface" (corrects legacy typo "so-Surface"),
+                          "Cubes", "Spheres", "Arrows", "Tensors", "Streamlines".
+                          "Streamlines" requires a streamline seed set defined.
+                          Note: "Element" style is obsolete and removed.
+                        </xs:documentation>
+                      </xs:annotation>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:enumeration value="Contour"/>
+                          <xs:enumeration value="Iso-Line"/>
+                          <xs:enumeration value="Iso-Surface"/>
+                          <xs:enumeration value="Cubes"/>
+                          <xs:enumeration value="Spheres"/>
+                          <xs:enumeration value="Arrows"/>
+                          <xs:enumeration value="Tensors"/>
+                          <xs:enumeration value="Streamlines"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="ColorbarStyle" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Defines color transitions. Allowed: "Smooth", "Banded".</xs:documentation>
+                      </xs:annotation>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:enumeration value="Smooth"/>
+                          <xs:enumeration value="Banded"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="BandStyle" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Legacy band style attribute.</xs:documentation>
+                      </xs:annotation>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:enumeration value="Default"/>
+                          <xs:enumeration value="Lines"/>
+                          <xs:enumeration value="Value Inline"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="DrawLines" type="sppBoolean" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Toggles boundary lines between color bands (0/1). Replaces legacy BandStyle.</xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+                    <xs:element name="Lighted" type="sppBoolean" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>
+                          Re-specifies lighting for the contour face itself (0/1). Consider turning this off for hardcopy printing/publishing.
+                        </xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+                    <xs:element name="BeamDisplayStyle" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>
+                          Controls cross-section styling for 1D beam elements.
+                          Allowed: "Line", "Line and Diagram", "Solid".
+                        </xs:documentation>
+                      </xs:annotation>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:enumeration value="Line"/>
+                          <xs:enumeration value="Line and Diagram"/>
+                          <xs:enumeration value="Solid"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="BeamContourScaleMethod" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Scale method for beam contour. Allowed: "%Model", "Absolute".</xs:documentation>
+                      </xs:annotation>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:enumeration value="%Model"/>
+                          <xs:enumeration value="Absolute"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="BeamContourScaleFactor" type="xs:double" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Scale factor multiplier for beam contour.</xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+                    <xs:element name="ShowBeamContours" type="sppBoolean" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Toggle beam contour display on/off (0/1).</xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+
+                    <xs:element name="CompressOptions" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Refines polygon reduction tolerances.</xs:documentation>
+                      </xs:annotation>
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="DisplayCompression" type="sppBoolean" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Toggle compression (0/1).</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element name="ValueTolerance" type="xs:double" minOccurs="0"/>
+                          <xs:element name="FaceNormalTolerance" type="xs:double" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Face normal angle tolerance in degrees (0.0 to 180.0) for compression.</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+
+                    <xs:element name="MarkOptions" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Configures vectors/arrows when DisplayStyle is 'Arrows' or 'Tensors'.</xs:documentation>
+                      </xs:annotation>
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="ArrowComponentX" type="sppBoolean" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Toggle X component of arrow display (0/1).</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element name="ArrowComponentY" type="sppBoolean" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Toggle Y component of arrow display (0/1).</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element name="ArrowComponentZ" type="sppBoolean" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Toggle Z component of arrow display (0/1).</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element name="ArrowComponentMag" type="sppBoolean" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Toggle Magnitude component of arrow display (0/1).</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element name="ArrowComponentResultant" type="sppBoolean" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Toggle Resultant component of arrow display (0/1).</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element name="ArrowComponentCombinationType" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Combination type for arrow component. Allowed: "None", "XY", "YZ", "ZX".</xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:string">
+                                <xs:enumeration value="None"/>
+                                <xs:enumeration value="XY"/>
+                                <xs:enumeration value="YZ"/>
+                                <xs:enumeration value="ZX"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="MarkComponentCombinationType" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>
+                                Allowed: "Normal Component", "Principal Component", "Shear Component", "Force Component", "Moment Component".
+                              </xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:string">
+                                <xs:enumeration value="Normal Component"/>
+                                <xs:enumeration value="Principal Component"/>
+                                <xs:enumeration value="Shear Component"/>
+                                <xs:enumeration value="Force Component"/>
+                                <xs:enumeration value="Moment Component"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="Component1" type="sppBoolean" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Toggle display of component 1 (0/1).</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element name="Component2" type="sppBoolean" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Toggle display of component 2 (0/1).</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element name="Component3" type="sppBoolean" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Toggle display of component 3 (0/1).</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element name="Component4" type="sppBoolean" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Toggle display of component 4 (0/1).</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element name="Component5" type="sppBoolean" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Toggle display of component 5 (0/1).</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element name="MarkStyle" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Defines the style of the mark. Allowed: "Line", "Solid".</xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:string">
+                                <xs:enumeration value="Line"/>
+                                <xs:enumeration value="Solid"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="TensorStyle" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Tensor glyph style settings. Allowed: "Detailed", "Arrow", "Box", "Line".</xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:string">
+                                <xs:enumeration value="Detailed"/>
+                                <xs:enumeration value="Arrow"/>
+                                <xs:enumeration value="Box"/>
+                                <xs:enumeration value="Line"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="MarkColor" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Allowed: "Colorbar", "Specified", "TextColor".</xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:string">
+                                <xs:enumeration value="Colorbar"/>
+                                <xs:enumeration value="Specified"/>
+                                <xs:enumeration value="TextColor"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="SpecifiedColor" type="colorIndex" minOccurs="0"/>
+                          <xs:element name="MarkSize" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>How mark size is controlled. Allowed: "Result" (scaled by value) or "Specified" (constant).</xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:string">
+                                <xs:enumeration value="Result"/>
+                                <xs:enumeration value="Specified"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="MaxMarkSize" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Units of the maximum mark size. Allowed: "% Model", "Specified".</xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:string">
+                                <xs:enumeration value="% Model"/>
+                                <xs:enumeration value="Specified"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="ModelPercentSizeValue" type="xs:double" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Size as percentage of model bounding box.</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element name="SpecifiedMaxMarkSizeValue" type="xs:double" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Absolute maximum mark size.</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element name="HideMarksBelow" type="sppBoolean" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Toggle hiding of marks below a certain threshold (0/1).</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element name="BelowOption" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Criteria for hiding marks. Allowed: "% Maximum Result", "% Absolute Maximum Result", "Result Value".</xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:string">
+                                <xs:enumeration value="% Maximum Result"/>
+                                <xs:enumeration value="% Absolute Maximum Result"/>
+                                <xs:enumeration value="Result Value"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="BelowResultPercentValue" type="xs:double" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Percentage of maximum result below which marks are hidden.</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element name="BelowSpecifiedResultValue" type="xs:double" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Specific result value below which marks are hidden.</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element name="BelowAbsoluteResultPercentValue" type="xs:double" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Percentage of absolute maximum result below which marks are hidden.</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element name="DisplayNumericValueWithArrow" type="sppBoolean" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Toggle display of numeric value with arrow (0/1).</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element name="DisplayLabelWithArrow" type="sppBoolean" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Toggle display of label with arrow (0/1).</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element name="DoubleSidedArrow" type="sppBoolean" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Toggle double-sided arrow display (0/1).</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+
+                    <xs:element name="NodalForceReportDisplayOptions" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Visual styling of nodal force vectors.</xs:documentation>
+                      </xs:annotation>
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="DisplayAtCentroid" type="sppBoolean" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Toggle displaying at centroid instead of nodal (0/1).</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+
+                    <xs:element name="MassOptions" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Visual styling of lumped mass elements.</xs:documentation>
+                      </xs:annotation>
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="MassSizeOption" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Lumped mass size option. Allowed: "% Model", "Specified".</xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:string">
+                                <xs:enumeration value="% Model"/>
+                                <xs:enumeration value="Specified"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="ModelPercentSizeValue" type="xs:double" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Mass size as percentage of model bounding box.</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element name="SpecifiedSizeValue" type="xs:double" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Mass size value in absolute units (mm).</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+
+                    <xs:element name="SpringOptions" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Visual styling of spring elements.</xs:documentation>
+                      </xs:annotation>
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="SpringSizeOption" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Spring element size option. Allowed: "% Model", "Specified".</xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:string">
+                                <xs:enumeration value="% Model"/>
+                                <xs:enumeration value="Specified"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="ModelPercentSizeValue" type="xs:double" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Spring size as percentage of model bounding box.</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element name="SpecifiedSizeValue" type="xs:double" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Spring size value in absolute units (mm).</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+
+                    <xs:element name="StreamlineOptions" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Configures streamlines when DisplayStyle is 'Streamlines'.</xs:documentation>
+                      </xs:annotation>
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="StreamlineSeedSet" type="xs:integer" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>
+                                Seed Set Group Tag ID. You must be told this in a prompt, do not try to guess or modify this without being prompted to do so.
+                              </xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element name="StreamlineVelocityOptions" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Points to the velocity result used to compute the streamlines.</xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="LoadCase" type="xs:integer" minOccurs="0"/>
+                                <xs:element name="Iteration" type="xs:integer" minOccurs="0"/>
+                                <xs:element name="Result" type="xs:string" minOccurs="0"/>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                          <xs:element name="StreamlineDataOptions" minOccurs="0">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="ValueSharing" minOccurs="0">
+                                  <xs:annotation>
+                                    <xs:documentation>Allowed: "Average", "Minimum", "Maximum".</xs:documentation>
+                                  </xs:annotation>
+                                  <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                      <xs:enumeration value="Average"/>
+                                      <xs:enumeration value="Minimum"/>
+                                      <xs:enumeration value="Maximum"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="NoDataTreatment" minOccurs="0">
+                                  <xs:annotation>
+                                    <xs:documentation>Allowed: "Ignore", "Use Value".</xs:documentation>
+                                  </xs:annotation>
+                                  <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                      <xs:enumeration value="Ignore"/>
+                                      <xs:enumeration value="Use Value"/>
+                                    </xs:restriction>
+                                  </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="NoDataValue" type="xs:double" minOccurs="0"/>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                          <xs:element name="StreamStyle" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Allowed: "Line", "Ribbon", "Tube", "Bubbles".</xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:string">
+                                <xs:enumeration value="Line"/>
+                                <xs:enumeration value="Ribbon"/>
+                                <xs:enumeration value="Tube"/>
+                                <xs:enumeration value="Bubbles"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="StreamColor" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Allowed: "Result", "Specified", "Text Color".</xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:string">
+                                <xs:enumeration value="Result"/>
+                                <xs:enumeration value="Specified"/>
+                                <xs:enumeration value="Text Color"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="SpecifiedColor" type="colorIndex" minOccurs="0"/>
+                          <xs:element name="StreamSize" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Allowed: "% Model", "Specified".</xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:string">
+                                <xs:enumeration value="% Model"/>
+                                <xs:enumeration value="Specified"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="ModelPercentSizeValue" type="xs:double" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Stream size as percentage of model bounding box.</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element name="SpecifiedSizeValue" type="xs:double" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Stream size value in absolute units (mm).</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element name="LineWeight" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Allowed: "Thin", "Normal", "Thick".</xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:string">
+                                <xs:enumeration value="Thin"/>
+                                <xs:enumeration value="Normal"/>
+                                <xs:enumeration value="Thick"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="BubbleSynchronization" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Allowed: "At Seed Point", "Upstream", "Downstream".</xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:string">
+                                <xs:enumeration value="At Seed Point"/>
+                                <xs:enumeration value="Upstream"/>
+                                <xs:enumeration value="Downstream"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="BubbleTimeStep" type="xs:double" minOccurs="0"/>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+
+              <!-- ResultOptions -->
+              <xs:element name="ResultOptions" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>Direct parameters linking to the results hierarchy.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="LoadCase" type="xs:integer" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>0-based index of loadcase.</xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+                    <xs:element name="Iteration" type="xs:integer" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>0-based index of iteration.</xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+                    <xs:element name="SubIteration" type="xs:integer" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>0-based index of sub-iteration, -1 if none.</xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+                    <xs:element name="Result" type="xs:string" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Unique result name: [Quantity][Support] or [Quantity][Tag1][Tag2]...[TagN] per result listing.</xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+
+                    <xs:element name="AxisymmetricResultOptions" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Parameters for Axisymmetric model expansion.</xs:documentation>
+                      </xs:annotation>
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="RevolveAxis" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Axis of rotation. Allowed: "X-Axis", "Y-Axis", "Z-Axis".</xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:string">
+                                <xs:enumeration value="X-Axis"/>
+                                <xs:enumeration value="Y-Axis"/>
+                                <xs:enumeration value="Z-Axis"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="ResultExtractMethod" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Extraction method. Allowed: "Original 2D Model", "3D Model".</xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:string">
+                                <xs:enumeration value="Original 2D Model"/>
+                                <xs:enumeration value="3D Model"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="OriginalModelOption" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Extraction option on original model. Allowed: "At Revolve Angle", "Envelope Across Circumference".</xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:string">
+                                <xs:enumeration value="At Revolve Angle"/>
+                                <xs:enumeration value="Envelope Across Circumference"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="EnvelopeOption" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>
+                                Enveloping criteria. Only relevant if ResultExtractMethod is '3D Model' and OriginalModelOption is 'Envelope Across Circumference'.
+                                Allowed: "Maximum", "Minimum", "Absolute Maximum", "Absolute Minimum", "Average", "Sum".
+                              </xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:string">
+                                <xs:enumeration value="Maximum"/>
+                                <xs:enumeration value="Minimum"/>
+                                <xs:enumeration value="Absolute Maximum"/>
+                                <xs:enumeration value="Absolute Minimum"/>
+                                <xs:enumeration value="Average"/>
+                                <xs:enumeration value="Sum"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="NumberOfSections" type="xs:integer" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>
+                                Number of sections to expand the 2D model if extracting 3D expanded results. Higher values give smoother results at the cost of performance.
+                              </xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element name="RevolveAngle" type="xs:double" minOccurs="0"/>
+                          <xs:element name="StartRevolveAngle" type="xs:double" minOccurs="0"/>
+                          <xs:element name="EndRevolveAngle" type="xs:double" minOccurs="0"/>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+
+                    <xs:element name="CyclicResultOptions" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Parameters for Cyclic symmetry expansion.</xs:documentation>
+                      </xs:annotation>
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="ResultExtractionValue" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Cyclic extraction target. Allowed: "Primary", "All", "Selected".</xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:string">
+                                <xs:enumeration value="Primary"/>
+                                <xs:enumeration value="All"/>
+                                <xs:enumeration value="Selected"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="OriginalModelOption" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>
+                                Allowed: "Particular Sector", "Enveloped Across Sectors", "At Cyclic Phase Angle", "Enveloped Over Cyclic Phase".
+                              </xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:string">
+                                <xs:enumeration value="Particular Sector"/>
+                                <xs:enumeration value="Enveloped Across Sectors"/>
+                                <xs:enumeration value="At Cyclic Phase Angle"/>
+                                <xs:enumeration value="Enveloped Over Cyclic Phase"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="SectorOption" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Allowed: "Index", "Value".</xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:string">
+                                <xs:enumeration value="Index"/>
+                                <xs:enumeration value="Value"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="ValueOption" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Allowed: "Maximum", "Minimum", "Absolute Maximum", "Absolute Minimum".</xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:string">
+                                <xs:enumeration value="Maximum"/>
+                                <xs:enumeration value="Minimum"/>
+                                <xs:enumeration value="Absolute Maximum"/>
+                                <xs:enumeration value="Absolute Minimum"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="EnvelopeOption" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>
+                                Enveloping criteria. Allowed: "Maximum", "Minimum", "Absolute Maximum", "Absolute Minimum", "Average", "Sum".
+                              </xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:string">
+                                <xs:enumeration value="Maximum"/>
+                                <xs:enumeration value="Minimum"/>
+                                <xs:enumeration value="Absolute Maximum"/>
+                                <xs:enumeration value="Absolute Minimum"/>
+                                <xs:enumeration value="Average"/>
+                                <xs:enumeration value="Sum"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="CyclicPhaseAngle" type="xs:double" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Phase angle for cyclic symmetry.</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element name="EnvelopeOverCyclicPhaseMethod" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Enveloping method over cyclic phase. Allowed: "Sweep", "Analytical".</xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:string">
+                                <xs:enumeration value="Sweep"/>
+                                <xs:enumeration value="Analytical"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="StartCyclicPhaseAngle" type="xs:double" minOccurs="0"/>
+                          <xs:element name="EndCyclicPhaseAngle" type="xs:double" minOccurs="0"/>
+                          <xs:element name="CyclicPhaseIncrement" type="xs:double" minOccurs="0"/>
+                          <xs:element name="SectorIndex" type="xs:integer" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Index of the cyclic sector.</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element name="NumberOfSectorIds" type="xs:integer" minOccurs="0"/>
+                          <xs:element name="SectorIds" type="xs:string" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Comma-separated list of sector IDs.</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+
+                    <xs:element name="NumberOfCyclicStages" type="xs:integer" minOccurs="0"/>
+                    <xs:element name="Component" type="xs:string" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Component name string; see result list (e.g. "Von-Mises", "XX", etc.).</xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+                    <xs:element name="BeamSection" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>
+                          Recovery point for beams.
+                          Allowed: "Recovery Point C", "Recovery Point D", "Recovery Point E", "Recovery Point F", "Minimum", "Maximum".
+                        </xs:documentation>
+                      </xs:annotation>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:enumeration value="Recovery Point C"/>
+                          <xs:enumeration value="Recovery Point D"/>
+                          <xs:enumeration value="Recovery Point E"/>
+                          <xs:enumeration value="Recovery Point F"/>
+                          <xs:enumeration value="Minimum"/>
+                          <xs:enumeration value="Maximum"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="ShellSection" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>
+                          Position through thickness for shells.
+                          Allowed: "Top", "Bottom", "Minimum", "Maximum", "Average/Middle", "Top and Bottom", "Bending".
+                        </xs:documentation>
+                      </xs:annotation>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:enumeration value="Top"/>
+                          <xs:enumeration value="Bottom"/>
+                          <xs:enumeration value="Minimum"/>
+                          <xs:enumeration value="Maximum"/>
+                          <xs:enumeration value="Average/Middle"/>
+                          <xs:enumeration value="Top and Bottom"/>
+                          <xs:enumeration value="Bending"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="dBScaling" type="sppBoolean" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Enable dB scaling (0/1).</xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+                    <xs:element name="dBReference" type="xs:double" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Reference value for dB scaling. Mapped to 0dB on colorbar, must be positive.</xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+                    <xs:element name="convertedDBRef" type="xs:double" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Converted dB reference value, used internally in dB math, not displayed.</xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+                    <xs:element name="dBScale" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Logarithmic base for dB scaling. Allowed: "dB10" (10*log10), "dB20" (20*log10).</xs:documentation>
+                      </xs:annotation>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:enumeration value="dB10"/>
+                          <xs:enumeration value="dB20"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="SectionNumber" type="xs:integer" minOccurs="0"/>
+                    <xs:element name="PlyNumber" type="xs:integer" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>1-based composite ply index; 0 for non-composite / default.</xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+                    <xs:element name="LayerNumber" type="xs:integer" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>1-based layer index for composites; 0 for all/default.</xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+                    <xs:element name="IncludeMidnodes" type="sppBoolean" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Whether to include mid-nodes for shell results (0/1).</xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+                    <xs:element name="ProjectOnNodeNormal" type="sppBoolean" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Whether to project shell results onto node normals (0/1).</xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+                    <xs:element name="PlyID" type="xs:integer" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Composite ply ID; 0 to ignore.</xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+                    <xs:element name="PlyLocation" type="xs:integer" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Location through the ply thickness: 0=Bottom, 1=Middle, 2=Top.</xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+
+                    <xs:element name="ComputationOptions" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Averaging and discontinuity mathematical combination controls.</xs:documentation>
+                      </xs:annotation>
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="NodalCombination" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>
+                                How to combine values at nodes.
+                                Allowed: "None", "Average", "Sum", "Maximum", "Minimum", "Absolute Minimum", "Absolute Maximum", "Arithmetic Mean", "Discontinuity", "Signed Absolute Minimum", "Signed Absolute Maximum".
+                              </xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:string">
+                                <xs:enumeration value="None"/>
+                                <xs:enumeration value="Average"/>
+                                <xs:enumeration value="Sum"/>
+                                <xs:enumeration value="Minimum"/>
+                                <xs:enumeration value="Maximum"/>
+                                <xs:enumeration value="Absolute Minimum"/>
+                                <xs:enumeration value="Absolute Maximum"/>
+                                <xs:enumeration value="Arithmetic Mean"/>
+                                <xs:enumeration value="Discontinuity"/>
+                                <xs:enumeration value="Signed Absolute Minimum"/>
+                                <xs:enumeration value="Signed Absolute Maximum"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="AccrossPhysicalProperties" type="sppBoolean" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Average across physical property boundaries (0/1). Note spelling 'Accross' with double 'c' is intentional.</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element name="AccrossMaterials" type="sppBoolean" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Average across material boundaries (0/1). Note spelling 'Accross' is intentional.</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element name="AccrossElementTypes" type="sppBoolean" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Average across element type boundaries (0/1). Note spelling 'Accross' is intentional.</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element name="AccrossFeatureAngles" type="sppBoolean" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Average across feature angle boundaries (0/1). Note spelling 'Accross' is intentional.</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element name="FeatureAngleValue" type="xs:double" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Feature angle value in degrees.</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element name="IncludeInternalElements" type="sppBoolean" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Toggle including internal elements in averaging (0/1).</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element name="Scope" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Averaging scope. Allowed: "Entire Model", "Visible Model".</xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:string">
+                                <xs:enumeration value="Entire Model"/>
+                                <xs:enumeration value="Visible Model"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="AcrossNonmanifoldEdges" type="sppBoolean" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Averaging across nonmanifold edges (0/1). Note spelling 'Across' with single 'c' is intentional.</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element name="ExcludeElements" type="sppBoolean" minOccurs="0"/>
+                          <xs:element name="DiscontinuityOption" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Discontinuity evaluation option. Allowed: "Relative", "Local", "Weighted", "Balanced".</xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:string">
+                                <xs:enumeration value="Relative"/>
+                                <xs:enumeration value="Local"/>
+                                <xs:enumeration value="Weighted"/>
+                                <xs:enumeration value="Balanced"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+
+                    <xs:element name="CoordinateSystem" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>
+                          Result transformation coordinate system.
+                          Allowed: "Absolute Rectangular", "Absolute Cylindrical", "Absolute Spherical", "Work rectangular", "Work Cylindrical", "Work Spherical", "Native", "Material", "Selected Rectangular", "Selected Cylindrical", "Selected Spherical".
+                          Note: The "Selected" variants require a valid ID in CoordinateSystemID. Only set those when explicitly told to.
+                        </xs:documentation>
+                      </xs:annotation>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:enumeration value="Absolute Rectangular"/>
+                          <xs:enumeration value="Absolute Cylindrical"/>
+                          <xs:enumeration value="Absolute Spherical"/>
+                          <xs:enumeration value="Work rectangular"/>
+                          <xs:enumeration value="Work Cylindrical"/>
+                          <xs:enumeration value="Work Spherical"/>
+                          <xs:enumeration value="Native"/>
+                          <xs:enumeration value="Material"/>
+                          <xs:enumeration value="Selected Rectangular"/>
+                          <xs:enumeration value="Selected Cylindrical"/>
+                          <xs:enumeration value="Selected Spherical"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="CoordinateSystemSource" type="xs:string" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Allowed: "None", "Model", "Result".</xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+                    <xs:element name="CoordinateSystemID" type="xs:integer" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>
+                          ID of the coordinate system if Source is "Model" or "Result". This is not a 0-based index. Do not modify unless explicitly told to.
+                        </xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+                    <xs:element name="DisplayBeamResultsInLocalCoordinateSystem" type="sppBoolean" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Always display 1D beam results in local coordinate system (0/1).</xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+                    <xs:element name="DisplayShellResultsInPojectedCoordinateSystem" type="sppBoolean" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>
+                          Display shell results in projected coordinate system (0/1).
+                          Note: the real tag is misspelled 'Pojected' (missing 'r').
+                        </xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+
+                    <xs:element name="ElementValueOptions" minOccurs="0">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="ElementValue" type="sppBoolean" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Toggle element-value based contouring (0/1).</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element name="ElementCriterion" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>
+                                Criterion for element values.
+                                Allowed: "Average", "Centroid", "Maximum", "Minimum", "Absolute Maximum", "Absolute Minimum", "Signed Absolute Maximum", "Signed Absolute Minimum".
+                              </xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:string">
+                                <xs:enumeration value="Average"/>
+                                <xs:enumeration value="Centroid"/>
+                                <xs:enumeration value="Maximum"/>
+                                <xs:enumeration value="Minimum"/>
+                                <xs:enumeration value="Absolute Maximum"/>
+                                <xs:enumeration value="Absolute Minimum"/>
+                                <xs:enumeration value="Signed Absolute Maximum"/>
+                                <xs:enumeration value="Signed Absolute Minimum"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+
+                    <xs:element name="ComplexComponent" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>
+                          Complex result component selection.
+                          Allowed: "Real", "Imaginary", "Amplitude", "Signed Amplitude", "At Phase Angle".
+                        </xs:documentation>
+                      </xs:annotation>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:enumeration value="Real"/>
+                          <xs:enumeration value="Imaginary"/>
+                          <xs:enumeration value="Amplitude"/>
+                          <xs:enumeration value="Signed Amplitude"/>
+                          <xs:enumeration value="At Phase Angle"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="ComplexPhaseAngle" type="xs:double" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Phase angle in degrees [0.0, 360.0). Used if ComplexComponent is 'At Phase Angle'.</xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+                    <xs:element name="ComplexStartPhaseAngle" type="xs:double" minOccurs="0"/>
+                    <xs:element name="ComplexEndPhaseAngle" type="xs:double" minOccurs="0"/>
+                    <xs:element name="ComplexPhaseAngleIncrement" type="xs:double" minOccurs="0"/>
+                    <xs:element name="ComplexMaxOverPhaseMethod" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Sweep method. Allowed: "Sweep", "Analytical".</xs:documentation>
+                      </xs:annotation>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:enumeration value="Sweep"/>
+                          <xs:enumeration value="Analytical"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="AbsoluteValue" type="sppBoolean" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Take absolute value of result (0/1).</xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+                    <xs:element name="ResultScale" type="xs:double" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Result scaling factor multiplier.</xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+                    <xs:element name="Unit" type="xs:string" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Verification result unit name (from the open result's supported list).</xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+                    <xs:element name="CalculateBeamStressesStrainsFromForces" type="sppBoolean" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Toggle calculating beam stresses/strains from forces (0/1).</xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+                    <xs:element name="BeamStressesStrainsFillets" type="sppBoolean" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Toggle fillets in beam stress calculation (0/1).</xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+                    <xs:element name="BeamStressesStrainsFilletRadius" type="xs:double" minOccurs="0"/>
+                    <xs:element name="AcousticWeighting" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Acoustical weighting criteria. Allowed: "None", "A", "B", "C", "D", "AB", "BC".</xs:documentation>
+                      </xs:annotation>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:enumeration value="None"/>
+                          <xs:enumeration value="A"/>
+                          <xs:enumeration value="B"/>
+                          <xs:enumeration value="C"/>
+                          <xs:enumeration value="D"/>
+                          <xs:enumeration value="AB"/>
+                          <xs:enumeration value="BC"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="ReferenceNode" type="xs:integer" minOccurs="0"/>
+                    <xs:element name="ReferenceNodeLabel" type="xs:integer" minOccurs="0"/>
+                    <xs:element name="AxisymmetricAxisOfRotation" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Axis of rotation for axisymmetric model expansion. Allowed: "X-Axis", "Y-Axis", "Z-Axis".</xs:documentation>
+                      </xs:annotation>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:enumeration value="X-Axis"/>
+                          <xs:enumeration value="Y-Axis"/>
+                          <xs:enumeration value="Z-Axis"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+
+              <!-- CrossSectionOptions -->
+              <xs:element name="CrossSectionOptions" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>Result shown on cross-section or cutting views.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="LockRotation" type="sppBoolean" minOccurs="0"/>
+                    <xs:element name="LoadCase" type="xs:integer" minOccurs="0"/>
+                    <xs:element name="Iteration" type="xs:integer" minOccurs="0"/>
+                    <xs:element name="Quantity" type="xs:string" minOccurs="0"/>
+                    <xs:element name="Component" type="xs:string" minOccurs="0"/>
+                    <xs:element name="ElementValueOptions" minOccurs="0">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="ElementValue" type="sppBoolean" minOccurs="0"/>
+                          <xs:element name="ElementCriterion" minOccurs="0">
+                            <xs:simpleType>
+                              <xs:restriction base="xs:string">
+                                <xs:enumeration value="Average"/>
+                                <xs:enumeration value="Centroid"/>
+                                <xs:enumeration value="Minimum"/>
+                                <xs:enumeration value="Maximum"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="ComplexOption" minOccurs="0">
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:enumeration value="Real"/>
+                          <xs:enumeration value="Imaginary"/>
+                          <xs:enumeration value="Amplitude"/>
+                          <xs:enumeration value="Signed Amplitude"/>
+                          <xs:enumeration value="At Phase Angle"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="ComplexPhaseAngle" type="xs:double" minOccurs="0"/>
+                    <xs:element name="AbsoluteValue" type="sppBoolean" minOccurs="0"/>
+                    <xs:element name="ResultScale" type="xs:double" minOccurs="0"/>
+                    <xs:element name="Unit" type="xs:string" minOccurs="0"/>
+                    <xs:element name="Fillets" type="sppBoolean" minOccurs="0"/>
+                    <xs:element name="FilletRadius" type="xs:double" minOccurs="0"/>
+                    <xs:element name="BeamElement" type="sppBoolean" minOccurs="0"/>
+                    <xs:element name="BeamEnd" minOccurs="0">
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:enumeration value="Fore"/>
+                          <xs:enumeration value="Aft"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+
+              <!-- DeformationOptions -->
+              <xs:element name="DeformationOptions" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>Visual styling of displaced/deformed models.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="ShowDeformation" type="sppBoolean" minOccurs="0"/>
+                    <xs:element name="SameLoadCaseIterationForColorAndDeformation" type="sppBoolean" minOccurs="0"/>
+                    <xs:element name="ShowUndeformedModel" type="sppBoolean" minOccurs="0"/>
+                    <xs:element name="DeformShellElementsByNormalComponent" type="sppBoolean" minOccurs="0"/>
+                    <xs:element name="ResultOptions" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Result record used for deformations (usually displacement nodal).</xs:documentation>
+                      </xs:annotation>
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="LoadCase" type="xs:integer" minOccurs="0"/>
+                          <xs:element name="Iteration" type="xs:integer" minOccurs="0"/>
+                          <xs:element name="SubIteration" type="xs:integer" minOccurs="0"/>
+                          <xs:element name="Result" type="xs:string" minOccurs="0"/>
+                          <xs:element name="Component" type="xs:string" minOccurs="0"/>
+                          <xs:element name="ComplexOption" minOccurs="0">
+                            <xs:simpleType>
+                              <xs:restriction base="xs:string">
+                                <xs:enumeration value="Real"/>
+                                <xs:enumeration value="Imaginary"/>
+                                <xs:enumeration value="Amplitude"/>
+                                <xs:enumeration value="Signed Amplitude"/>
+                                <xs:enumeration value="At Phase Angle"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="ComplexPhaseAngle" type="xs:double" minOccurs="0"/>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="ScaleOptions" minOccurs="0">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="DeformationScaleType" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Allowed: "% Model", "Absolute".</xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:string">
+                                <xs:enumeration value="% Model"/>
+                                <xs:enumeration value="Absolute"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="AbsoluteScaleValue" type="xs:double" minOccurs="0"/>
+                          <xs:element name="ModelPercentScaleValue" type="xs:double" minOccurs="0"/>
+                          <xs:element name="ReferenceNode" type="xs:integer" minOccurs="0"/>
+                          <xs:element name="ReferenceNodeLabel" type="xs:integer" minOccurs="0"/>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="ReferenceDeformationOptions" minOccurs="0">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="DeformWith" type="sppBoolean" minOccurs="0"/>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+
+              <!-- DisplayOnOptions -->
+              <xs:element name="DisplayOnOptions" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>Where to render graphics (e.g. Free Faces, Volume, Cutting Plane).</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="DisplayOn" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Allowed: "Free Faces", "Volume", "Cutting Plane".</xs:documentation>
+                      </xs:annotation>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:enumeration value="Free Faces"/>
+                          <xs:enumeration value="Volume"/>
+                          <xs:enumeration value="Cutting Plane"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="ClippingOptions" minOccurs="0">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="ShowModelOutline" type="sppBoolean" minOccurs="0"/>
+                          <xs:element name="ShowClippedModelGhost" type="sppBoolean" minOccurs="0"/>
+                          <xs:element name="ClippingValue" type="xs:double" minOccurs="0"/>
+                          <xs:element name="ClippingSide" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Allowed: "Positive", "Negative", "Both".</xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:string">
+                                <xs:enumeration value="Positive"/>
+                                <xs:enumeration value="Negative"/>
+                                <xs:enumeration value="Both"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="CutPlane" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Allowed: "X", "Y", "Z" (or "R", "T", "P" for cylindrical/spherical).</xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:string">
+                                <xs:pattern value="[XYZRTP]"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="CutPlaneCoordinateSystem" minOccurs="0">
+                            <xs:simpleType>
+                              <xs:restriction base="xs:string">
+                                <xs:enumeration value="Absolute Rectangular"/>
+                                <xs:enumeration value="Absolute Cylindrical"/>
+                                <xs:enumeration value="Absolute Spherical"/>
+                                <xs:enumeration value="Work rectangular"/>
+                                <xs:enumeration value="Work Cylindrical"/>
+                                <xs:enumeration value="Work Spherical"/>
+                                <xs:enumeration value="Native"/>
+                                <xs:enumeration value="Material"/>
+                                <xs:enumeration value="Selected Rectangular"/>
+                                <xs:enumeration value="Selected Cylindrical"/>
+                                <xs:enumeration value="Selected Spherical"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="CutPlaneCoordinateSystemSource" type="xs:integer" minOccurs="0"/>
+                          <xs:element name="CutPlaneCoordinateSystemID" type="xs:integer" minOccurs="0"/>
+                          <xs:element name="PostCoordinateSystemOptions" minOccurs="0">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="PostCoordinateSystemType" type="xs:string" minOccurs="0"/>
+                                <xs:element name="Orientation" minOccurs="0">
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="X_Vector" type="vector3D" minOccurs="0"/>
+                                      <xs:element name="Y_Vector" type="vector3D" minOccurs="0"/>
+                                      <xs:element name="Z_Vector" type="vector3D" minOccurs="0"/>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
+                                <xs:element name="Origin" type="vector3D" minOccurs="0"/>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+
+              <!-- HeaderOptions -->
+              <xs:element name="HeaderOptions" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>Title blocks above the legend.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="ShowHeader" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Allowed: "None", "Automatic", "Customized".</xs:documentation>
+                      </xs:annotation>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:enumeration value="None"/>
+                          <xs:enumeration value="Automatic"/>
+                          <xs:enumeration value="Customized"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="CustomHeaders" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>
+                          Contains custom line tokens. Tokens: "Solution", "Loadcase", "Iteration", "Result", "Combination", "Component", "Ply Id And Layer", "Beam Section", "Shell Section", "Cross Section Beam Info", "Formula", "Unit", "Scale", "CSYS", "Deformation", "Complex", "Absolute Value", "Model Summary", "User Text".
+                        </xs:documentation>
+                      </xs:annotation>
+                      <xs:complexType>
+                        <xs:sequence>
+                          <!-- Old-style static line options -->
+                          <xs:element name="ShowLine1" type="sppBoolean" minOccurs="0"/>
+                          <xs:element name="Line1" type="xs:string" minOccurs="0"/>
+                          <xs:element name="ShowLine2" type="sppBoolean" minOccurs="0"/>
+                          <xs:element name="Line2" type="xs:string" minOccurs="0"/>
+                          <xs:element name="ShowLine3" type="sppBoolean" minOccurs="0"/>
+                          <xs:element name="Line3" type="xs:string" minOccurs="0"/>
+                          <xs:element name="ShowLine4" type="sppBoolean" minOccurs="0"/>
+                          <xs:element name="Line4" type="xs:string" minOccurs="0"/>
+                          <xs:element name="ShowLine5" type="sppBoolean" minOccurs="0"/>
+                          <xs:element name="Line5" type="xs:string" minOccurs="0"/>
+                          <xs:element name="ShowLine6" type="sppBoolean" minOccurs="0"/>
+                          <xs:element name="Line6" type="xs:string" minOccurs="0"/>
+                          <xs:element name="ShowLine7" type="sppBoolean" minOccurs="0"/>
+                          <xs:element name="Line7" type="xs:string" minOccurs="0"/>
+                          <xs:element name="ShowLine8" type="sppBoolean" minOccurs="0"/>
+                          <xs:element name="Line8" type="xs:string" minOccurs="0"/>
+                          <xs:element name="ShowLine9" type="sppBoolean" minOccurs="0"/>
+                          <xs:element name="Line9" type="xs:string" minOccurs="0"/>
+                          <xs:element name="ShowLine10" type="sppBoolean" minOccurs="0"/>
+                          <xs:element name="Line10" type="xs:string" minOccurs="0"/>
+
+                          <!-- New-style Legend Header custom token configuration -->
+                          <xs:element name="CustomHeaderLineCount" type="xs:integer" minOccurs="0"/>
+                          <xs:element name="HeaderLine0" type="headerLineType" minOccurs="0"/>
+                          <xs:element name="HeaderLine1" type="headerLineType" minOccurs="0"/>
+                          <xs:element name="HeaderLine2" type="headerLineType" minOccurs="0"/>
+                          <xs:element name="HeaderLine3" type="headerLineType" minOccurs="0"/>
+                          <xs:element name="HeaderLine4" type="headerLineType" minOccurs="0"/>
+                          <xs:element name="HeaderLine5" type="headerLineType" minOccurs="0"/>
+                          <xs:element name="HeaderLine6" type="headerLineType" minOccurs="0"/>
+                          <xs:element name="HeaderLine7" type="headerLineType" minOccurs="0"/>
+                          <xs:element name="HeaderLine8" type="headerLineType" minOccurs="0"/>
+                          <xs:element name="HeaderLine9" type="headerLineType" minOccurs="0"/>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+
+              <!-- ColorbarOptions -->
+              <xs:element name="ColorbarOptions" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>Configures colorbar and legend display.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="ShowColorbar" type="sppBoolean" minOccurs="0"/>
+                    <xs:element name="Spectrum" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Allowed: "Structural", "Thermal", "Grayscale", "Stoplight".</xs:documentation>
+                      </xs:annotation>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:enumeration value="Structural"/>
+                          <xs:enumeration value="Thermal"/>
+                          <xs:enumeration value="Grayscale"/>
+                          <xs:enumeration value="Stoplight"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="InvertSpectrum" type="sppBoolean" minOccurs="0"/>
+                    <xs:element name="SpectrumScale" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Allowed: "Automatic", "Linear", "Logarithmic".</xs:documentation>
+                      </xs:annotation>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:enumeration value="Automatic"/>
+                          <xs:enumeration value="Linear"/>
+                          <xs:enumeration value="Logarithmic"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="Spacing" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Allowed: "Equally Spaced", "Round Off", "Level Increment".</xs:documentation>
+                      </xs:annotation>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:enumeration value="Equally Spaced"/>
+                          <xs:enumeration value="Round Off"/>
+                          <xs:enumeration value="Level Increment"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="AutoLevel" type="sppBoolean" minOccurs="0"/>
+                    <xs:element name="NumLevels" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Number of color bar transition levels. Range [1..50].</xs:documentation>
+                      </xs:annotation>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:integer">
+                          <xs:minInclusive value="1"/>
+                          <xs:maxInclusive value="50"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="MinMaxCriterion" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Allowed: "Result", "Displayed", "Specified", "Combined Viewport Result", "Combined Viewport Displayed".</xs:documentation>
+                      </xs:annotation>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:enumeration value="Result"/>
+                          <xs:enumeration value="Displayed"/>
+                          <xs:enumeration value="Specified"/>
+                          <xs:enumeration value="Combined Viewport Result"/>
+                          <xs:enumeration value="Combined Viewport Displayed"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="MinimumValue" type="xs:double" minOccurs="0"/>
+                    <xs:element name="MaximumValue" type="xs:double" minOccurs="0"/>
+                    <xs:element name="OverflowColor" type="colorIndex" minOccurs="0"/>
+                    <xs:element name="UnderflowColor" type="colorIndex" minOccurs="0"/>
+                    <xs:element name="Position" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Allowed: "Left", "Right", "None".</xs:documentation>
+                      </xs:annotation>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:enumeration value="Left"/>
+                          <xs:enumeration value="Right"/>
+                          <xs:enumeration value="None"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="OverflowDisplayStyle" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Allowed: "None", "Shaded", "Translucent", "Clipped".</xs:documentation>
+                      </xs:annotation>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:enumeration value="None"/>
+                          <xs:enumeration value="Shaded"/>
+                          <xs:enumeration value="Translucent"/>
+                          <xs:enumeration value="Clipped"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="UnderflowDisplayStyle" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Allowed: "None", "Shaded", "Translucent", "Clipped".</xs:documentation>
+                      </xs:annotation>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:enumeration value="None"/>
+                          <xs:enumeration value="Shaded"/>
+                          <xs:enumeration value="Translucent"/>
+                          <xs:enumeration value="Clipped"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="OverwriteValue" type="sppBoolean" minOccurs="0"/>
+                    <xs:element name="OverwriteColor" type="colorIndex" minOccurs="0"/>
+                    <xs:element name="HideColorBarUnits" type="sppBoolean" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Hides the unit displayed at the bottom of the colorbar (0/1).</xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+                    <xs:element name="CustomColorbar" type="sppBoolean" minOccurs="0"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+
+              <!-- EdgefaceDisplayOptions -->
+              <xs:element name="EdgefaceDisplayOptions" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>Edge/Face display preferences for deformed (Primary) and undeformed structures.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="PrimaryOptions" minOccurs="0">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="EdgeStyle" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Allowed: "External", "Feature", "Wireframe", "None", "Polygon Edge".</xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:string">
+                                <xs:enumeration value="External"/>
+                                <xs:enumeration value="Feature"/>
+                                <xs:enumeration value="Wireframe"/>
+                                <xs:enumeration value="None"/>
+                                <xs:enumeration value="Polygon Edge"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="EdgeColor" type="colorIndex" minOccurs="0"/>
+                          <xs:element name="FaceStyle" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Allowed face style for primary elements: "Fill", "NoFill".</xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:string">
+                                <xs:enumeration value="Fill"/>
+                                <xs:enumeration value="NoFill"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="FaceColor" type="colorIndex" minOccurs="0"/>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="UndeformedOptions" minOccurs="0">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="EdgeStyle" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Allowed: "External", "Feature", "Wireframe", "None", "Polygon Edge".</xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:string">
+                                <xs:enumeration value="External"/>
+                                <xs:enumeration value="Feature"/>
+                                <xs:enumeration value="Wireframe"/>
+                                <xs:enumeration value="None"/>
+                                <xs:enumeration value="Polygon Edge"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="EdgeColor" type="colorIndex" minOccurs="0"/>
+                          <xs:element name="FaceStyle" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Allowed face style for undeformed elements: "Opaque", "Translucent", "None".</xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:string">
+                                <xs:enumeration value="Opaque"/>
+                                <xs:enumeration value="Translucent"/>
+                                <xs:enumeration value="None"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="FaceColor" type="colorIndex" minOccurs="0"/>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+
+              <!-- TextOptions -->
+              <xs:element name="TextOptions" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>Annotations, labels, and numeric formats.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="TextColor" type="colorIndex" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>White is 213 by default.</xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+                    <xs:element name="FontSizeOptions" minOccurs="0">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="FontAutoSize" type="sppBoolean" minOccurs="0"/>
+                          <xs:element name="FontScale" type="xs:double" minOccurs="0"/>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="NumberFormatOptions" minOccurs="0">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="Format" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Allowed: "Automatic", "Fixed Point", "Scientific".</xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:string">
+                                <xs:enumeration value="Automatic"/>
+                                <xs:enumeration value="Fixed Point"/>
+                                <xs:enumeration value="Scientific"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="DecimalPlaces" minOccurs="0">
+                            <xs:simpleType>
+                              <xs:restriction base="xs:integer">
+                                <xs:minInclusive value="0"/>
+                                <xs:maxInclusive value="9"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+
+              <!-- LegendBoxDispOptions -->
+              <xs:element name="LegendBoxDispOptions" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>Legend box styling options.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="DisplayOptions" minOccurs="0">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="TextAndLeaderColor" type="colorIndex" minOccurs="0"/>
+                          <xs:element name="TextAlignment" type="xs:integer" minOccurs="0"/>
+                          <xs:element name="BoxFillColor" type="colorIndex" minOccurs="0"/>
+                          <xs:element name="ShowBoxBorder" type="sppBoolean" minOccurs="0"/>
+                          <xs:element name="BoxFill" type="sppBoolean" minOccurs="0"/>
+                          <xs:element name="BoxTranslucency" type="sppBoolean" minOccurs="0"/>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+
+              <!-- MinMarkerOptions -->
+              <xs:element name="MinMarkerOptions" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>Displays minimum peak value marker on the model mesh.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="ShowMarker" type="sppBoolean" minOccurs="0"/>
+                    <xs:element name="ValueType" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Allowed: "None", "Result And Entity", "Result", "Entity".</xs:documentation>
+                      </xs:annotation>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:enumeration value="None"/>
+                          <xs:enumeration value="Result And Entity"/>
+                          <xs:enumeration value="Result"/>
+                          <xs:enumeration value="Entity"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="DisplayUnit" type="sppBoolean" minOccurs="0"/>
+                    <xs:element name="SecondaryData" type="sppBoolean" minOccurs="0"/>
+                    <xs:element name="DisplayOptions" minOccurs="0">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="BoxStyle" type="xs:integer" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>C++ validates BoxStyle strictly to [0..2].</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element name="TextAndLeaderColor" type="colorIndex" minOccurs="0"/>
+                          <xs:element name="TextAlignment" type="xs:integer" minOccurs="0"/>
+                          <xs:element name="BoxFillColor" type="colorIndex" minOccurs="0"/>
+                          <xs:element name="ShowBoxBorder" type="sppBoolean" minOccurs="0"/>
+                          <xs:element name="BoxFill" type="sppBoolean" minOccurs="0"/>
+                          <xs:element name="BoxTranslucency" type="sppBoolean" minOccurs="0"/>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+
+              <!-- MaxMarkerOptions -->
+              <xs:element name="MaxMarkerOptions" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>Displays maximum peak value marker on the model mesh.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="ShowMarker" type="sppBoolean" minOccurs="0"/>
+                    <xs:element name="ValueType" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Allowed: "None", "Result And Entity", "Result", "Entity".</xs:documentation>
+                      </xs:annotation>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:enumeration value="None"/>
+                          <xs:enumeration value="Result And Entity"/>
+                          <xs:enumeration value="Result"/>
+                          <xs:enumeration value="Entity"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="DisplayUnit" type="sppBoolean" minOccurs="0"/>
+                    <xs:element name="SecondaryData" type="sppBoolean" minOccurs="0"/>
+                    <xs:element name="DisplayOptions" minOccurs="0">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="BoxStyle" type="xs:integer" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>C++ validates BoxStyle strictly to [0..2].</xs:documentation>
+                            </xs:annotation>
+                          </xs:element>
+                          <xs:element name="TextAndLeaderColor" type="colorIndex" minOccurs="0"/>
+                          <xs:element name="TextAlignment" type="xs:integer" minOccurs="0"/>
+                          <xs:element name="BoxFillColor" type="colorIndex" minOccurs="0"/>
+                          <xs:element name="ShowBoxBorder" type="sppBoolean" minOccurs="0"/>
+                          <xs:element name="BoxFill" type="sppBoolean" minOccurs="0"/>
+                          <xs:element name="BoxTranslucency" type="sppBoolean" minOccurs="0"/>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+
+              <!-- AnimationOptions -->
+              <xs:element name="AnimationOptions" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>Animation player visual settings.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="Color" type="sppBoolean" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Toggle color-spectrum animation (0/1).</xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+                    <xs:element name="Deformation" type="sppBoolean" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Toggle deformation scale animation (0/1).</xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+                    <xs:element name="ResultAnimationOptions" minOccurs="0">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="Style" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Allowed: "Linear", "Modal", "Forward Wave", "Backward Wave".</xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:string">
+                                <xs:enumeration value="Linear"/>
+                                <xs:enumeration value="Modal"/>
+                                <xs:enumeration value="Forward Wave"/>
+                                <xs:enumeration value="Backward Wave"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="NumFrames" type="xs:integer" minOccurs="0"/>
+                          <xs:element name="SaveFramesInMemory" type="sppBoolean" minOccurs="0"/>
+                          <xs:element name="StartPhaseAngle" type="xs:double" minOccurs="0"/>
+                          <xs:element name="EndPhaseAngle" type="xs:double" minOccurs="0"/>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="IterationAnimationOptions" minOccurs="0">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="IterationValueType" type="xs:integer" minOccurs="0"/>
+                          <xs:element name="StartLoadCase" type="xs:integer" minOccurs="0"/>
+                          <xs:element name="StartIteration" type="xs:integer" minOccurs="0"/>
+                          <xs:element name="StartSubIteration" type="xs:integer" minOccurs="0"/>
+                          <xs:element name="EndLoadCase" type="xs:integer" minOccurs="0"/>
+                          <xs:element name="EndIteration" type="xs:integer" minOccurs="0"/>
+                          <xs:element name="SubEndIteration" type="xs:integer" minOccurs="0"/>
+                          <xs:element name="IterationStep" type="xs:integer" minOccurs="0"/>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="StreamlineAnimationOptions" minOccurs="0">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="ShowGuides" type="sppBoolean" minOccurs="0"/>
+                          <xs:element name="PulseSynchronization" minOccurs="0">
+                            <xs:annotation>
+                              <xs:documentation>Allowed: "At Seed Point", "Upstream", "Downstream".</xs:documentation>
+                            </xs:annotation>
+                            <xs:simpleType>
+                              <xs:restriction base="xs:string">
+                                <xs:enumeration value="At Seed Point"/>
+                                <xs:enumeration value="Upstream"/>
+                                <xs:enumeration value="Downstream"/>
+                              </xs:restriction>
+                            </xs:simpleType>
+                          </xs:element>
+                          <xs:element name="ActiveRegionStartFactor" type="xs:double" minOccurs="0"/>
+                          <xs:element name="ActiveRegionEndFactor" type="xs:double" minOccurs="0"/>
+                          <xs:element name="NumIncrements" type="xs:integer" minOccurs="0"/>
+                          <xs:element name="ContinuousPulse" type="sppBoolean" minOccurs="0"/>
+                          <xs:element name="NumTimePeriods" type="xs:integer" minOccurs="0"/>
+                          <xs:element name="NumFramesPerPulse" type="xs:double" minOccurs="0"/>
+                          <xs:element name="PulseDutyCycle" type="xs:double" minOccurs="0"/>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="FullCycle" type="sppBoolean" minOccurs="0"/>
+                    <xs:element name="Delay" type="xs:integer" minOccurs="0">
+                      <xs:annotation>
+                        <xs:documentation>Animation delay in milliseconds.</xs:documentation>
+                      </xs:annotation>
+                    </xs:element>
+                    <xs:element name="VectorDisplaySizeControl" type="sppBoolean" minOccurs="0"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+
+              <!-- GroupVisibilities -->
+              <xs:element name="GroupVisibilities" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>Group visibilities. Item counts and lists must match exactly.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="Num0DGroups" type="xs:integer" minOccurs="0"/>
+                    <xs:element name="Visibilities0DGroups" type="xs:string" minOccurs="0"/>
+                    <xs:element name="Num1DGroups" type="xs:integer" minOccurs="0"/>
+                    <xs:element name="Visibilities1DGroups" type="xs:string" minOccurs="0"/>
+                    <xs:element name="Num2DGroups" type="xs:integer" minOccurs="0"/>
+                    <xs:element name="Visibilities2DGroups" type="xs:string" minOccurs="0"/>
+                    <xs:element name="Num3DGroups" type="xs:integer" minOccurs="0"/>
+                    <xs:element name="Visibilities3DGroups" type="xs:string" minOccurs="0"/>
+                    <xs:element name="NumConnectorGroups" type="xs:integer" minOccurs="0"/>
+                    <xs:element name="VisibilitiesConnectorGroups" type="xs:string" minOccurs="0"/>
+                    <xs:element name="NumOtherGroups" type="xs:integer" minOccurs="0"/>
+                    <xs:element name="VisibilitiesOtherGroups" type="xs:string" minOccurs="0"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+
+              <!-- GroupTranslucency -->
+              <xs:element name="GroupTranslucency" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>Group translucencies. Note correct spellings 'TranslucencyForXGroups'.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="Num0DGroups" type="xs:integer" minOccurs="0"/>
+                    <xs:element name="TranslucencyFor0DGroups" type="xs:string" minOccurs="0"/>
+                    <xs:element name="Num1DGroups" type="xs:integer" minOccurs="0"/>
+                    <xs:element name="TranslucencyFor1DGroups" type="xs:string" minOccurs="0"/>
+                    <xs:element name="Num2DGroups" type="xs:integer" minOccurs="0"/>
+                    <xs:element name="TranslucencyFor2DGroups" type="xs:string" minOccurs="0"/>
+                    <xs:element name="Num3DGroups" type="xs:integer" minOccurs="0"/>
+                    <xs:element name="TranslucencyFor3DGroups" type="xs:string" minOccurs="0"/>
+                    <xs:element name="NumConnectorGroups" type="xs:integer" minOccurs="0"/>
+                    <xs:element name="TranslucencyForConnectorGroups" type="xs:string" minOccurs="0"/>
+                    <xs:element name="NumOtherGroups" type="xs:integer" minOccurs="0"/>
+                    <xs:element name="TranslucencyForOtherGroups" type="xs:string" minOccurs="0"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+
+              <!-- CsysGroup -->
+              <xs:element name="CsysGroup" minOccurs="0">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="NumCsys" type="xs:integer" minOccurs="0"/>
+                    <xs:element name="CsysVisibilities" type="xs:string" minOccurs="0"/>
+                    <xs:element name="CsysIds" type="xs:string" minOccurs="0"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="TemplateType" type="xs:string" use="optional"/>
+      <xs:attribute name="Version" type="xs:string" use="required"/>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>
