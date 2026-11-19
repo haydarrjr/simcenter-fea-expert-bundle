@@ -9,12 +9,12 @@ except ImportError:
     from validate_distribution import ROOT, distribution_files, validate
 
 
-def build(root=ROOT):
+def build(root=ROOT, out=None):
     result = validate(root)
     recipe = YAML(typ='safe').load((root / 'recipes/fea-expert-agent.yaml').read_text(encoding='utf-8'))
     ver = str(recipe.get('version', '0.1.2'))
-    out = root / 'dist'
-    out.mkdir(exist_ok=True)
+    out = Path(out) if out is not None else root / 'dist'
+    out.mkdir(parents=True, exist_ok=True)
     archive = out / f'simcenter-fea-expert-source-{ver}.zip'
     if archive.is_symlink() or out.is_symlink():
         raise ValueError('unsafe output path')

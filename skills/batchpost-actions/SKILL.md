@@ -8,10 +8,9 @@ metadata:
 <!-- FEA integration safety v1 -->
 ## FEA integration safety contract (overrides conflicting legacy guidance)
 
-- Discover the current tool catalog and exact input schemas before calling tools.
-  A connected server need not expose every tool from older documentation.
-  If a call fails, check dc_connection_status first. Retry bounded read-only
-  discovery after recovery; never replay an uncertain mutation blindly.
+- Discover the current BatchPost catalog and exact input schemas. A successful
+  catalog check proves connector readiness. Use tool results to distinguish a
+  pipe or startup failure from an absent result, file error or failed export.
 - Documentation: use documentation-search-tool only when currently advertised.
   If absent after connectivity recovery, route to the advertised Product Support
   search tool using its current schema and version-specific Siemens sources.
@@ -48,8 +47,8 @@ Use the existing BatchPost post-processor through its configured MCP connector. 
 ## Normal Workflow
 
 1. Confirm that the host exposes the connected BatchPost tools and their current definitions. If the connector/server is unavailable, report the prerequisite instead of guessing tool names, arguments, or launching a replacement solver.
-2. Establish ownership of the result session. The tested server shares a single open result and preferences across clients. Open the user's intended file only when the session is available; never replace another workflow's result.
-3. Use `list` or `batchpost://results` resources to discover actual loadcases, iterations, result types and components. Prefer structured content when available; do not concatenate separate text blocks into JSON. Resolve scientifically significant ambiguities with the user.
+2. Establish ownership of the result session. A worker shares its open result and preferences across clients attached to its pipe. Resolve the explicit absolute result path and verify it is a real file. Call `open` with its advertised schema. Ask for the path if unresolved. Preserve any result owned by another workflow.
+3. After successful `open`, use `list` or `batchpost://results` to discover actual loadcases, iterations, result types and components. Error `-32001` stating that no result is open means an input/result-state prerequisite. Prefer structured content when available. Resolve scientifically significant ambiguities with the user.
 4. Choose the output format, path, result selection and intended scope. MCP result indices are 1-based; XML template indices use the provided `template_index`. Result display names and XML unique names are not interchangeable.
 5. Reuse a user-provided post template or snapshot when appropriate. Follow the connected version's rules about whether one is required; never supply both. Read only the relevant support document below when a file needs creating or changing.
 6. Use `contour` for field plots/data and `graphi` for graphs across iterations. A graph needs specific entities rather than the whole-model `all` selection. Do not invent separate view-creation or image-export tools.

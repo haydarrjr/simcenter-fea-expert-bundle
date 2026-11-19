@@ -1,5 +1,5 @@
-bundle: simcenter-fea-expert-0.1.2
-version: 0.1.2
+bundle: simcenter-fea-expert-0.1.3
+version: 0.1.3
 title: Simcenter 3D FEA Expert
 description: Master Simcenter 3D & Simcenter Nastran FEA orchestrator that routes model inspection, NXOpen journal authoring, solver diagnostics, BatchPost results, documentation lookup, and analytical verification through specialized subagents and 38 canonical skills.
 instructions: |

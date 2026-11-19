@@ -18,7 +18,7 @@ EXPECTED_SUBRECIPES = [
 
 def distribution_files(root=ROOT):
     selected = []
-    for name in ['.sim-ai-agents.toml', 'README.md', 'RELEASE_NOTES.md', 'LICENSE', 'requirements-test.txt', 'recipes', 'skills', 'docs', 'scripts', 'tests']:
+    for name in ['.sim-ai-agents.toml', 'README.md', 'RELEASE_NOTES.md', 'LICENSE', 'requirements-test.txt', 'recipes', 'skills', 'docs', 'integrations', 'scripts', 'tests']:
         path = root / name
         if not path.exists():
             continue
@@ -79,7 +79,7 @@ def validate(root=ROOT):
         check(p.stat().st_size <= 512 * 1024, 'oversized source: ' + str(p))
         text = p.read_text(encoding='utf-8')
         check(not re.search(r'-----BEGIN [A-Z ]*PRIVATE KEY-----|gh[pousr]_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{30,}', text), 'credential-like source: ' + str(p))
-        if p.suffix == '.md':
+        if p.suffix == '.md' and not p.relative_to(root).as_posix().startswith('integrations/'):
             body_no_fence = re.sub(r'(?ms)^```.*?^```\s*', '', text)
             for target in re.findall(r'\[[^\]]*\]\(([^)]+)\)', body_no_fence):
                 if target.startswith(('http:', 'https:', 'mailto:', '#')):
