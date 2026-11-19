@@ -63,14 +63,14 @@ python -B scripts/install_copilot.py --project $copilotProject --archive "$candi
 
 Use `--verify` in place of `--archive` to verify installed files. Use `--rollback --backup <backup>` to restore the backed-up version when current bytes still match the installation. Codex uses a marked section of `AGENTS.md` and an installed `.agents/skills` tree. VS Code discovers `simcenter-fea-expert` in `.github/agents` and its skills in `.github/skills`. Open a fresh chat after installation.
 
-Project installation preserves existing MCP settings and task files. Reuse the already configured official connection for a matching profile. If a profile needs configuration, render a fragment for the selected local Siemens installation and review it against the host's existing settings. The default fragment allows read-only tools. `--engineering` adds sandbox and action candidates, and `--batchpost` adds the connector for a separately running worker.
+Project installation preserves existing MCP settings and task files. Use global, official MCP definitions by default in Codex and VS Code. Keep one active definition of each Siemens profile in the selected client. Preserve host settings for unrelated tools. If a profile needs configuration, render a fragment for the selected local Siemens installation and review it against the host's existing settings. The default fragment allows read-only tools. `--engineering` adds sandbox and action candidates, and `--batchpost` adds the connector for the separate Siemens worker. The packaged launcher starts the worker and hands its private pipe to the official connector.
 
 ```powershell
 python -B scripts/render_mcp_config.py --project $codexProject --product $productRoot
 python -B scripts/render_mcp_config.py --host copilot --project $copilotProject --product $productRoot
 ```
 
-For Copilot native configuration, use the selected workspace `.mcp.json` or Copilot user `mcp-config.json`. Existing editor-managed definitions can be forwarded when eligible. Select the FEA custom agent in a new chat and verify the current tool namespaces. [VS Code MCP configuration reference](https://code.visualstudio.com/docs/agents/reference/mcp-configuration)
+Place reviewed Codex fragments in the user's `~/.codex/config.toml`. Install shared connector scripts to a stable integration directory if the global definition uses them. For Copilot native configuration, use the Copilot user `~/.copilot/mcp-config.json` or the VS Code user MCP configuration, according to which client loads the tools. Existing editor-managed definitions can be forwarded when eligible. Select the FEA custom agent in a new chat and verify the current tool namespaces. [VS Code MCP configuration reference](https://code.visualstudio.com/docs/agents/reference/mcp-configuration)
 
 The Siemens 2612 Copilot launcher uses `--legacy-discovery` for Designcenter Open and Model Inspection. A controlled probe reproduced a status-only catalog and `DCMCP-E002` after the VS Code Copilot host's `server/discover` negotiation. Standard MCP `initialize` on a fresh child connected to the same open Model Inspection session. The launcher returns the standard method-not-found response for `server/discover` so the host can negotiate `initialize`. All tool catalogs and results continue to come from Siemens.
 

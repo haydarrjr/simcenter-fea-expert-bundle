@@ -26,4 +26,3 @@ governing-location jump, altered physical identity, unavailable tolerances
 or invalid h order return indeterminate/error as appropriate.
 This source comparison neither validates production local stress peaks nor
 runs Siemens adaptivity or a solver. See
-P08 source guide (source: fea_expert_agent_plugin/docs/qualification/mesh-vvuq-source-slice.md).

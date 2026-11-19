@@ -7,23 +7,6 @@ metadata:
 
 # Modal correlation
 
-Treat a repeated eigenvalue as an invariant subspace. An individual eigenvector
-inside that subspace is not unique. Call `fea_compare_modal_subspaces` after
-establishing identical physical DOF identity and a justified cluster and metric.
+Compare actual labeled modes in the same model/reference frame and physical state. Align observation coordinates, DOF types, units and sensor or mesh mapping. For a mode pair, compute mass-weighted or observation-weighted MAC only if the weight basis is valid. For a repeated/close cluster, compare subspace dimension and principal angles or singular values using the same weighted orthonormal basis.
 
-1. Inspect units, frames, constraints, retained components, mass and solver states.
-   Include node/frame/component in each DOF ID; reject missing/duplicate identities.
-2. Select a narrow physically justified frequency cluster. Do not pool unrelated
-   modes merely to improve a correlation score.
-3. Declare a positive metric: full SPD mass/measurement metric or explicit
-   positive weights. Distinguish rotational and translational dimensions.
-4. Inspect metric rank, frequency mismatch and principal angles. Use individual
-   MAC values as diagnostics alongside the subspace result, not as a substitute.
-5. Challenge sign, scale, order and basis rotation invariance, then replace a
-   direction or frequency to ensure a physically wrong candidate is rejected.
-
-Read [subspace method](references/engineering-method.md). Obtain the
-`repeated_modal_cluster` example through `fea_get_example`. A successful source
-correlation does not establish damping, nonlinear operating state or experimental
-validation. Route rotating/gyroscopic or complex non-self-adjoint modes through
-their appropriate model family; this real symmetric-subspace method is bounded.
+Read [correlation method](references/engineering-method.md) and [free-free SOL 103](../fea-dynamics/references/sol103-free-free.md). Use original eigenspectrum and qualified modal vector export; visual agreement alone cannot verify quantitative correlation. Preserve unresolved correspondence, insufficient spatial coverage and normalization limits.

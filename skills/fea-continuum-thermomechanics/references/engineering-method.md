@@ -1,6 +1,6 @@
 # Solid and thermal method
 
-Read the full formulation and validation (source: fea_expert_agent_plugin/docs/engineering/multiphysics-v3.md).
+Use release-specific Siemens Help for the chosen element, material and thermal sequence.
 The source API uses 3D isotropic small-strain elasticity with positive material
 parameters, linear tetrahedra or fully integrated trilinear hexahedra; conduction
 may use a symmetric positive-definite tensor. It rejects nearly incompressible
@@ -30,13 +30,7 @@ rejects negative Kelvin in both steady and transient solutions.
 
 ## Reproducible work
 
-`fea_get_example(name="bimaterial_history")` returns a complete two-material
-thermal/mechanical history. `continuum_cantilever` supplies a hexahedral bending
-case. Execute the returned request using `fea_solve_continuum`; examine every
-retained state and its applicability fields. For an authentic BDF, supply
-`unit_scales` with `length_to_m`, `force_to_N`, `mass_to_kg`, a nonempty
-`unit_basis`, and an effective `subcase_id` to the preparer. Units are not encoded
-reliably in a Nastran deck, so these scales remain analyst declarations.
+Use a two-material reference with distinct expansion coefficients to test thermal load transfer and restrained stress. Declare initial and prescribed temperatures and force balance.
 
 Use analytical affine fields, independently assembled scikit-fem operators,
 published archived solid displacement/reaction data, time decay and refinement

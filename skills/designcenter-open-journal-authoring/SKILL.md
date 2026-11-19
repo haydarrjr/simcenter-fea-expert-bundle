@@ -63,10 +63,9 @@ Always test before executing; never deliver untested code.
   `theSession` and `workPart` plus common NXOpen imports are pre-bound; write
   plain statements only (no imports, no `main()` wrapper). Does NOT modify the
   open part. Use for quick probes. Input: `nxopen_python_snippet`.
-- `dcopen-run-journal-tool` — run a complete journal (with imports and `main()`)
-  in an isolated sandbox. Pass data via `args` (read from `sys.argv[1:]`; the
-  sandbox provides `sys`). Does NOT modify the open part. Input: `python_code`,
-  optional `args`.
+- `dcopen-run-journal-tool` — run a complete journal in an isolated sandbox.
+  Confirm the current runner's entry point and argument contract. It does not
+  modify the open part. Input: `python_code`, optional `args`.
 - `dcopen-execute-tool` — execute NXOpen Python in the LIVE Designcenter session
   within a security sandbox. Requires user confirmation (skipped in batch mode)
   and applies real changes to the open part. Input: `python_code` defining
@@ -81,9 +80,10 @@ Always test before executing; never deliver untested code.
    error, read the message, re-verify names, fix, and re-run until clean.
 4. Produce the Markdown response (python code block + 2-3 sentence explanation +
    execution status).
-5. If the request contains action words (execute, run, apply, create, add,
-   build, modify, …), call `dcopen-execute-tool` and report the result. If it is
-   only "show me"/"explain", present the tested code and ask before executing.
+5. Admit live execution only for the exact authorized effect, on an identified
+   owned copy, through the [native runtime gate](../fea-native-runtime-gate/SKILL.md).
+   Record the effect through independent readback. Save and solve require
+   separately qualified native operations.
 
 ## Mandatory journal structure (execute-tool compatible)
 
@@ -98,9 +98,6 @@ def main(args):
     if workPart is None:
         raise RuntimeError('No part is open.')
     # ... your code here ...
-
-if __name__ == '__main__':
-    main(sys.argv[1:])
 ```
 
 - `def main(args)` (plural), with the four session lines in that exact order.
@@ -117,7 +114,8 @@ if __name__ == '__main__':
 - Enum values use the full attribute path, never bare strings.
 - Never assign a read-only property (e.g. `TaggedObject.Tag`).
 - Call `UpdateManager.DoUpdate()` after non-builder edits.
-- `Part.Save()` needs a SaveStatus out-parameter; `Part.SaveAs(path)` does not.
+- Check the installed API for save and solve signatures during capability
+  discovery. Keep both outside generic journal execution.
 
 ## Guardrails
 

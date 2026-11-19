@@ -89,5 +89,4 @@ Return computed metrics, declared tolerances, retained identities and
 assumptions, and all rejection/review findings. Keep native, solver, client
 and engineering statuses **NOT_RUN**, `authenticated=false`,
 `native_executable=false` and `engineering_accepted=false`. Read
-P10 worked cases and source limits (source: fea_expert_agent_plugin/docs/qualification/structural-quant-source-slice.md)
-for further examples and numerical range limits.
+Use the [free-free modal workflow](../../fea-dynamics/references/sol103-free-free.md) for actual SOL 103 acceptance evidence.

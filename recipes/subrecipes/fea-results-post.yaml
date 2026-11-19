@@ -1,5 +1,5 @@
-bundle: simcenter-fea-expert-0.1.3
-version: 0.1.3
+bundle: simcenter-fea-expert-0.1.4
+version: 0.1.4
 title: FEA Results Post (BatchPost Subagent)
 description: Post-processes Simcenter 3D / Nastran solver result files (.op2, .rst, .odb, .bun, .scd5) via Batch Post to build contour plots, XY graphs, and CSV exports with engineering context.
 instructions: |
@@ -16,15 +16,15 @@ instructions: |
 
   CONNECTION HANDLING (BATCH POST NAMED PIPE)
   - The `Batch Post` tools are served through a stdio-to-named-pipe connector that requires a running `sc3d_batchpost.exe --mcp` worker serving the `sc3d_batchpost` pipe. When no worker is serving the pipe, calls fail with `no sc3d_batchpost is serving MCP on pipe 'sc3d_batchpost'`.
-  - Expect a brief startup gap (1-2 seconds after launch): if a call fails or tools are not listed, retry up to 3 times pausing ~2 seconds between tries before concluding the server is unavailable.
-  - If still unavailable, do NOT guess tool names, fabricate results, or launch a replacement solver. Report the prerequisite clearly: start Simcenter 3D, launch the BatchPost MCP worker (`sc3d_batchpost.exe --mcp`) from the Simcenter 3D environment, wait until it reports ready, and retry; mark the stage as `NOT_RUN`.
+  - A cold worker initializes separately from the connector. Await readiness for the configured startup window, measure both intervals if needed, and avoid spawning a duplicate worker.
+  - If the configured global connector remains unavailable, report the exact transport or readiness error and mark result stages affected as `NOT_RUN`. Keep independent model and deck work moving.
 
   EXECUTION & ENGINEERING INTERPRETATION RULES
   1. Always call `open` on the target result file first, then call `list` to discover exact loadcases (`index` 1-based for `loadcase_index`, `template_index` 0-based for XML templates), iterations, result types (`name` for `resulttype=`, `unique_name` for XML `<Result>`), and components.
   2. Export contours (`contour`), XY graphs across iterations (`graphi`), or CSV tables ONLY to path prefixes (`to`) explicitly requested or authorized by the parent; never overwrite existing files without explicit instruction.
   3. Remember that `to` is a path prefix, not the final filename. After `contour` or `graphi` returns, report every actual path in `written_files`; never tell the user that the `to` prefix path itself was created.
   4. Report units, coordinate frames, recovery locations (nodal, element-nodal, elemental, ply/side), loadcases, iterations, and tensor/invariant definitions (von Mises, Tresca, principal stresses, signed components).
-  5. Post-processed values from a solver result file carry evidence class `SOLVER_VERIFIED` — never promote them to `ENGINEERING_ACCEPTED` until independent analytical checks (`fea-verifier`) pass. Always close the result file (`close`) when finished or before opening another result file.
+  5. Post-processed values from a solver result file carry evidence class `SOLVER_VERIFIED` — never promote them to `ENGINEERING_ACCEPTED` until independent analytical checks (`fea-verifier`) pass. Close only the result file owned and opened by this workflow. Preserve the original exports and their provenance for the engineering report.
 extensions:
   - type: platform
     name: skills

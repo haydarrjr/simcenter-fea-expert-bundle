@@ -3,7 +3,7 @@
 Trigger only when all six **real** components, explicit stress/strain
 dimension and unit, frame/proper rotation history, source artifact
 declaration, material/owner/position and recovery/averaging provenance
-are supplied. Run the strict offline source-only `assess-tensor` CLI.
+are supplied. Use actual labeled values from a qualified result read.
 
 - Components: `XX,YY,ZZ,XY,YZ,XZ`; do not reinterpret permutations.
 - Stress tensor XY/YZ/XZ values are physical tensor shear; small strain
@@ -21,5 +21,3 @@ are supplied. Run the strict offline source-only `assess-tensor` CLI.
 - Reject stale or duplicate transform IDs, left-handed matrices, unknown
   shear convention, undefined location, unsupported ply/beam/complex/PSD
   recovery, unverified averaging and unauthenticated native claims.
-
-See P09 verification guide (source: fea_expert_agent_plugin/docs/qualification/tensor-qoi-source-slice.md).

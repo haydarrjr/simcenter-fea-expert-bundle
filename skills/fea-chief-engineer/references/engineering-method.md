@@ -17,13 +17,7 @@ and a green job status do not identify that quantity. Obtain the effective model
 and selected step from artifacts or the qualified Runtime read tools. Preserve
 model, revision, owner, mesh revision, frame, load state and source bytes.
 
-The executable entry is `python -m fea_agent run-case CASE.json`. A case contains
-the natural-language request, expected physical model identity and named source
-artifacts with SHA-256 hashes. The runner reads each bounded file once, checks
-all hashes and cross-artifact identities, then dispatches by the inspected
-schema. JSON text is never executed. The runner recognizes joint models,
-nonlinear evidence and mounted-assembly models. It does not ask the user to
-declare whether physics or convergence has passed.
+Create an evidence record for the question, exact source files, model identity, checks, tolerances and status. Use the current catalog and scoped evidence to trace each quantity.
 
 `route-expert "request text"` is an explainable triage aid. It is not native
 authorization or a replacement for understanding the request. A mixed request
@@ -59,7 +53,7 @@ residual plateau proves a unique contact-penalty problem.
 
 ## Executable flange investigation
 
-Run `python -m fea_agent run-case examples/engineering_v2/joint_case.json`.
+Use the worked case as an example of the verification logic.
 The manufactured eight-bolt case is an engineering reference, not a solver run.
 It contains pretension, lock, differential heating, eccentric service and unload
 states, plus a deliberately contradictory nonlinear evidence record.
@@ -85,18 +79,11 @@ source numerical oracle; it is not a substitute for flexible-flange validation.
 
 ## API and Runtime boundary
 
-Prepare native work with `compile-api`, using exact .NET 2606 declarations in
-the vendor API workflow (source: fea_expert_agent_plugin/docs/engineering/vendor-api-workflows.md).
-The compiled recipe contains owner bindings, configuration, builder cleanup,
-required effects and unresolved edges. It cannot create a capability by naming
-one. The FEA Runtime client uses actual MCP `list_tools`/`call_tool` contracts
-of a supplied session; it creates no server or endpoint.
+Prepare native work using current Siemens Help Server documentation, installed
+API discovery and the actual MCP catalog. Record owner bindings, configuration,
+builder cleanup, required effects and independent readback for the exact release.
 
-Read Runtime compatibility (source: fea_expert_agent_plugin/docs/architecture/runtime-compatibility.md)
-before native work. Current main's discovery/session interface and a separately
-pinned unmerged Java-read candidate are different profiles. CAE mutation remains
-a concrete upstream capability gap. Generate and test the FEA-side request,
-then report that dependency; do not quietly relabel a CAE write as a CAD write.
+Read the [runtime gate](../../fea-native-runtime-gate/SKILL.md) for qualified scope and independent observation.
 
 ## Interpreting failures and choosing the next experiment
 

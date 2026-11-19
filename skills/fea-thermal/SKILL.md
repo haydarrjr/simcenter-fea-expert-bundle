@@ -7,41 +7,6 @@ metadata:
 
 # Thermal
 
-Distinguish absolute temperature, temperature change, initial condition and thermal strain. Preserve load-step history and effective properties. Use the joint and mounted-assembly calculations for constant-property reduced models; identify missing heat-field or nonlinear correlation explicitly.
+Identify reference, absolute and applied temperatures, sinks, ambient histories, convection/radiation and contact conductance from live or original artifacts. Establish thermal state and material applicability before stress recovery. Check steady heat balance and transient storage/flux, and compare with independent conduction or thermal mass bounds where applicable.
 
-## Engineering method and resources
-
-- [Thermal and restraint method](references/engineering-method.md).
-- Bolt thermal history (source: fea_expert_agent_plugin/docs/engineering/bolted-joint-workflow.md).
-- Native load-step binding (source: fea_expert_agent_plugin/docs/engineering/vendor-api-workflows.md).
-
-## Executable starting point
-
-```sh
-python -m fea_agent assess-assembly examples/engineering_v2/mounted_assembly_model.json
-```
-
-At 100 K temperature change, M1 axial reaction reverses from +206.174 N to -9.905 N while global equilibrium remains accurate. A compression-only mount would require a changed active set.
-
-## Source heat-field and stress workflow
-
-For spatial conduction or a thermal history, compose with `fea-continuum-thermomechanics`
-and call `fea_solve_continuum` using the `bimaterial_history` request from
-`fea_get_example`. Preserve absolute Kelvin, previous thermal state, load
-replacement versus inheritance, and the stress-free reference separately.
-Compute heat input, storage and boundary heat reaction before transferring the
-field to mechanics. Small algebraic residual does not establish a physical
-thermal field: source-free temperatures must respect the previous/boundary
-extrema, and negative Kelvin is rejected even with sources. Compare total,
-elastic and thermal strains; fully restrained heating has zero total strain
-without having zero stress or small elastic strain.
-
-Read the full continuum/heat method (source: fea_expert_agent_plugin/docs/engineering/multiphysics-v3.md)
-and its primary-source ledger (source: fea_expert_agent_plugin/docs/evidence/physics-v3-source-method-ledger.json).
-Capacity lumping is an explicit discretization choice, not an arbitrary-mesh
-monotonicity guarantee. Mechanical transient inertia, radiation, phase change
-and temperature-dependent properties are outside this source solver.
-
-## Completion boundary
-
-Return the calculated or evidence-backed decision, its physical assumptions, the strongest falsifier exercised, and the specific unresolved dependency. Use qualified Engineering Desktop Runtime capabilities for native effects; this skill and source calculations do not create host authority. Preserve separate source, native, solver and engineering outcomes.
+Use [engineering method](references/engineering-method.md) and [continuum thermomechanics](../fea-continuum-thermomechanics/SKILL.md). Separate thermal, elastic and total strain; retain the previous thermal state and actual load history. Check constrained versus free expansion and preload/contact sensitivity. Use qualified Simcenter/Nastran operations where advertised and [BatchPost](../batchpost-actions/SKILL.md) for exact temperature, flux and stress states. Treat unextracted detail as unavailable.

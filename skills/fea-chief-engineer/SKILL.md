@@ -7,59 +7,11 @@ metadata:
 
 # Chief Engineer
 
-Start from the requested physical decision and inspect its evidence. Run the case runner when compatible artifacts exist; acquire missing source or qualified Runtime observations before asking the caller to supply facts that tools can obtain. Use the calculations to decide whether the current model can answer the question.
+Start with the requested physical decision. Discover the current globally configured Siemens MCP tools through [tool routing](../fea-sc3d-tool-routing/SKILL.md). On an open model, check Model Inspection and Designcenter Open independently, then bind the release, backend/session, work and display parts, ownership, revisions and dirty state. Open the explicitly identified result file through BatchPost before listing or exporting. Use [artifact forensics](../fea-artifact-forensics/SKILL.md) for deck/F06 lineage and evidence gaps.
 
-## Choose the engineering path
+- For model idealization, materials, connectors and mesh, use [model preparation](../fea-model-preparation/SKILL.md), [materials](../fea-materials-properties/SKILL.md), [connectors](../fea-connector-contact/SKILL.md) and [mesh quality](../fea-mesh-quality/SKILL.md). Keep material assignment, coordinate frames, BC scope, mesh quality and QoI convergence separate.
+- For static or nonlinear solver evidence, use [solver investigation](../fea-solver-investigation/SKILL.md) and [multistep nonlinear](../fea-multistep-nonlinear/SKILL.md). Check effective constraints, force and moment balance, contact state and energy on the actual subcase.
+- For SOL 103, use [dynamics](../fea-dynamics/SKILL.md) and the [free-free workflow](../fea-dynamics/references/sol103-free-free.md). Qualify each native operation through the [runtime gate](../fea-native-runtime-gate/SKILL.md). On a capability gap, complete independent reads and present the gap as NOT_RUN.
+- Use [continuum thermomechanics](../fea-continuum-thermomechanics/SKILL.md) for heat and mechanical coupling, [composite laminates](../fea-composite-laminates/SKILL.md) for ply evidence, [random response](../fea-random-response/SKILL.md) for correlated spectra, and [durability](../fea-durability/SKILL.md) for signed histories. Preserve assumptions, state, tensor conventions, provenance and validation scope.
 
-- Begin tool discovery with `fea_capabilities`; use `fea_get_example` to obtain
-  complete request contracts, then replace their assumptions with inspected
-  evidence. The bounded source MCP can execute computations and read supplied
-  files; it never submits native work or confers engineering acceptance.
-- For an imported STEP/IGES/BREP assembly, begin with
-  [Model preparation](../fea-model-preparation/SKILL.md), establish body/face
-  ownership and connection intent, then choose a solver. Use
-  [Multistep nonlinear](../fea-multistep-nonlinear/SKILL.md) for actual external
-  CalculiX contact/plastic/thermal/pretension histories. External execution
-  requires the configured effectful capability and exact prepared-input hash.
-  Keep the complete force/moment, contact, mesh and step findings even when
-  the process exits successfully.
-- For a transient stress or life question, use
-  [Dynamics](../fea-dynamics/SKILL.md) and [Durability](../fea-durability/SKILL.md).
-  Verify signed histories and time resolution before counting reversals. Use
-  the open workflow contract (source: fea_expert_agent_plugin/docs/engineering/source-tools-v4.md) to
-  carry the actual solver/model/state evidence into result interpretation.
-- For original BDF/OP2/OP4/mesh fields, use [Artifact forensics](../fea-artifact-forensics/SKILL.md).
-  A recognized file or matching value is insufficient without physical state,
-  unit/frame and element/node/ply identity.
-- For actual solid models and temperature histories, use
-  [Continuum thermomechanics](../fea-continuum-thermomechanics/SKILL.md). Apply
-  energy/heat and physical-temperature checks before using a computed stress.
-- For laminate coupling, use [Composite laminates](../fea-composite-laminates/SKILL.md);
-  for repeated-mode equivalence use [Modal correlation](../fea-modal-correlation/SKILL.md).
-  For a qualified primitive-based geometry/mesh/load pipeline use
-  [Open meshing](../fea-open-meshing/SKILL.md).
-
-- For FEM/SIM hierarchy, effective deck, solver log or state-specific result claims, use [Solver investigation](../fea-solver-investigation/SKILL.md). Reconcile ownership, supports, loads and the physical result state, then exercise compatibility and local equilibrium checks before accepting a response.
-- For stationary correlated excitation and RMS/covariance, use [Random response](../fea-random-response/SKILL.md). Establish a valid linear operating state first; retain spatial load patterns and the full complex spectral matrix. Reject inadmissible spectra; if the response changes contact state, reassess the operating model before using RMS for acceptance.
-- Keep preload/contact and nonlinear-history questions with their existing specialist methods; combine them with [Dynamics](../fea-dynamics/SKILL.md) when the operating tangent or response regime changes. Route gyroscopic, cyclic and other coupled dynamics through its explicit specialist methods and implementation limits.
-
-## Engineering method and resources
-
-- [Complete engineering method](references/engineering-method.md).
-- [Solver-linked artifact method and discriminating repairs](../fea-solver-investigation/references/engineering-method.md).
-- [Stationary random-response equations, validation and output scope](../fea-random-response/references/engineering-method.md).
-- Vendor API implementation (source: fea_expert_agent_plugin/docs/engineering/vendor-api-workflows.md).
-- Runtime client contract (source: fea_expert_agent_plugin/docs/architecture/runtime-compatibility.md).
-
-## Executable starting point
-
-```sh
-python -m fea_agent run-case examples/engineering_v2/joint_case.json
-python -m fea_agent run-case examples/solver_linked/captured/gantry_case.json
-```
-
-An eight-bolt thermal/service case changes contact state and exposes a false convergence claim. Explain opening, local slip and the 18 kN balance defect; do not convert the converged label into acceptance.
-
-## Completion boundary
-
-Return the calculated or evidence-backed decision, its physical assumptions, the strongest falsifier exercised, and the specific unresolved dependency. Use qualified Engineering Desktop Runtime capabilities for native effects; this skill and source calculations do not create host authority. Preserve separate source, native, solver and engineering outcomes.
+Use the [engineering method](references/engineering-method.md), [acceptance verifier](../fea-acceptance-verifier/SKILL.md) and [report method](../fea-results-interpretation/references/engineering-report.md). Follow the tool routing even when a task names a tool absent from the installed catalog. Report native, archived, derived and engineering acceptance states independently.

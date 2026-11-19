@@ -61,8 +61,7 @@ while giving the wrong critical-speed intersection.
 Use operating-speed equilibrium, bearing cross-coupled stiffness/damping,
 rotor/stator frames and spin direction. Track modes by shape/subspace and whirl
 sense through a Campbell diagram, not by sorting frequencies at each speed.
-The mounted-assembly source kernel has no gyroscopy and must not be used to
-claim rotor stability or a speed-dependent critical-speed margin.
+Require a qualified gyroscopic eigensolution or documented rotor response for critical speeds and stability. A non-gyroscopic mounted-assembly model cannot establish those results.
 
 ## Aeroelasticity
 

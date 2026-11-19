@@ -98,10 +98,7 @@ PBEAM field mapping. Different shear-factor evidence must be supplied explicitly
 
 ## Deterministic numerical method
 
-records.py (source: fea_expert_agent_plugin/fea_agent/idealization/records.py) holds immutable SI
-records; sections.py (source: fea_expert_agent_plugin/fea_agent/idealization/sections.py) calculates
-properties; beam.py (source: fea_expert_agent_plugin/fea_agent/idealization/beam.py) integrates the
-piecewise response. The algorithm splits at section, force, couple and
+Use immutable SI model records, evaluated section properties and piecewise integration. Split at section, force, couple and
 load-interval boundaries, represents polynomials in a normalized local
 coordinate, integrates response coefficients and evaluates energy with a
 three-point Gaussian rule exact for the supported polynomial integrands.
@@ -124,8 +121,7 @@ real gaps/overlaps are rejected. The pure SI core requires exact adjacency.
 
 ## Model choice and error accounting
 
-For each computable QoI Q, assessment.py (source: fea_expert_agent_plugin/fea_agent/idealization/assessment.py)
-calculates original Timoshenko Q_r, proposed Timoshenko Q_t and proposed EB Q_e.
+For each computable QoI Q, calculate original Timoshenko Q_r, proposed Timoshenko Q_t and proposed EB Q_e.
 The declared allowance is a+r*abs(Q_r), with dimensional absolute tolerance a
 and dimensionless relative tolerance r. The geometry difference is
 D_g=abs(Q_t-Q_r); omitted shear is D_s=abs(Q_e-Q_t).

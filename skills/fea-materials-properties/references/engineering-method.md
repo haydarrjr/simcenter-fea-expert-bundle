@@ -22,8 +22,7 @@ and shear stiffness. In this package's compressible elastic calculations,
 by replacing nu=0.5 with an arbitrary nearby number; choose an appropriate
 formulation and verify volumetric locking.
 
-The coupled joint implementation (source: fea_expert_agent_plugin/docs/engineering/bolted-joint-workflow.md)
-derives bolt/member axial stiffness from `EA/L` and member tangential stiffness
+The coupled [joint method](../../fea-connector-contact/references/engineering-method.md) derives bolt/member axial stiffness from `EA/L` and member tangential stiffness
 from `GA/L`. A 200 GPa bolt with 84.3 mm² area and 50 mm grip has 337.2 MN/m
 axial stiffness. A 70 GPa member prism with 800 mm² effective area and 40 mm
 grip has 1,400 MN/m. These areas and lengths represent an idealization: head
@@ -38,8 +37,7 @@ extension. The series compliance predicts a preload rise of 16,957.053 N per
 bolt. After cooling with 4 micrometres permanent settlement, the retained
 preload is 18,913.009 N, not the original 20,000 N.
 
-Run the actual case with `python -m fea_agent assess-joint
-examples/engineering_v2/joint_flange8_thermal_service.json`. The independent
+Use the worked values below as an illustration of the relevant material effects. The independent
 tests check thermal compatibility, common free expansion and energy/work.
 The model assumes constant elastic moduli; a high-temperature alloy requiring
 E(T), plasticity or creep needs the appropriate constitutive history.
@@ -75,7 +73,7 @@ Keep stress/strain type, frame, recovery location and shell side/ply identity
 with every tensor. The existing tensor kernel handles supported real tensor
 semantics and engineering-shear conversion; it deliberately does not infer
 ply failure from an averaged global stress. Use the
-tensor source reference (source: fea_expert_agent_plugin/docs/qualification/tensor-qoi-source-slice.md)
+[tensor method](../../fea-results-interpretation/references/real-tensor-qoi.md)
 before rotating or enveloping results.
 
 ## Orthotropy and laminate reasoning
@@ -116,8 +114,7 @@ Fetched Simcenter Nastran 2606 QRG pages, SKU `PL20251024315120185`, provide:
   plane. A smeared representation cannot recover the same ply stresses as
   actual layered recovery; offsets affect result and contact interpretation.
 
-The material evidence ledger (source: fea_expert_agent_plugin/docs/evidence/nastran-2606-v2-material-ledger.json)
-records hashes/status. Use verified API workflows (source: fea_expert_agent_plugin/docs/engineering/vendor-api-workflows.md)
+Record material evidence hashes and statuses. Use exact-release Siemens Help and API discovery
 for any actual assignment owner/factory and lifecycle. If no material-assignment
 builder is verified and admitted, retain that exact capability gap; do not
 invent a setter or silently mutate a shared material. Read back the effective
