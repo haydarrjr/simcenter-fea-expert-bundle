@@ -3,8 +3,7 @@ name: simcenter-3d-connection-status
 description: >-
   Check and recover the connection between the Model Inspection MCP server and a
   running Simcenter 3D session. Use when the model-inspection tools are missing or
-  not listed, when a mesh / body / material / part / boundary-condition tool call
-  fails or times out, or when the user asks "is Simcenter connected", "why are no
+  not listed, a tool reports a connection symptom, or the user asks "is Simcenter connected", "why are no
   tools available", or "the server won't start". Backed by the always-available
   dc_connection_status tool.
 metadata:
@@ -16,8 +15,9 @@ metadata:
 
 - Discover the current tool catalog and exact input schemas before calling tools.
   A connected server need not expose every tool from older documentation.
-  If a call fails, check dc_connection_status first. Retry bounded read-only
-  discovery after recovery; never replay an uncertain mutation blindly.
+  Follow the [shared recovery budget](../fea-sc3d-tool-routing/SKILL.md#recovery-budget).
+  Diagnose status only for an unbound profile or a connection symptom. Never
+  replay an uncertain effect.
 - Documentation: use documentation-search-tool only when currently advertised.
   If absent after connectivity recovery, route to the advertised Product Support
   search tool using its current schema and version-specific Siemens sources.
@@ -60,7 +60,8 @@ is the one tool that is always present.
 
 - The expected model-inspection tools are not listed, or only
   `dc_connection_status` is available.
-- A model tool call just failed, returned an error, or timed out.
+- The tool reported a connection symptom or the prior binding is stale.
+  Do not load this skill for schema, model or mesh-domain errors.
 - The user asks "is Simcenter 3D connected?", "why do the tools not work?",
   "there are no tools", or "the model inspection server won't start".
 - Before reporting that the server is broken or unavailable — check first instead
@@ -77,16 +78,12 @@ is the one tool that is always present.
 
 1. Call `dc_connection_status` to read the current connection state. Never assume
    the server is down without this check.
-2. If it reports connected: retry the user's original tool call once, then
-   continue the normal workflow from that fresh result.
+2. If connected, continue with the bound profile. Do not retry an unchanged
+   timed-out read unless the conditions changed; use the bounded fallback.
 3. If it reports not connected: relay its guidance to the user — start (or
    re-attach) the MCP server session from the Simcenter 3D UI, wait until it
    reports ready, then retry the original request.
-4. Expect a brief startup gap: the backend session attaches a second or two
-   after the server process starts, so the first call often shows only
-   `dc_connection_status` or reports not-connected. Re-check and retry up to 3
-   times, pausing about two seconds between tries, before concluding the session
-   is unavailable.
+4. Re-check once after observed reattachment, not on a timer.
 5. Report the actual state in plain language (connected / not connected) and the
    concrete next step, not a generic failure.
 

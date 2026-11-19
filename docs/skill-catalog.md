@@ -1,6 +1,6 @@
-# Simcenter 3D FEA Expert — Canonical Skill Catalog (38 Skills)
+# Simcenter 3D FEA Expert — Canonical Skill Catalog (39 Skills)
 
-All 38 skills live under top-level `skills/<skill-name>/SKILL.md`.
+All 39 skills live under top-level `skills/<skill-name>/SKILL.md`.
 
 | # | Skill | Description |
 |---:|---|---|
@@ -42,3 +42,4 @@ All 38 skills live under top-level `skills/<skill-name>/SKILL.md`.
 | 36 | [`simcenter-aerostructures-margin-of-safety`](../skills/simcenter-aerostructures-margin-of-safety/SKILL.md) | Configure, parameterize, solve, and audit Simcenter 3D Aerostructures Margin of Safety (MarginSolution and MarginCalculation) using associative Knowledge Fusion ExtractProperty rules, standard panel/column buckling and stress allowable methods, .msz/.mslog forensic analysis, and automated Word Report Writer templates. |
 | 37 | [`simcenter-airframe-structural-verification`](../skills/simcenter-airframe-structural-verification/SKILL.md) | Orchestrate the end-to-end Simcenter 3D Airframe Structural Verification workflow from associative CAD, Idealized parts, Component FEMs, Structural Assembly GFEM, and Aeroelastic Assembly FEM through SOL 144 static aeroelastic trim (multi-weight OP2 envelope), 49-station Nodal Force Reports, Load Case Filtering, associative Knowledge Fusion Margin of Safety, and automated Word report generation. |
 | 38 | [`simcenter-parametric-sol101`](../skills/simcenter-parametric-sol101/SKILL.md) | Build, update and accept a parametrically defined SOL101 cantilever beam pilot (CAD metadata, semantic selections, FEM/SIM, material, clamp and tip load, Euler-Bernoulli and mesh-convergence acceptance) using the real Designcenter Open, Simcenter 3D model-inspection, Product Support and Simcenter Nastran MCP tools. Use for this structural benchmark, reusable cantilever automation, or to judge PASS/FAIL/PARTIAL/NOT_RUN/UNVERIFIED status of such a workflow. |
+| 39 | [`simcenter-nastran`](../skills/simcenter-nastran/SKILL.md) | Qualify SOL 101/103 solver input and diagnostics; resolve deck includes and effective case control without a replacement solver or binary result reader. |

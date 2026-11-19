@@ -15,8 +15,9 @@ metadata:
 
 - Discover the current tool catalog and exact input schemas before calling tools.
   A connected server need not expose every tool from older documentation.
-  If a call fails, check dc_connection_status first. Retry bounded read-only
-  discovery after recovery; never replay an uncertain mutation blindly.
+  Follow the [shared recovery budget](../fea-sc3d-tool-routing/SKILL.md#recovery-budget).
+  Diagnose status only for an unbound profile or a connection symptom. Never
+  replay an uncertain effect.
 - Documentation: use documentation-search-tool only when currently advertised.
   If absent after connectivity recovery, route to the advertised Product Support
   search tool using its current schema and version-specific Siemens sources.
@@ -73,11 +74,12 @@ Always test before executing; never deliver untested code.
 
 ## Workflow
 
-1. Gather verified API names first (see the `designcenter-open-api-discovery` skill).
-2. Probe uncertain behavior with `dcopen-run-snippet-tool` (return types, side
-   effects, enum mappings).
-3. Assemble the full journal, then test it with `dcopen-run-journal-tool`. On
-   error, read the message, re-verify names, fix, and re-run until clean.
+1. Use the [qualified 2612 CAE catalog](references/cae-2612.md) for known
+   operations. Use `designcenter-open-api-discovery` only for unmatched symbols.
+2. Verify changed or uncertain behavior using a targeted read or sandbox test.
+   Do not run both snippet and journal for the same assertion.
+3. Check inner vendor status and the expected return or log witness. If
+   output is empty, do not replay without identifying the missing evidence.
 4. Produce the Markdown response (python code block + 2-3 sentence explanation +
    execution status).
 5. Admit live execution only for the exact authorized effect, on an identified
@@ -85,7 +87,7 @@ Always test before executing; never deliver untested code.
    Record the effect through independent readback. Save and solve require
    separately qualified native operations.
 
-## Mandatory journal structure (execute-tool compatible)
+## CAD journal structure (execute-tool compatible)
 
 ```python
 import NXOpen

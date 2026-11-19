@@ -14,8 +14,9 @@ metadata:
 
 - Discover the current tool catalog and exact input schemas before calling tools.
   A connected server need not expose every tool from older documentation.
-  If a call fails, check dc_connection_status first. Retry bounded read-only
-  discovery after recovery; never replay an uncertain mutation blindly.
+  Follow the [shared recovery budget](../fea-sc3d-tool-routing/SKILL.md#recovery-budget).
+  Diagnose status only for an unbound profile or a connection symptom. Never
+  replay an uncertain effect.
 - Documentation: use documentation-search-tool only when currently advertised.
   If absent after connectivity recovery, route to the advertised Product Support
   search tool using its current schema and version-specific Siemens sources.
@@ -85,11 +86,7 @@ memory.
 
 - Grounding is mandatory: use only the returned chunks; never use prior model
   knowledge, assumptions, or external context, and do not infer missing details.
-- If a successful search returns no relevant chunk, reply exactly: "I couldn't
-  find the information to answer your question. Consider trying another question
-  or topic." Do not use this reply to mask a connection problem: if the tool is
-  not available at all (only `dc_connection_status` is present) or the call fails
-  with a transport/timeout error, treat it as a connection issue and follow the
-  designcenter-open-connection-status skill instead.
-- The tool is deterministic — never repeat a call with identical inputs; retry a
-  failed request up to 3 times before reporting failure.
+- If the context tool is absent, times out or returns no relevant excerpt, use
+  the advertised Product Support search once. Keep transport and coverage
+  separate; report the missing fact if neither route supports it. Do not retry
+  identical queries.

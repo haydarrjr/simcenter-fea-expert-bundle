@@ -1,7 +1,7 @@
 <!-- simcenter-fea-expert:start -->
 ## Simcenter 3D FEA Expert
 
-Use the installed skills in `.agents/skills` and the [FEA workflow](.agents/fea-workflow.md). Load `fea-chief-engineer` and the relevant specialist skills on demand. Follow the FEA workflow for runtime binding and acceptance. Existing task instructions and model access restrictions apply.
+Use the installed skills in `.agents/skills` and the [FEA workflow](.agents/fea-workflow.md). Start whole studies with `fea-chief-engineer`; for focused tasks use only the skill matching the operation. Existing task instructions and model access restrictions apply.
 
 For an open Designcenter CAD session, use the global Designcenter Open profile directly. Use Simcenter 3D Model Inspection for tasks that need FEM/SIM inspection.
 

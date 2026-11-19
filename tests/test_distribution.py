@@ -3,7 +3,7 @@ import json, tempfile, unittest
 from pathlib import Path
 from zipfile import ZipFile
 from ruamel.yaml import YAML
-from scripts.validate_distribution import ROOT, validate, distribution_files, EXPECTED_SUBRECIPES
+from scripts.validate_distribution import ROOT, validate, distribution_files, EXPECTED_SUBRECIPES, missing_recipe_skills
 from scripts.build_distribution import build
 
 
@@ -11,7 +11,7 @@ class DistributionTests(unittest.TestCase):
     def test_meaningful_source_contract(self):
         result = validate()
         self.assertGreater(result['checked_criterion_count'], 0)
-        self.assertEqual(result['skills'], 38)
+        self.assertEqual(result['skills'], 39)
         self.assertEqual(result['subrecipes'], 6)
         self.assertEqual(result['runtime'], 'NOT_RUN')
 
@@ -43,8 +43,14 @@ class DistributionTests(unittest.TestCase):
 
     def test_missing_skills_rejected(self):
         with tempfile.TemporaryDirectory() as d:
-            with self.assertRaisesRegex(ValueError, '38 canonical skills'):
+            with self.assertRaisesRegex(ValueError, '39 canonical skills'):
                 validate(Path(d))
+
+    def test_recipe_missing_canonical_skill_reference(self):
+        instructions = ('Load `simcenter-nastran` then `nastran-sol401-basic-checks`. '
+                        'Delegate to `fea-solver-diagnostics` using `load_skill`.')
+        self.assertEqual(missing_recipe_skills(instructions, {'simcenter-nastran'}),
+                         {'nastran-sol401-basic-checks'})
 
 
 if __name__ == '__main__':

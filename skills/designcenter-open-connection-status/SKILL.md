@@ -3,8 +3,7 @@ name: designcenter-open-connection-status
 description: >-
   Check and recover the connection between the Designcenter Open MCP server and a running
   Siemens Designcenter session. Use when the Designcenter Open tools are missing or
-  not listed, when a journal, snippet, discovery, model-data, or documentation
-  tool call fails or times out, or when the user asks "is Designcenter connected",
+  not listed, a tool reports a connection symptom, or the user asks "is Designcenter connected",
   "why are no NXOpen tools available", or "the Designcenter Open server won't start". Backed
   by the always-available dc_connection_status tool.
 metadata:
@@ -16,8 +15,9 @@ metadata:
 
 - Discover the current tool catalog and exact input schemas before calling tools.
   A connected server need not expose every tool from older documentation.
-  If a call fails, check dc_connection_status first. Retry bounded read-only
-  discovery after recovery; never replay an uncertain mutation blindly.
+  Follow the [shared recovery budget](../fea-sc3d-tool-routing/SKILL.md#recovery-budget).
+  Diagnose status only for an unbound profile or a connection symptom. Never
+  replay an uncertain effect.
 - Documentation: use documentation-search-tool only when currently advertised.
   If absent after connectivity recovery, route to the advertised Product Support
   search tool using its current schema and version-specific Siemens sources.
@@ -60,8 +60,8 @@ attached, `dc_connection_status` is the one tool that is always present.
 
 - The expected Designcenter Open tools are not listed, or only `dc_connection_status` is
   available.
-- A discovery, snippet, journal, execute, model-data, or documentation tool call
-  just failed, returned an error, or timed out.
+- The tool reported a connection symptom or the prior binding is stale.
+  Do not load this skill for a schema, vendor Python or domain error.
 - The user asks "is Designcenter connected?", "why do the NXOpen tools not
   work?", "there are no tools", or "the Designcenter Open server won't start".
 - Before reporting that the server is broken or unavailable — check first instead
@@ -82,11 +82,8 @@ attached, `dc_connection_status` is the one tool that is always present.
 3. If it reports not connected: relay its guidance to the user — start (or
    re-attach) the MCP server session from the Designcenter UI, wait until it
    reports ready, then retry the original request.
-4. Expect a brief startup gap: the backend session attaches a second or two
-   after the server process starts, so the first call often shows only
-   `dc_connection_status` or reports not-connected. Re-check and retry up to 3
-   times, pausing about two seconds between tries, before concluding the session
-   is unavailable.
+4. Re-check once after observed reattachment, not on a timer. If connected
+   but the read route still times out, use the bounded fallback.
 5. Report the actual state in plain language (connected / not connected) and the
    concrete next step, not a generic failure.
 
