@@ -1,5 +1,5 @@
-bundle: simcenter-fea-expert-0.1.4
-version: 0.1.4
+bundle: simcenter-fea-expert-0.1.5
+version: 0.1.5
 title: FEA Independent Verifier Subagent
 description: Independent read-only analytical falsification and VVUQ review of FEA and Aerostructures results.
 instructions: |

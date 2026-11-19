@@ -6,14 +6,14 @@ from datetime import datetime, timezone
 import hashlib
 import json
 import os
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 import re
 import tempfile
 
 
 EFFECTS = {
     'designcenter': {
-        'dcopen-execute-tool': {'CAE_MUTATION'},
+        'dcopen-execute-tool': {'CAE_MUTATION', 'DECK_EXPORT'},
         'read-model-data': {'PURE_READ'},
     },
     'simcenter3d': {
@@ -88,6 +88,36 @@ def normalize_journal(source):
     return source
 
 
+def export_journal(target, fem, solution_tag):
+    """Render the only journal admitted as DECK_EXPORT (qualified 2612 build)."""
+    sim = target['model']
+    if (target['release'] != '2612.1700' or not isinstance(sim, str)
+            or not isinstance(fem, str) or not PureWindowsPath(sim).is_absolute()
+            or not PureWindowsPath(fem).is_absolute() or not sim.lower().endswith('.sim')
+            or not fem.lower().endswith('.fem') or not isinstance(solution_tag, str)
+            or not re.fullmatch(r'[1-9][0-9]*', solution_tag)):
+        raise ValueError('export requires qualified build, exact SIM/FEM paths and solution tag')
+    return f"""import NXOpen
+import NXOpen.CAE
+
+def main(args):
+    parts = NXOpen.Session.GetSession().Parts
+    work = parts.BaseWork
+    if (not isinstance(work, NXOpen.CAE.SimPart) or work.FullPath.lower() != {sim.lower()!r}
+            or not parts.BaseDisplay or parts.BaseDisplay.Tag != work.Tag
+            or not work.FemPart or work.FemPart.FullPath.lower() != {fem.lower()!r}):
+        raise RuntimeError('Work/display/FEM identity mismatch')
+    for solution in work.Simulation.Solutions:
+        if str(solution.Tag) == {solution_tag!r}:
+            if solution.SolutionType != 'SEMODES 103':
+                raise RuntimeError('Expected SEMODES 103')
+            solution.Solve(NXOpen.CAE.SimSolution.SolveOption.WriteSolverInputFile,
+                           NXOpen.CAE.SimSolution.SetupCheckOption.CompleteCheckAndOutputErrors)
+            return str(solution.Tag)
+    raise RuntimeError('Qualified solution tag not found')
+"""
+
+
 def save(path, value):
     with tempfile.NamedTemporaryFile(dir=path.parent, delete=False) as temporary:
         temp = Path(temporary.name)
@@ -150,7 +180,23 @@ class Controller:
         if tool == 'dcopen-execute-tool':
             if arguments.keys() != {'python_code'}:
                 raise ValueError('prepared live execute accepts only python_code')
-            arguments['python_code'] = normalize_journal(arguments['python_code'])
+            if effect == 'DECK_EXPORT':
+                before, after = (operation.get(k, {}) for k in ('baseline', 'expected'))
+                deck = PureWindowsPath(after.get('deck_path', ''))
+                if (arguments['python_code'] != export_journal(target, binding.get('fem'),
+                                                               binding.get('solution_tag'))
+                        or before.get('deck_path') != after.get('deck_path')
+                        or deck.parent != PureWindowsPath(target['model']).parent
+                        or deck.suffix.lower() not in {'.dat', '.bdf', '.nas'}
+                        or before.get('deck_present') is not False
+                        or after.get('deck_present') is not True
+                        or after.get('export_finished') is not True
+                        or after.get('deck_qualified') is not True
+                        or not before.get('original_solution_signature')
+                        or after.get('original_solution_signature') != before['original_solution_signature']):
+                    raise ValueError('export requires the exact template and preflighted fresh target')
+            else:
+                arguments['python_code'] = normalize_journal(arguments['python_code'])
         request = {**operation, 'arguments': arguments}
         request_digest = digest(request)
         if not operation.get('expected'):
@@ -226,7 +272,8 @@ class Controller:
                                               for key, value in contract.items())
             if matches(expected):
                 status = 'ACCEPTED'
-            elif matches(baseline):
+            elif matches(baseline) and (record['request']['effect'] != 'DECK_EXPORT'
+                                        or witnesses.get('export_finished') is True):
                 status = 'NOT_APPLIED'
             else:
                 status = 'UNKNOWN'

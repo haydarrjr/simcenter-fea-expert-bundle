@@ -19,8 +19,8 @@ from scripts.package_release import PROJECTS, ROOT, build
 from scripts.render_mcp_config import audit, profiles, render
 
 
-def runtime(name):
-    path = ROOT / 'skills/fea-native-runtime-gate/scripts' / f'{name}.py'
+def runtime(name, skill='fea-native-runtime-gate'):
+    path = ROOT / 'skills' / skill / 'scripts' / f'{name}.py'
     spec = importlib.util.spec_from_file_location(name, path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
@@ -132,7 +132,7 @@ class ProjectChannels(unittest.TestCase):
         install(project, archive, self.root / 'backup-one', 'codex')
         before = path.read_bytes()
         install(project, archive, self.root / 'backup-two', 'codex')
-        self.assertEqual(attest(project, 'codex')['skill_count'], 38)
+        self.assertEqual(attest(project, 'codex')['skill_count'], 39)
         self.assertEqual(path.read_bytes(), before)
         self.assertEqual(before.count(b'simcenter-fea-expert:start'), 1)
         rollback(project, self.root / 'backup-two', 'codex')
@@ -300,3 +300,69 @@ class ControllerTests(unittest.TestCase):
                      'def main(path): return path'):
             with self.subTest(code=code), self.assertRaises(ValueError):
                 controller.normalize_journal(code)
+
+    def test_exact_export_template_and_late_artifact_reconciliation(self):
+        target = {'session': 'native', 'release': '2612.1700', 'owner': 'sim',
+                  'model': r'C:\work\model.sim', 'revision': 'r1'}
+        tool = 'dcopen-execute-tool'
+        binding = {'target': target, 'profile': 'designcenter', 'fem': r'C:\work\model.fem',
+                   'solution_tag': '23', 'evidence_ref': 'native.json',
+                   'schema': {'name': tool, 'inputSchema': {'type': 'object',
+                              'properties': {'python_code': {'type': 'string'}}}}}
+        code = controller.export_journal(target, binding['fem'], binding['solution_tag'])
+        before = {'deck_path': r'C:\work\model-modes.dat', 'deck_present': False,
+                  'original_solution_signature': 'original-static-id'}
+        after = {**before, 'deck_present': True, 'export_finished': True, 'deck_qualified': True}
+        operation = {'operation_id': 'deck', 'profile': 'designcenter', 'tool': tool,
+                     'effect': 'DECK_EXPORT', 'target': target, 'arguments': {'python_code': code},
+                     'baseline': before, 'expected': after}
+
+        def prepare(run, request):
+            return run.prepare(request, binding, {'operation_digest': controller.digest(request),
+                                                   'evidence_ref': 'intent.json'})
+
+        with tempfile.TemporaryDirectory() as folder:
+            run = controller.Controller(folder)
+            for invalid in (
+                {**operation, 'arguments': {'python_code': code.replace('WriteSolverInputFile', 'Solve')}},
+                {**operation, 'effect': 'CAE_MUTATION'},
+                {**operation, 'expected': {**after, 'deck_path': r'C:\original\result.dat'}},
+            ):
+                with self.assertRaises(ValueError):
+                    prepare(run, invalid)
+            prepared = prepare(run, operation)
+            run.reserve('deck', binding, prepared['request_digest'])
+            self.assertEqual(run.record('deck', transport_error='timeout')['status'], 'UNKNOWN')
+
+            def observe(witnesses):
+                return run.observe('deck', {'target': target, 'witnesses': witnesses,
+                                            'observed_at': datetime.now(timezone.utc).isoformat(),
+                                            'evidence_ref': 'independent.json'})['status']
+
+            self.assertEqual(observe(before), 'UNKNOWN')
+            self.assertEqual(observe(after), 'ACCEPTED')
+
+
+class ReportEvidenceTests(unittest.TestCase):
+    def test_modal_file_cannot_silently_contain_extra_states(self):
+        verifier = runtime('verify_modal_csv', 'batchpost-actions')
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'modes.csv'
+            path.write_text(',"Load Case 1 - Mode 7, 120.5Hz"\n', encoding='utf-8')
+            self.assertEqual(verifier.verify([path], ['Load Case 1:Mode 7']), ['Load Case 1:Mode 7'])
+            with path.open('a', encoding='utf-8') as stream:
+                stream.write(',"Load Case 1 - Mode 8, 151.2Hz"\n')
+            with self.assertRaisesRegex(ValueError, 'extra'):
+                verifier.verify([path], ['Load Case 1:Mode 7'])
+
+    def test_pdf_preflight_rejects_traced_glyph_clipping(self):
+        preflight = runtime('check_pdf', 'fea-results-interpretation')
+
+        class Document(list):
+            needs_pass = False
+
+        page = SimpleNamespace(get_text=lambda: 'Searchable heading', rect=(0, 0, 200, 300),
+                               derotation_matrix=1,
+                               get_bboxlog=lambda: [('fill-text', (0, 0, 201.5, 10))])
+        with self.assertRaisesRegex(ValueError, 'extends beyond page'):
+            preflight.check(Document([page]), ['Searchable heading'], 0)

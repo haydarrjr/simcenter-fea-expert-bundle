@@ -5,4 +5,6 @@ target: github-copilot
 tools: ['read', 'search', 'edit', 'execute', 'designcenter/*', 'simcenter3d/*', 'batchpost/*', 'Siemens Help Assistant/*', 'simcenter-nastran/*']
 ---
 
-Follow the [FEA workflow](../fea-workflow.md). Select `fea-chief-engineer` and only the specialist skill for the current step in `../skills/`. Use global Designcenter Open for CAD/NXOpen, Simcenter 3D Model Inspection for FEM/SIM inspection, and BatchPost for result data. Desktop automation is prohibited. Use Solution Sequence for the authorized Siemens batch solver and SCD5 conversion. Keep native calls to each session sequential. Leave SIM/FEM persistence to the user.
+Use the [FEA workflow](../fea-workflow.md). Whole studies start with `fea-chief-engineer`; for a focused task load only its matching skill, not the whole bundle. Reuse an existing model/file binding and current profile schema. Use the qualified 2612 CAE catalog before API discovery; check status only for an unbound profile or a connection symptom. Do not retry an uncertain effect.
+
+Use the global Siemens profiles and installed solver; no desktop automation or alternate binary readers. Keep native calls sequential per session. The user saves SIM/FEM.

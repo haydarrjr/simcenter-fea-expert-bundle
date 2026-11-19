@@ -1,3 +1,9 @@
+# 0.1.5 candidate
+
+- Add the 2612 Python CAE operation catalog and live SIM/subcase readback journal. Reuse known APIs and profile bindings; stop after a connected read times out instead of repeating status and the same query.
+- Add the `simcenter-nastran` SOL 101/103 skill, text-deck coverage limits, and guarded 2612 `WriteSolverInputFile` admission. Export, solver completion and engineering acceptance remain separate.
+- Tighten BatchPost state acceptance, requested-format PDF checks, and VS Code/Codex/Agent Workspace skill routing. Remove mandatory references to unbundled host skills.
+
 # 0.1.4 candidate
 
 - Route FEA skills through globally configured Siemens MCPs. Use scoped original Nastran text and official BatchPost exports when no live Nastran diagnostic tool is available.

@@ -78,6 +78,10 @@ Multiple values request combinations of compatible selections, not positional pa
 
 Multiple output targets apply the requested export formats/paths to the selected combinations. Images normally hold individual results; SCE is a container, and CSV grouping also depends on preferences. Do not equate combination count with file count, assume input-order output, or predict exact suffixes. Start with a small explicit selection, confirm returned/exported files, then expand the batch when requested.
 
+On the observed 2612 worker, close a task-owned file before opening another. For modal exports use explicit iteration IDs from `list`; a range requested fewer CSV modes than were actually returned. Single-target/single-component was the working fallback; check CSV column labels because `Magnitude` also carried XYZ in the observed result. Compare actual unique state IDs against the exact requested set (including extra, missing and duplicate state groups), match frequencies to F06 signed roots, and inspect image pixels/legends before publication. Do not infer export success from file count or connector success. For an undeformed mesh, use a reader-validated namespaced `NXPostProcessingTemplate` with mesh shown and deformation disabled; XSD validity alone is not a runtime witness.
+
+For the observed English 2612 modal CSV layout, [verify_modal_csv.py](scripts/verify_modal_csv.py) checks state coverage from actual CSV headers; pass exact expected `Load Case N:Mode M` labels and only the task-owned files. Other layouts need an independently verified mapping.
+
 ## Bundled Assets
 
 - [PostTemplate.xsd](./references/PostTemplate.xsd): bundled schema reference. The format guidance documents known discrepancies with runtime behavior; XSD validation alone is not an acceptance test.

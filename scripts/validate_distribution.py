@@ -5,7 +5,7 @@ from ruamel.yaml import YAML
 
 ROOT = Path(__file__).resolve().parents[1]
 ALLOWED_SUFFIXES = {'.md', '.py', '.mjs', '.json', '.yaml', '.yml', '.txt', '.toml', '.xsd'}
-EXPECTED_SKILLS = 38
+EXPECTED_SKILLS = 39
 EXPECTED_SUBRECIPES = [
     'fea-model-inspector',
     'fea-journal-author',
@@ -14,6 +14,12 @@ EXPECTED_SUBRECIPES = [
     'fea-verifier',
     'product-support-agent',
 ]
+
+
+def missing_recipe_skills(instructions, names):
+    refs = re.findall(r'`((?:fea|designcenter-open|simcenter|nastran-sol401)-[a-z0-9-]+|batchpost-actions)`',
+                      instructions)
+    return set(refs) - set(names) - set(EXPECTED_SUBRECIPES)
 
 
 def distribution_files(root=ROOT):
@@ -53,9 +59,12 @@ def validate(root=ROOT):
         check(fields.get('metadata', {}).get('copyright') == 'Unpublished work. Copyright 2026 Siemens', 'missing ADR-086 copyright metadata in ' + str(p))
 
     recipe = yaml.load((root / 'recipes/fea-expert-agent.yaml').read_text(encoding='utf-8'))
+    skill_names = {p.parent.name for p in skills}
     check(all(k in recipe for k in ['version', 'title', 'description', 'instructions', 'extensions', 'sub_recipes']), 'missing recipe fields')
     check({e['name'] for e in recipe['extensions']} == {'skills', 'summon', 'Simcenter 3D', 'Designcenter Open', 'Product Support', 'Simcenter Nastran MCP', 'Batch Post'}, 'unexpected extension or executable binding')
     check(all('cmd' not in e for e in recipe['extensions']), 'machine-local connector execution')
+    missing = missing_recipe_skills(recipe['instructions'], skill_names)
+    check(not missing, f'orchestrator references missing skills: {sorted(missing)}')
 
     subrecipes = recipe['sub_recipes']
     check([s['name'] for s in subrecipes] == EXPECTED_SUBRECIPES, 'expected exact 6 subrecipes')
@@ -68,6 +77,8 @@ def validate(root=ROOT):
         check(all(k in sub_doc for k in ['version', 'title', 'description', 'instructions', 'extensions']), 'missing subrecipe fields: ' + sub['name'])
         check(all('cmd' not in e for e in sub_doc['extensions']), 'machine-local connector execution in subrecipe: ' + sub['name'])
         check('sub_recipes' not in sub_doc, 'nested sub_recipes forbidden in subrecipe: ' + sub['name'])
+        missing = missing_recipe_skills(sub_doc['instructions'], skill_names)
+        check(not missing, f"{sub['name']} references missing skills: {sorted(missing)}")
         if sub['name'] == 'fea-journal-author':
             dc_ext = next(e for e in sub_doc['extensions'] if e['name'] == 'Designcenter Open')
             check('dcopen-execute-tool' not in dc_ext.get('available_tools', []) and bool(dc_ext.get('available_tools')), 'fea-journal-author must allowlist Designcenter Open tools without dcopen-execute-tool')

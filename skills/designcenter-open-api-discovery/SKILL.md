@@ -15,8 +15,9 @@ metadata:
 
 - Discover the current tool catalog and exact input schemas before calling tools.
   A connected server need not expose every tool from older documentation.
-  If a call fails, check dc_connection_status first. Retry bounded read-only
-  discovery after recovery; never replay an uncertain mutation blindly.
+  Follow the [shared recovery budget](../fea-sc3d-tool-routing/SKILL.md#recovery-budget).
+  Diagnose status only for an unbound profile or a connection symptom. Never
+  replay an uncertain effect.
 - Documentation: use documentation-search-tool only when currently advertised.
   If absent after connectivity recovery, route to the advertised Product Support
   search tool using its current schema and version-specific Siemens sources.
@@ -49,8 +50,10 @@ metadata:
 # NXOpen API Discovery
 
 Find the exact, verified NXOpen API names you need before generating journal
-code. NEVER guess class, method, enum, or parameter names — every name must come
-from a tool result.
+code. Never guess class, method, enum, or parameter names. For a known CAE
+operation, use the [qualified 2612 catalog](../designcenter-open-journal-authoring/references/cae-2612.md)
+before calling discovery. For gaps, go straight to exact class/member lookup
+when the symbol is known; use broad discovery only for genuinely unknown CAD APIs.
 
 ## When to use
 

@@ -15,7 +15,7 @@ owns the manual save.
    deliberate result output request and verify the new live solution.
 3. **Export and qualify the exact deck.** For the qualified Siemens NXOpen
    route, `SolveOption.WriteSolverInputFile` exports the solver deck. Check the
-   exporter diagnostics, effective Case Control, selected loads/constraints,
+   exporter diagnostics, [effective Case Control](../../simcenter-nastran/SKILL.md), selected loads/constraints,
    units, referenced dependencies and output requests. Copy the verified deck
    to a new task-owned batch directory and verify its hash. If it references
    INCLUDEs or other files, preserve the authorized dependency paths and
@@ -31,6 +31,9 @@ owns the manual save.
    ```
 
    Confirm applicable runtime and license options for other installations.
+   Resolve the authorized product root first, then test only the known
+   `NXNASTRAN\bin\nastranw.exe` and `NXBIN\scd5_convert.exe` paths. If absent,
+   request that installation's exact path; do not search vendor trees.
    The Windows launcher can return before Nastran finishes. Use new job files
    and the solver's log, exit status and F06 completion to qualify the result.
    Reconcile a pending launch before retry. Preserve the input, invocation and

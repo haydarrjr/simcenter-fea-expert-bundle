@@ -1,6 +1,6 @@
 # Simcenter 3D FEA Expert
 
-Canonical top-level orchestrator, six specialist roles and **38 FEA and Simcenter 3D skills**. One source candidate produces Simcenter Agent Workspace, Codex and VS Code GitHub Copilot distributions.
+Canonical top-level orchestrator, six specialist roles and **39 FEA and Simcenter 3D skills**. One source candidate produces Simcenter Agent Workspace, Codex and VS Code GitHub Copilot distributions.
 
 Repository: <https://github.com/haydarrjr/simcenter-fea-expert-bundle>
 
@@ -10,7 +10,7 @@ Matching the clean, self-contained layout of `simcenter_nx_expert`, all recipes 
 
 ```text
 simcenter-fea-expert-bundle/
-├── .sim-ai-agents.toml                  # Bundle sidecar manifest (id = "simcenter-fea-expert", version = "0.1.2")
+├── .sim-ai-agents.toml                  # Bundle sidecar manifest and release version
 ├── recipes/
 │   ├── fea-expert-agent.yaml            # Single top-level orchestrator agent
 │   └── subrecipes/                      # 6 specialist subagents
@@ -20,13 +20,13 @@ simcenter-fea-expert-bundle/
 │       ├── fea-results-post.yaml        # BatchPost result post-processing (.op2, contours, XY graphs)
 │       ├── fea-verifier.yaml            # Independent analytical falsification & VVUQ verifier
 │       └── product-support-agent.yaml   # Cited Siemens documentation retrieval
-├── skills/                              # All 38 canonical skills in one place (skills/<name>/SKILL.md)
+├── skills/                              # All 39 canonical skills in one place (skills/<name>/SKILL.md)
 ├── docs/
-│   ├── skill-catalog.md                 # Complete catalog of all 38 skills
+│   ├── skill-catalog.md                 # Complete catalog of all 39 skills
 │   └── qualification/0.1.2.md           # Qualification scope and evidence classes
 ├── scripts/
-│   ├── package_bundle.py                # Builds dist/simcenter-fea-expert/0.1.2/agents-artefact-windows.zip
-│   ├── validate_distribution.py         # Validates all 38 skills, 7 recipes, ADR-086 metadata, and links
+│   ├── package_bundle.py                # Builds the Agent Workspace archive
+│   ├── validate_distribution.py         # Validates all 39 skills, 7 recipes, ADR-086 metadata, and links
 │   ├── build_distribution.py            # Builds portable source archive
 │   └── install_release_local.py         # Packages, installs, enables, and hydrates the bundle in Agent Workspace
 └── tests/
@@ -34,7 +34,7 @@ simcenter-fea-expert-bundle/
     └── test_distribution.py             # Verifies offline source contract
 ```
 
-See the complete [Skill Catalog (38 skills)](docs/skill-catalog.md) and [Release Notes](RELEASE_NOTES.md).
+See the complete [Skill Catalog (39 skills)](docs/skill-catalog.md) and [Release Notes](RELEASE_NOTES.md).
 
 ## Referenced MCP Servers (`type: ref`)
 

@@ -3,7 +3,7 @@
 Layout (must match the host loader):
   recipes/fea-expert-agent.yaml                main agent (YAML, has sub_recipes)
   recipes/subrecipes/<name>.yaml               every sub_recipes target, nothing else at recipes/ root
-  skills/<skill>/...                           canonical 38 skills
+  skills/<skill>/...                           canonical 39 skills
   readme/README.md
 Never copies an installed/extracted bundle. Usage:
   python scripts/package_bundle.py [--out dist/simcenter-fea-expert/<ver>]
