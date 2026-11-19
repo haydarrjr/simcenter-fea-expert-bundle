@@ -62,7 +62,7 @@ physical problem even when the service pressure is unchanged.
 
 ## Worked assembly and bolt examples
 
-Run `python -m fea_agent run-case examples/engineering_v2/assembly_case.json`.
+Use the example to verify the signs and magnitudes of restrained thermal expansion.
 The manufactured 118 kg assembly has four tilted anisotropic mounts. A 100 K
 temperature change gives the four modeled local growth magnitudes
 `110, 192, 81, 121 micrometres`, derived from length times coefficient times
@@ -82,7 +82,7 @@ The eight-bolt flange example offers an independent mechanism. Initial 20 kN
 preload rises to about 36.957 kN after different bolt/member temperature changes.
 Eccentric service then opens B2–B5; unloading with 4 micrometres settlement leaves
 about 18.913 kN per bolt. A single thermal stress number cannot represent that
-load history. Run `assess-joint examples/engineering_v2/joint_flange8_thermal_service.json`
+load history. Use the joint mechanics calculation
 and read the stepwise forces, contact states and energy.
 
 ## Verification and API effects
@@ -97,8 +97,7 @@ The documented API workflow can attach a created load to an explicit solution
 step and read back membership. The load descriptor and property names must come
 from actual release-specific metadata; a contract fixture's strings are not
 vendor-defined identifiers. Consult the
-API workflow (source: fea_expert_agent_plugin/docs/engineering/vendor-api-workflows.md) and
-Runtime compatibility (source: fea_expert_agent_plugin/docs/architecture/runtime-compatibility.md).
+documentation for the current Siemens release and [runtime gate](../../fea-native-runtime-gate/SKILL.md).
 Thermal field creation, coupling, solve and persistent export need their own
 qualified capabilities; no generic CAD mutation grant covers these operations.
 

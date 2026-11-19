@@ -26,4 +26,3 @@ pair provenance; even intentional duplicates retain a warning.
 **Escalation:** TET10/TRI6/HEX, quadratic Jacobians, shell warpage,
 contact discontinuity, recovery quality, stress singularities, native
 quality controls and actual solver thresholds need separate evidence.
-Refer to P08 source guide (source: fea_expert_agent_plugin/docs/qualification/mesh-vvuq-source-slice.md).

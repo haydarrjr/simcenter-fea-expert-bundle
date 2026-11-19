@@ -31,17 +31,19 @@ def profiles(project, product, *, host='codex', engineering=False, batchpost=Fal
         'skills/fea-native-runtime-gate/scripts/launch_mcp.py')
     if not launcher.is_file() or not (product / 'UGII/dcmcpserver/DcMcpServer.exe').is_file():
         raise ValueError('install FEA project resources and select the Siemens product directory first')
-    if batchpost and not (product / 'NXBIN/sc3d_batchpost_mcpconnector.exe').is_file():
-        raise ValueError('the selected Siemens product does not have the BatchPost connector')
+    if batchpost and not all((product / 'NXBIN' / binary).is_file() for binary in (
+            'sc3d_batchpost.exe', 'sc3d_batchpost_mcpconnector.exe')):
+        raise ValueError('the selected Siemens product must have the BatchPost worker and connector')
     result = {}
     for name in [*READ_TOOLS, *(['batchpost'] if batchpost else [])]:
-        argv = ['-B', '-u', str(launcher), '--profile', name, '--ugii-base-dir', str(product),
-                '--tool-timeout', '40' if name != 'batchpost' else '180']
-        if host == 'copilot' and name != 'batchpost':
-            argv += ['--legacy-discovery', '--catalog-wait', '12']
-        if name == 'batchpost' and host == 'copilot':
+        if name == 'batchpost':
             argv = ['-B', '-u', str(launcher.with_name('batchpost_mcp.py')),
                     '--ugii-base-dir', str(product)]
+        else:
+            argv = ['-B', '-u', str(launcher), '--profile', name,
+                    '--ugii-base-dir', str(product), '--tool-timeout', '40']
+            if host == 'copilot':
+                argv += ['--legacy-discovery', '--catalog-wait', '12']
         if logs is not None and name != 'batchpost':
             # This Siemens build writes a generated log filename inside this directory.
             argv += ['--log-file', str(Path(logs).resolve() / name)]

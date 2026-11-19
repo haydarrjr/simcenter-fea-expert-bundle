@@ -7,33 +7,9 @@ metadata:
 
 # Dynamics
 
-Compose component transforms and mass properties; derive mount stiffness instead of accepting an unexplained diagonal matrix. Bind the operating state and preserve mixed translational/rotational units. Check model validity, complex phase and transfer work before comparing frequencies or amplitudes.
+Compose component transforms and mass properties. Verify effective stiffness, constraints, operating state and unit/frame conventions. A mode, RMS value and harmonic or transient amplitude describe different states.
 
-## Select the response method
-
-- Use [Transient field histories](references/transient-field-history.md) and `fea_solve_transient` for actual 3D linear solid response, signed integration-point tensors and time-grid checks. Use [Durability](../fea-durability/SKILL.md) for the resulting state-bound signed histories; exact energy does not establish resolved peaks or reversals.
-- Use [Solver investigation](../fea-solver-investigation/SKILL.md) for flexible FE decks, FEM/SIM ownership and state-bound displacement, reaction or modal evidence. Resolve the actual support/load selection and flexible model before comparing source and solver results.
-- Use [Random response](../fea-random-response/SKILL.md) for stationary force-driven cross spectra, displacement/stress RMS and covariance after the linear operating state is established. Check full-matrix spectral admissibility, load-pattern units, modal/integration coverage and whole-model motion; retain the distinction between RMS, finite-duration peaks and fatigue.
-- Use [Advanced dynamics](references/advanced-dynamics.md) for cyclic phase, shock/DDAM, gyroscopic rotor behavior, aeroelasticity and acoustics. Gyroscopic reasoning requires operating speed, bearing terms and the skew-symmetric gyroscopic operator. Neither the mounted-assembly nor flexible random-response source kernel implements rotor gyroscopy, critical-speed or stability computation; this guidance does not establish native solver or Runtime capability.
-
-## Engineering method and resources
-
-- [Coupled assembly method](references/engineering-method.md).
-- [Transient solids, energy and stress history](references/transient-field-history.md).
-- [Flexible-deck and physical-result investigation](../fea-solver-investigation/references/engineering-method.md).
-- [Stationary correlated random-response method](../fea-random-response/references/engineering-method.md).
-- [Cyclic, random, rotor and coupled methods](references/advanced-dynamics.md).
-- Result API lifecycle (source: fea_expert_agent_plugin/docs/engineering/vendor-api-workflows.md).
-
-## Executable starting point
-
-```sh
-python -m fea_agent run-case examples/engineering_v2/assembly_case.json
-python -m fea_agent run-case examples/solver_linked/captured/gantry_case.json
-```
-
-Three components and four tilted mounts produce six coupled modes around 46.04–148.70 Hz. A correct resultant force can still hide a missing interface moment; thermal loading can reverse a mount reaction.
-
-## Completion boundary
-
-Return the calculated or evidence-backed decision, its physical assumptions, the strongest falsifier exercised, and the specific unresolved dependency. Use qualified Engineering Desktop Runtime capabilities for native effects; this skill and source calculations do not create host authority. Preserve separate source, native, solver and engineering outcomes.
+- For unloaded, unprestressed SOL 103 use the [free-free workflow](references/sol103-free-free.md), including native admission, eigenspace checks and BatchPost export.
+- For harmonic or mounted-assembly dynamics, use [assembly dynamics](references/engineering-method.md). Check complex phase, transfer work, damping assumptions, frequency sampling, mass and coordinate mapping.
+- For actual complete transient histories, use [transient field histories](references/transient-field-history.md), [BatchPost](../batchpost-actions/SKILL.md) and [durability](../fea-durability/SKILL.md). Check signed integration-point tensors, time-grid refinement and peak/reversal resolution.
+- For stationary correlated spectra, use [random response](../fea-random-response/SKILL.md). For cyclic, shock/DDAM, rotor gyroscopy, aeroelastic and acoustic checks, use [specialized dynamics](references/advanced-dynamics.md). Require qualified solver scope and exact result state.

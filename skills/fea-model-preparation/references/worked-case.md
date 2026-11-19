@@ -2,10 +2,9 @@
 
 ## Input and engineering question
 
-Complete executable request (source: fea_expert_agent_plugin/examples/model_preparation_support_arm.json)
-and independent expected values (source: fea_expert_agent_plugin/examples/model_preparation_support_arm.expected.json)
-are committed with this case. It is a synthetic verification scenario, not an
-allowable calculation for a certified alloy or a native Siemens benchmark.
+The geometry, load and reference values below define an illustrative
+verification scenario. Use project-specific allowables and native evidence for
+an engineering assessment.
 
 A 500 mm cantilever has a common centroidal axis and 50 mm width. The original
 section depth is 40 mm over x=0–100 mm and 20 mm over x=100–500 mm. Proposal B
@@ -43,16 +42,7 @@ values nor a pass establish the material allowable or 3D model validity.
 
 ## Execute and inspect
 
-```sh
-python -m fea_agent plan-domain examples/model_preparation_support_arm.json
-python -m unittest tests.test_preparation_worked_case -v
-```
-
-The route reports `fea.model-preparation-assessment.v1`. `status` describes the
-global approximation choice; `local_requirements`, unavailable QoIs and
-`engineering_accepted=false` must also be read. Numerical results below are
-independently checked against exact-rational virtual-work integrals in
-`tests/test_preparation_worked_case.py`, not copied back as test expectations.
+Compare the following illustrative values against the piecewise virtual-work integrals and stated spring and beam assumptions.
 
 | Computed quantity | Original Timoshenko | Proposal B Timoshenko | Proposal B EB |
 |---|---:|---:|---:|

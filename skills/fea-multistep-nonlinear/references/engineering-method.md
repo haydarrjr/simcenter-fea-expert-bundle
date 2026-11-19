@@ -7,9 +7,9 @@
 - [Worked investigation](#worked-apparently-converged-case)
 - [Recovery](#recovery-and-outcome)
 
-Use the executable diagnosis method (source: fea_expert_agent_plugin/docs/engineering/nonlinear-diagnosis.md)
+Use the following diagnostic method.
 for its exact input contract, source parsers and evidence ledger. Use
-vendor API workflows (source: fea_expert_agent_plugin/docs/engineering/vendor-api-workflows.md)
+the exact-release Siemens Help API references
 to prepare or admit native operations through the Runtime owner. Diagnosis
 must remain grounded in the actual submitted model/deck and accepted result
 state, not merely a solution name in the UI.
@@ -83,9 +83,7 @@ unassessed. A balanced projection cannot establish transverse equilibrium.
 
 Run:
 
-```sh
-python -m fea_agent diagnose-nonlinear examples/engineering_v2/nonlinear_false_convergence.json
-```
+Use the worked diagnosis below as an example of how to reject false convergence.
 
 The source example contains a two-subcase SOL401 control excerpt, a manufactured
 documented-column log fragment and separately identified adapter CSV. They are

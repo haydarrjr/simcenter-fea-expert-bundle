@@ -24,7 +24,7 @@ length from geometry, not a label such as fine/coarse. Duplicate nodes with
 different labels are not automatically connected; a welded geometry can still
 produce disconnected finite-element load paths.
 
-The bounded source kernel supports TRI3/TET4 geometric checks, duplicate IDs,
+For independent TRI3/TET4 geometry checks inspect duplicate IDs,
 coincident positions, element/node incidence and orphan connectivity. It does
 not infer higher-order Jacobians, warped shell behavior or solver-specific
 integration quality from corner coordinates. See [TRI3/TET4 mechanics](tri3-tet4.md).
@@ -47,8 +47,7 @@ finite-radius model instead of declaring a divergent nodal maximum accurate.
 
 ## Computable verification
 
-Run `assess-mesh examples/mesh_quality_tet4_v1.json` and
-`assess-convergence examples/convergence_4_levels_v1.json` with the package CLI.
+Use Model Inspection and measured QoI changes across independently recorded meshes.
 The convergence evaluator compares the top-level physical identity with every
 mesh level before numerical conversion. A model A request containing only model
 B levels is rejected even if those levels agree with one another.
@@ -97,8 +96,7 @@ partial-mesh commit or automatic element-size adjustment cannot be labeled a
 successful requested mesh without evaluating the changed result. Automatic
 reset may remove manual edits, so preserve the explicit effect and recovery plan.
 
-Run the tetra compiler example (source: fea_expert_agent_plugin/examples/vendor_api_v2/tetra_mesh.json)
-through `compile-api`; follow vendor lifecycle guidance (source: fea_expert_agent_plugin/docs/engineering/vendor-api-workflows.md).
+Verify the tetra builder lifecycle through installed API discovery and exact-release Siemens Help.
 Compilation and a contract double exercise prove source behavior. Actual
 geometry selection, licensed SDK execution and mesh readback still require
 qualified Runtime capabilities.

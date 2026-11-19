@@ -7,23 +7,6 @@ metadata:
 
 # Composite laminates
 
-Inspect the actual stacking sequence and material axes before using a scalar
-failure number. Call `fea_analyze_laminate` for classical laminate response;
-use `fea_inspect_artifact` to inspect original ply result identities. Get the
-`unsymmetric_laminate` request from `fea_get_example` for the input contract.
+Bind actual layup order, ply IDs, orientation, thickness, reference surface, temperature/moisture condition, transformed stiffness and sign conventions. Use the effective deck and documented Simcenter model reads for laminate properties, and [BatchPost](../batchpost-actions/SKILL.md) or qualified result reads for original ply/face fields. Never infer interlaminar strength from classical laminate theory.
 
-1. Declare bottom-to-top ply order, thickness, angle, lamina E1/E2/G12/nu12 and
-   thermal coefficients. Require positive-definite constitutive energy.
-2. Preserve A, B and D, thermal force/moment resultants and prescribed generalized
-   strain components. Do not erase B because the analyst expects membrane behavior.
-3. Solve membrane strain and curvature with work-conjugate engineering shear.
-   Recover top/bottom stress for every named ply in both global and material axes.
-4. Reconstruct applied resultants from recovered fields and challenge ply order,
-   angle sign and midplane/reference-temperature assumptions.
-5. If strength is requested, require the corresponding qualified strength/failure
-   model, allowables, load ratio and environmental basis. CLT stresses do not
-   supply transverse shear, delamination or damage evolution.
-
-Read [laminate method and wrong-answer tests](references/engineering-method.md).
-Return signed ply fields and coupling evidence, not only an envelope. Retain
-each recovery surface when joining Siemens/OP2 output to the source calculation.
+Read [laminate method](references/engineering-method.md). For an independent ABD check, integrate transformed ply stiffness through the declared signed thickness, retain the (B) coupling matrix, and check thermal resultants and strain/curvature signs. Compare individual ply stresses/strains in their material frame with evidenced allowables and stated failure criterion. Missing layup state, fields or allowables limits the decision.

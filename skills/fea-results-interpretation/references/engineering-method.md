@@ -94,10 +94,7 @@ maximum stress extracted from that unaccepted state cannot repair its provenance
 ## Readback and debugging
 
 Run `assess-tensor`, `assess-sol103`, `assess-sol105` or the v2 case runner
-according to the actual data contract. Run the
-element-nodal API example (source: fea_expert_agent_plugin/examples/vendor_api_v2/element_nodal_stress.json)
-through `compile-api` to inspect the documented extraction path. Result output
-flags separate source computation from Runtime/native authentication.
+according to the actual data contract. Use the exact-release Siemens Help API and a qualified read path for element-nodal extraction. Preserve the actual result-position and state labels.
 
 On disagreement, test units, component/shear convention, frame, location,
 parent ownership and step identity before adjusting tolerances. Compare a

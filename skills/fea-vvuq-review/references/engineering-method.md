@@ -76,11 +76,7 @@ each variant a distinct case identity. The executable mechanics predicts:
 The contact set changes at the upper variant. A single linear preload-to-force
 coefficient would miss that transition. All three still require nonlinear
 contact/slip review; none is a thread-capacity or fatigue acceptance result.
-Reproduce the variants by loading
-`examples/engineering_v2/joint_flange8_thermal_service.json`, changing each
-station's `preload_n`, changing `identity.case_id`, and calling
-`fea_agent.joint_mechanics.assess_request`. The returned request digest pins
-each computed variant.
+For the actual joint, change each evidenced station preload consistently and record each variant's independently identified decks, states and checks.
 
 An independent transfer falsifier uses -1000 and +3000 N at x=-0.5 and +0.5 m.
 The net force is 2000 N, but the Y moment is -2000 N m. A claimed transfer

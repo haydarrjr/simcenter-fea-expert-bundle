@@ -59,6 +59,22 @@ class ProjectChannels(unittest.TestCase):
                     if name.startswith('skills/') and name != BUNDLE_MANIFEST:
                         self.assertEqual(files[f'{prefix}/{name}'], raw)
 
+    def test_packaged_fea_workflow_does_not_route_to_removed_engines(self):
+        bundle = read_zip(self.out / 'agents-artefact-windows.zip')
+        for name, raw in bundle.items():
+            if name.startswith('skills/') and name.endswith('.md'):
+                self.assertNotRegex(
+                    raw.decode('utf-8').lower(),
+                    r'\b(?:fea_capabilities|fea_get_example|fea_inspect_artifact|fea_agent|pynastran)\b',
+                    name,
+                )
+        for _, filename in PROJECTS.values():
+            files = read_zip(self.out / filename)
+            root = next(name.split('/')[0] for name in files if name.endswith('/fea-workflow.md'))
+            workflow = files[f'{root}/fea-workflow.md'].decode('utf-8')
+            self.assertIn('globally configured official Siemens MCPs', workflow)
+            self.assertIn(f'{root}/skills/fea-dynamics/references/sol103-free-free.md', files)
+
     def test_codex_update_and_rollback_preserve_existing_instructions(self):
         project = self.root / 'codex'
         project.mkdir()
@@ -111,6 +127,15 @@ class ProjectChannels(unittest.TestCase):
             self.assertIn('dc_connection_status', server['enabled_tools'])
         self.assertNotIn('dcopen-execute-tool', decoded['designcenter']['enabled_tools'])
         self.assertNotIn('surface-mesh-generation-tool', decoded['simcenter3d']['enabled_tools'])
+        binaries = product / 'NXBIN'
+        binaries.mkdir()
+        (binaries / 'sc3d_batchpost_mcpconnector.exe').touch()
+        with self.assertRaisesRegex(ValueError, 'worker and connector'):
+            profiles(project, product, batchpost=True)
+        (binaries / 'sc3d_batchpost.exe').touch()
+        batchpost = profiles(project, product, batchpost=True)['batchpost']
+        self.assertEqual(Path(batchpost['args'][2]).name, 'batchpost_mcp.py')
+        self.assertIn('open', batchpost['enabled_tools'])
 
     def test_unsafe_paths_are_rejected(self):
         for paths in (['../escape'], ['CON.md'], ['x/a', 'x/A'], ['a', 'A/b'], ['a/b:stream']):

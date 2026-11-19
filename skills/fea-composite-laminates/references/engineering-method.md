@@ -1,8 +1,6 @@
 # Classical laminate source workflow
 
-The continuum/composite method (source: fea_expert_agent_plugin/docs/engineering/multiphysics-v3.md)
-documents NASA RP-1351 provenance and independent reproduction. The source
-request explicitly uses SI: Pa, m, N/m, N and K. Plies run from negative z to
+Use consistent SI for the independent laminate calculation: Pa, m, N/m, N and K. Plies run from negative z to
 positive z; `strain(z)=midplane_strain + z*curvature` with engineering gamma_xy.
 
 For each transformed ply stiffness Qbar, integrate:
@@ -16,10 +14,7 @@ Then `[N;M] = [[A,B],[B,D]]*[epsilon0;kappa] - [NT;MT]`.
 Do not convert engineering shear by rotating its components as though gamma_xy
 were tensor shear: transformation must preserve virtual work.
 
-Read the complete example
-unsymmetric laminate (source: fea_expert_agent_plugin/examples/multiphysics_v3/unsymmetric_laminate.json)
-before changing its material/ply fields. `prescribed_generalized_strain` provides
-mixed strain/curvature constraints; the remaining components are solved from
+Check the actual unsymmetric layup and material axes. Prescribed generalized strains can impose mixed strain/curvature constraints; the remaining components are solved from
 declared resultants. Thermal-gradient input is kelvin per metre, while
 `delta_T_midplane` is a temperature increment, not absolute Kelvin.
 

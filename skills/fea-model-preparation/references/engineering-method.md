@@ -65,7 +65,7 @@ frame must match before comparing these quantities.
 
 ## Worked mounted-assembly case
 
-Run `python -m fea_agent assess-assembly examples/engineering_v2/mounted_assembly_model.json`.
+Use these mechanics checks as a worked mount-assembly example.
 The example is a manufactured housing, gearbox and nested accessory with
 different occurrence orientations, off-center inertia and four tilted mounts.
 Their exclusive masses are 90, 25 and 3 kg. Aggregation gives **118 kg** and
@@ -86,7 +86,7 @@ arbitrary numerical characteristic length also leaves the physics unchanged.
 
 ## Native construction and failure recovery
 
-Use the verified vendor workflows (source: fea_expert_agent_plugin/docs/engineering/vendor-api-workflows.md)
+Use exact-release Siemens Help and installed API discovery
 to bind geometry ownership and exact API declarations. The pressure compiler
 audits per-face normal, area, centroid, owner and revision before emission.
 Its 2 MPa example acts on 0.01 m² and produces -20 kN in the defined direction;
@@ -102,7 +102,7 @@ when operand recipes exist and remain homogeneous, and verify area, normal,
 centroid, and load resultant/moment after topological splits or remeshing.
 Use `classify_associativity`, `plan_associative_retrofit_or_rebind`,
 `evaluate_mesh_and_connection_replay`, and `plan_sim_rebind` in
-`fea_agent.parametric_cae` to evaluate associativity classes, inspect-before-create
+the [parametric SOL101 workflow](../../simcenter-parametric-sol101/SKILL.md) to evaluate associativity classes, inspect-before-create
 duplicate guards, freeze states (`FEM_GEOMETRY_FROZEN`, `CAE_RECIPE_FROZEN`,
 `AFEM_ASSEMBLY_FROZEN`), mesh update log completeness, and SIM BC/load/contact
 propagation. Missing owner accessors, SDK signatures or installed handlers remain

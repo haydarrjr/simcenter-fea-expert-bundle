@@ -35,12 +35,7 @@ result can be rehashed correctly; the independent physics checks must still
 find it wrong. Job metadata, a log marker or a caller-supplied grant never
 creates native authority.
 
-Use `python -m fea_agent investigate <manifest.json>` or the common `run-case`
-entrypoint. The captured gantry directory is a complete, portable worked
-bundle; its job, hierarchy, manifest and comparison tolerances show the exact
-typed contract. The source hierarchy is manufactured to match the source
-deck; it is not an NX export. The recorded OpenSees outputs were executed
-independently, while the importer retains their unauthenticated-source status.
+Use the official Nastran and BatchPost reads or scoped original solver text to record these links. The worked examples below illustrate physical checks and are not live evidence.
 
 ## Effective deck and flexible mechanics
 

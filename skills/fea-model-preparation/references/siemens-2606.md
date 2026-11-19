@@ -2,11 +2,9 @@
 
 ## Release-bound documentation
 
-The bounded evidence ledger (source: fea_expert_agent_plugin/docs/evidence/siemens-2606-idealization-ledger.json)
-records the canonical document IDs, release SKUs, raw source hashes, retrieval
-time, content status and adopted claim. It contains summaries/metadata, not
-copies of Siemens manuals. Read the relevant document through Siemens Help
-Server when preparing a release-specific native implementation.
+Read the relevant documents through Siemens Help Server when preparing a
+release-specific native implementation. Record the retrieved version, scope and
+availability of any necessary figures or equations.
 
 | Product/release | Document ID suffix | Adopted rule and its limit |
 |---|---|---|
@@ -17,18 +15,13 @@ Server when preparing a release-specific native implementation.
 | Simcenter Nastran 2606 | `QRG.id508621` | PBEAM remark 12 distinguishes zero/nonzero shear fields for EB/Timoshenko, independently by plane. This does not establish that analytical kappa is numerically identical to a card field. |
 | Simcenter 3D 2606 | `advanced.id625621`, `advanced.id629976` | Midsurface source association and effective shell thickness/normal/offset require separate checks. A vendor sampling switch is not an engineering error budget. No shell algorithm is implemented by this slice. |
 
-Ledger status is DRAFT for these source documents. Twelve of thirteen retrieved
-records reported COMPLETE and one PARTIAL. Equation images were unavailable in
-some otherwise COMPLETE text; no taper/shear-relief equation is adopted from
-missing images. Native availability, installed SDK signatures and numerical
-parity are not inferred from documentation completeness.
+Confirm native availability, installed SDK signatures and numerical parity
+independently of documentation retrieval.
 
 ## What Codex must qualify locally
 
-The source callable entry points are `section_properties`, `analyze_beam`,
-`assess_idealization`, and `assess_preparation_request`. They already execute
-offline. None calls NXOpen or requires Windows to perform its calculation.
-The following adapters/evidence are still required locally:
+Use the bundled mechanics reference for independent checks. The following
+native observations require the current Siemens MCP profile:
 
 1. **Geometry and ownership extraction.** Read actual body/revision, idealized
    source association, section dimensions/common centroid, axes and protected
@@ -45,7 +38,7 @@ The following adapters/evidence are still required locally:
    `plan_associative_retrofit_or_rebind`, `evaluate_mesh_and_connection_replay`,
    and `plan_sim_rebind`, separating `SOURCE_TESTED` / `DOCUMENTED_2606_CANDIDATE`
    source verification from `NATIVE_READBACK_VERIFIED` `SelectionRecipe.GetEntities()`
-   persistence. See parametric CAE qualification (source: fea_expert_agent_plugin/docs/qualification/parametric-cae-v1.md).
+   persistence. See the [parametric SOL 101 workflow](../../simcenter-parametric-sol101/SKILL.md).
    This PR adds no Runtime handler or MCP contract and changes no NX/Runtime branch.
 4. **Solver and discretization validation.** Run controlled SOL101 models on the
    licensed host for the original/proposed sections and both intended theories.

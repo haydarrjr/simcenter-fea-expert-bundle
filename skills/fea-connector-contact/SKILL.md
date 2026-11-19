@@ -7,22 +7,6 @@ metadata:
 
 # Connector Contact
 
-Derive bolt/member stiffness from physical inputs and solve compatibility with active contact. Preserve pretension state and exact step inheritance. Evaluate per-contact friction, force/moment balance and energy before interpreting bolt stress or proposing a fix.
+Read [joint mechanics](references/engineering-method.md). Use Model Inspection and the effective deck to identify preload, interfaces, stiffness, contacts, local axes and load application. Bind BatchPost outputs to the actual nonlinear step and iteration. Compare bolt force, local opening/slip and contact work with an independently constructed compatibility and equilibrium reference, retaining pressure convention, area and lever arms.
 
-## Engineering method and resources
-
-- [Joint engineering method](references/engineering-method.md).
-- Complete equations and worked history (source: fea_expert_agent_plugin/docs/engineering/bolted-joint-workflow.md).
-- Pressure API and region audit (source: fea_expert_agent_plugin/docs/engineering/vendor-api-workflows.md).
-
-## Executable starting point
-
-```sh
-python -m fea_agent assess-joint examples/engineering_v2/joint_flange8_thermal_service.json
-```
-
-Eccentric service opens B2–B5 and reaches 56.048 kN maximum bolt force. Local slip can begin even when global shear and torque capacity bounds appear adequate.
-
-## Completion boundary
-
-Return the calculated or evidence-backed decision, its physical assumptions, the strongest falsifier exercised, and the specific unresolved dependency. Use qualified Engineering Desktop Runtime capabilities for native effects; this skill and source calculations do not create host authority. Preserve separate source, native, solver and engineering outcomes.
+Check bolt/thread and local pressure allowables only with applicable material and geometry evidence. Preserve the difference between preload control and locked adjustment. Report material, friction, rigidization or result gaps.

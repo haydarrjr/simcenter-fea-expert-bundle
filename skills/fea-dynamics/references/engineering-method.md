@@ -83,7 +83,7 @@ small-rotation assumption merely because the static load was small.
 
 ## Worked three-component assembly
 
-Run `python -m fea_agent run-case examples/engineering_v2/assembly_case.json`.
+Use these values as a worked dimensional and mechanics example.
 The manufactured model contains a 90 kg housing, 25 kg gearbox and 3 kg nested
 accessory, with distinct local frames and four anisotropic tilted mounts.
 It derives a coupled mass matrix from the hierarchy instead of accepting an
@@ -120,7 +120,7 @@ pure translational supplied matrices; use the assembly implementation for this
 mixed-coordinate reference instead of relabeling rotations as translations.
 
 Use the documented result-access path in the
-vendor workflow (source: fea_expert_agent_plugin/docs/engineering/vendor-api-workflows.md).
+exact-release Siemens Help Server documentation.
 Map entity labels to result indices, preserve parent element for element-nodal
 data, select the actual solution/loadcase/iteration and retain units and frame.
 Borrowed result handles are not owned builders. Do not destroy an object whose
@@ -130,7 +130,7 @@ qualified Runtime readback and remains separate from these source computations.
 ## Frequency-resolution review
 
 A converged complex linear solve at requested frequencies is not a response
-envelope. Inspect `frequency_sampling_review`: the source tool marks modes in
+envelope. Inspect the actual extraction and integration grids. Identify modes in
 the requested range with no sample inside the approximate isolated-mode
 half-power half-width, zeta times natural frequency. Refine locally and track
 phase and peak displacement/rotation as the frequency spacing decreases. The

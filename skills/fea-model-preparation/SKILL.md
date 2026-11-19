@@ -1,30 +1,12 @@
 ---
 name: fea-model-preparation
-description: "Choose and verify FEA idealizations, model hierarchy, persistent regions, coordinate transforms and conservative load paths. Use for CAD-to-FEM preparation, owned revisions, associativity and global-to-detail transfer; CAD design belongs to NX."
+description: "Plan and verify Simcenter 3D idealization, FEM/SIM ownership, mesh, connections, units and associative changes from model evidence."
 metadata:
   copyright: "Unpublished work. Copyright 2026 Siemens"
 ---
 
 # Model Preparation
 
-Use actual geometry, sections, material and support evidence. Preserve owner/revision, occurrence transforms and physical region membership. Assess reduction error at each requested QoI; global agreement cannot certify omitted local features.
+Start from [decision procedure](references/decision-procedure.md) and [mechanics](references/mechanics.md). Use Designcenter Open and Model Inspection to verify geometry ownership, dimensional scale, FEM/SIM association, and effective mesh/connection/BC state. Map idealization to the QoI, load path, interfaces and required accuracy. Keep full element order, connectivity and provenance.
 
-## Engineering method and resources
-
-- [Hierarchy, idealization and transfer](references/engineering-method.md).
-- [Section mechanics](references/mechanics.md).
-- [Quantitative support-arm case](references/worked-case.md).
-- [Original CAD import, owned meshing and independent analysis](references/imported-cad-v4.md).
-- Siemens API path (source: fea_expert_agent_plugin/docs/engineering/vendor-api-workflows.md).
-
-## Executable starting point
-
-```sh
-python -m fea_agent assess-assembly examples/engineering_v2/mounted_assembly_model.json
-```
-
-A 118 kg hierarchical assembly must retain its off-center inertia. A transfer with correct 2000 N force but missing -2000 N m moment is rejected.
-
-## Completion boundary
-
-Return the calculated or evidence-backed decision, its physical assumptions, the strongest falsifier exercised, and the specific unresolved dependency. Use qualified Engineering Desktop Runtime capabilities for native effects; this skill and source calculations do not create host authority. Preserve separate source, native, solver and engineering outcomes.
+Use [imported CAD](references/imported-cad-v4.md), [Siemens preparation](references/siemens-2606.md), [engineering method](references/engineering-method.md) and the [support-arm example](references/worked-case.md) where relevant. For each proposed work-copy operation, bind the exact supported API or MCP tool, units and source geometry. Record independent readback via [runtime gate](../fea-native-runtime-gate/SKILL.md). Preserve original files and distinguish a model preparation decision from a qualified native edit.

@@ -3,7 +3,7 @@ schema_version = "1"
 [bundle]
 id = "simcenter-fea-expert"
 name = "Simcenter 3D FEA Expert"
-version = "0.1.3"
+version = "0.1.4"
 description = "Route Simcenter 3D FEA requests through expert FEA skills and specialist subagents, reusing the host-managed Simcenter 3D, Designcenter Open and Product Support MCPs."
 os = ["windows"]
 homepage = "https://github.com/haydarrjr/simcenter-fea-expert-bundle"

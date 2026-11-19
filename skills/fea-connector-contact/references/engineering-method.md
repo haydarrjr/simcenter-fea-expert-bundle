@@ -7,11 +7,7 @@
 - [Worked assembly](#worked-eight-bolt-decision)
 - [Construct and falsify](#construct-debug-and-falsify)
 
-Use the complete coupled flange method (source: fea_expert_agent_plugin/docs/engineering/bolted-joint-workflow.md)
-for derivation, source contract and native construction checks. Use
-verified API workflows (source: fea_expert_agent_plugin/docs/engineering/vendor-api-workflows.md)
-for operation-specific owners and lifecycles; a local operation name does not
-establish a callable Runtime handler.
+Use the exact-release Siemens Help and installed API discovery for native setup. Use the mechanics below as a separate physical check.
 
 ## Establish the load path
 
@@ -73,9 +69,7 @@ branch, force/moment balance and reported tangent independently.
 
 Run:
 
-```sh
-python -m fea_agent assess-joint examples/engineering_v2/joint_flange8_thermal_service.json
-```
+Use this worked load-path example to define independent falsifiers for the actual joint.
 
 Eight bolts on an 80 mm radius have E=200 GPa, area 84.3 mm², grip 50 mm and
 initial preload 20 kN. The member prisms have E=70 GPa, effective area 800 mm²

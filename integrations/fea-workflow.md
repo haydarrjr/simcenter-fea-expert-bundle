@@ -1,5 +1,7 @@
 # Simcenter 3D FEA workflow
 
+Use the globally configured official Siemens MCPs. Avoid duplicate workspace registrations. Local work is limited to explicitly scoped files and derived report calculations. Missing official capabilities remain NOT_RUN.
+
 Load [FEA Chief Engineer](skills/fea-chief-engineer/SKILL.md) and [SC3D Tool Routing](skills/fea-sc3d-tool-routing/SKILL.md) first. Load specialist skill instructions and their references as needed.
 
 | Request | Starting skill |
@@ -10,6 +12,8 @@ Load [FEA Chief Engineer](skills/fea-chief-engineer/SKILL.md) and [SC3D Tool Rou
 | Investigate deck, F06 or contact logs | [Solver investigation](skills/fea-solver-investigation/SKILL.md), [Artifact forensics](skills/fea-artifact-forensics/SKILL.md) |
 | Export or interpret results | [BatchPost](skills/batchpost-actions/SKILL.md), [Results interpretation](skills/fea-results-interpretation/SKILL.md) |
 | Evaluate engineering acceptance | [Acceptance verifier](skills/fea-acceptance-verifier/SKILL.md), [VVUQ](skills/fea-vvuq-review/SKILL.md) |
+| Create or verify SOL 103 free-free normal modes | [SOL 103](skills/fea-dynamics/references/sol103-free-free.md) |
+| Produce technical HTML with genuine results | [Report method](skills/fea-results-interpretation/references/engineering-report.md) |
 | Retrieve Siemens documentation | [Documentation search](skills/designcenter-open-documentation-search/SKILL.md) |
 | Associative SOL101 or airframe workflows | [SOL101](skills/simcenter-parametric-sol101/SKILL.md), [Airframe](skills/simcenter-airframe-structural-verification/SKILL.md) |
 

@@ -1,3 +1,10 @@
+# 0.1.4 candidate
+
+- Route FEA skills through globally configured Siemens MCPs. Use scoped original Nastran text and official BatchPost exports when no live Nastran diagnostic tool is available.
+- Add the free-free SOL 103 setup, native admission, eigenspace and reporting methods.
+- Remove instructions to provision external FEA solvers or Python result readers during a Siemens study.
+- Define offline engineering report figures and quantity-level provenance.
+
 # 0.1.3 candidate
 
 - Build Agent Workspace, Codex and VS Code Copilot packages with one source digest.

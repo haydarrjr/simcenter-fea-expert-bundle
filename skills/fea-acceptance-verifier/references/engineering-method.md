@@ -62,10 +62,7 @@ constant force blindly re-applied at every service step.
 
 Run the bundled eight-bolt flange case:
 
-```sh
-python -m fea_agent run-case examples/engineering_v2/joint_case.json
-python -m fea_agent diagnose-nonlinear examples/engineering_v2/nonlinear_false_convergence.json
-```
+Use the magnitudes below as a worked example of independent acceptance checks.
 
 The nonlinear example is explicitly manufactured. Its deck fragment selects
 SOL401, a preload subcase and dependent service loading. Its F06 fragment uses
@@ -121,11 +118,4 @@ Use these outcome distinctions:
 - Contact/mesh/time-step/model-form uncertainty requires a discriminating study,
   not an average PASS that hides one failed physical direction or load stage.
 
-Execute `python -m unittest tests.test_runtime_client_v2 -v` for forged-origin,
-wrong-owner, part-ABA, partial-inventory and uncertain-response counterexamples.
-Use the [Runtime method](../../fea-native-runtime-gate/references/engineering-method.md)
-for callable DTOs and reconciliation, and the
-compatibility contract (source: fea_expert_agent_plugin/docs/architecture/runtime-compatibility.md)
-for exact source pins and unsupported native operations. Deliver the decisive
-numbers, provenance and falsifiers; keep engineering acceptance distinct from
-source CI and package validity.
+Test for contradictory state, unknown origin or missing independent readback. Consult the [runtime gate](../../fea-native-runtime-gate/SKILL.md) for case-specific evidence.
