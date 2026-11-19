@@ -136,6 +136,9 @@ class ProjectChannels(unittest.TestCase):
         batchpost = profiles(project, product, batchpost=True)['batchpost']
         self.assertEqual(Path(batchpost['args'][2]).name, 'batchpost_mcp.py')
         self.assertIn('open', batchpost['enabled_tools'])
+        self.assertEqual(batchpost['env_vars'], ['SALT_LICENSE_SERVER', 'SALT_LICENSE_TYPE',
+                                                 'SPLM_LICENSE_SERVER'])
+        self.assertNotIn('env', batchpost)
 
     def test_unsafe_paths_are_rejected(self):
         for paths in (['../escape'], ['CON.md'], ['x/a', 'x/A'], ['a', 'A/b'], ['a/b:stream']):
