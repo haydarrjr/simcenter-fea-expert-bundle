@@ -106,6 +106,16 @@ def main(args):
 - Build features with the builder pattern: create builder → set only settable
   properties → `CommitFeature()` → `Destroy()` in a `finally` block.
 
+### Simcenter 3D SIM context
+
+For a SIM or FEM, bind `NXOpen.Session.GetSession().Parts.BaseWork` and the
+exact expected path. `Parts.Work` is the CAD accessor and can raise
+`The part file is not a .prt part` on an active SIM. For an authorized
+read-only live journal, verify the expected SIM and iterate
+`part.Simulation.Solutions` directly. Check the native execution status
+and returned solution identities. The 2612 Python collection was iterable
+and did not expose the .NET `ToArray()` method.
+
 ## Known gotchas
 
 - No `NewPart` on PartCollection — use

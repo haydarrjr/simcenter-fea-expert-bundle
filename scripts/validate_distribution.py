@@ -4,7 +4,7 @@ import json, re
 from ruamel.yaml import YAML
 
 ROOT = Path(__file__).resolve().parents[1]
-ALLOWED_SUFFIXES = {'.md', '.py', '.json', '.yaml', '.yml', '.txt', '.toml', '.xsd'}
+ALLOWED_SUFFIXES = {'.md', '.py', '.mjs', '.json', '.yaml', '.yml', '.txt', '.toml', '.xsd'}
 EXPECTED_SKILLS = 38
 EXPECTED_SUBRECIPES = [
     'fea-model-inspector',

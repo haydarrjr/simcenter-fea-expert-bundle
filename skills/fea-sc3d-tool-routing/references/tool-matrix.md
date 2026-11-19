@@ -34,16 +34,16 @@ fea-model-inspector (read Simcenter 3D / CAD state), fea-journal-author (NXOpen 
 | [fea-open-meshing](../../fea-open-meshing/SKILL.md) | geometry-to-mesh transfer and volume checks | fea-model-inspector |
 | [fea-random-response](../../fea-random-response/SKILL.md) | results | fea-results-post |
 | [fea-results-interpretation](../../fea-results-interpretation/SKILL.md) | results | fea-results-post (Batch Post); F06 via fea-solver-diagnostics |
-| [fea-solver-investigation](../../fea-solver-investigation/SKILL.md) | deck, results, inventory | fea-solver-diagnostics, fea-model-inspector |
+| [fea-solver-investigation](../../fea-solver-investigation/SKILL.md) | deck, [batch solve](../../fea-solver-investigation/references/solution-sequence.md), results, inventory | main agent (submission), fea-solver-diagnostics, fea-model-inspector |
 | [fea-thermal](../../fea-thermal/SKILL.md) | BC/load, results | fea-model-inspector, fea-results-post |
 | [fea-vvuq-review](../../fea-vvuq-review/SKILL.md) | mesh, verification | fea-verifier |
 
 ## Capability gaps
 | Gap | Status |
 |---|---|
-| Mesh generation/visibility are advertised live mutations (main agent only, explicit request, owned copy, `mesh-info-tool` readback); BC/load/solution/solve/save mutation not advertised | BLOCKED_BY_OFFICIAL_MCP_CAPABILITY |
-| No solve/submit tool advertised | BLOCKED_BY_OFFICIAL_MCP_CAPABILITY / NOT_RUN |
-| No save tool advertised | BLOCKED_BY_OFFICIAL_MCP_CAPABILITY until a separate persistence route qualifies |
+| Live solution setup and deck export | Qualify the exact live Designcenter Open journal and read back the effect |
+| Batch solve | Use the qualified deck with the installed Siemens executable through [Solution Sequence](../../fea-solver-investigation/references/solution-sequence.md) |
+| SIM/FEM persistence | Manual user save after the analysis |
 | Simcenter 3D not connected / tools missing | run `dc_connection_status`, follow recovery; stages NOT_RUN |
 | Nastran deck/F06 outside allowed roots | `list_allowed_roots`, `request_file_access` (approval per job bundle) |
 | Nastran MCP tools are SOL 401 oriented | state limits when applied to SOL 101; parse_f06_file/list_deck_cards remain usable read-only |
