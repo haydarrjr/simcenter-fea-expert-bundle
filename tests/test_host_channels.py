@@ -1,0 +1,224 @@
+"""Regression tests for candidate parity, managed installs and MCP admission."""
+from datetime import datetime, timezone
+import importlib.util
+import io
+import json
+from pathlib import Path
+import tempfile
+import tomllib
+import unittest
+from time import monotonic
+from types import SimpleNamespace
+from unittest.mock import patch
+
+from scripts.install_project import attest, install, rollback
+from scripts.install_bundle import on_demand_pointer
+from scripts.package_identity import BUNDLE_MANIFEST, check_paths, read_zip, verify_files
+from scripts.package_release import PROJECTS, ROOT, build
+from scripts.render_mcp_config import audit, profiles, render
+
+
+def runtime(name):
+    path = ROOT / 'skills/fea-native-runtime-gate/scripts' / f'{name}.py'
+    spec = importlib.util.spec_from_file_location(name, path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+launcher = runtime('launch_mcp')
+batchpost_launcher = runtime('batchpost_mcp')
+controller = runtime('fea_controller')
+
+
+class ProjectChannels(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.temp = tempfile.TemporaryDirectory()
+        cls.addClassCleanup(cls.temp.cleanup)
+        cls.root = Path(cls.temp.name)
+        cls.out = cls.root / 'candidate'
+        cls.identity = build(cls.out)
+        cls.other_out = cls.root / 'other-candidate'
+        build(cls.other_out)
+
+    def test_shared_candidate_and_canonical_skill_bytes(self):
+        self.assertEqual((self.out / 'SHA256SUMS.txt').read_bytes(),
+                         (self.other_out / 'SHA256SUMS.txt').read_bytes())
+        bundle = read_zip(self.out / 'agents-artefact-windows.zip')
+        common = verify_files(bundle, BUNDLE_MANIFEST, 'agentsai')['candidate_source_digest']
+        for channel, (manifest, filename) in PROJECTS.items():
+            with self.subTest(channel=channel):
+                path = self.out / filename
+                self.assertEqual(path.read_bytes(), (self.other_out / filename).read_bytes())
+                files = read_zip(path)
+                self.assertEqual(verify_files(files, manifest, channel)['candidate_source_digest'], common)
+                prefix = manifest.split('/')[0]
+                self.assertNotIn(f'{prefix}/{BUNDLE_MANIFEST}', files)
+                for name, raw in bundle.items():
+                    if name.startswith('skills/') and name != BUNDLE_MANIFEST:
+                        self.assertEqual(files[f'{prefix}/{name}'], raw)
+
+    def test_codex_update_and_rollback_preserve_existing_instructions(self):
+        project = self.root / 'codex'
+        project.mkdir()
+        path = project / 'AGENTS.md'
+        path.write_bytes(b'# User instructions\r\n')
+        archive = self.out / PROJECTS['codex'][1]
+        install(project, archive, self.root / 'backup-one', 'codex')
+        before = path.read_bytes()
+        install(project, archive, self.root / 'backup-two', 'codex')
+        self.assertEqual(attest(project, 'codex')['skill_count'], 38)
+        self.assertEqual(path.read_bytes(), before)
+        self.assertEqual(before.count(b'simcenter-fea-expert:start'), 1)
+        rollback(project, self.root / 'backup-two', 'codex')
+        rollback(project, self.root / 'backup-one', 'codex')
+        self.assertEqual(path.read_bytes(), b'# User instructions\r\n')
+        self.assertFalse((project / '.agents/fea-expert-package.json').exists())
+
+    def test_copilot_preserves_workspace_config_and_rejects_tamper(self):
+        project = self.root / 'copilot'
+        (project / '.vscode').mkdir(parents=True)
+        (project / '.github/workflows').mkdir(parents=True)
+        mcp = project / '.vscode/mcp.json'
+        mcp.write_bytes(b'{ /* existing */ "servers": {} }')
+        timestamp = mcp.stat().st_mtime_ns
+        unrelated = project / '.github/workflows/user.yml'
+        unrelated.write_text('name: existing', encoding='utf-8')
+        backup = self.root / 'copilot-backup'
+        install(project, self.out / PROJECTS['copilot'][1], backup, 'copilot')
+        self.assertEqual(mcp.stat().st_mtime_ns, timestamp)
+        self.assertEqual(unrelated.read_text(), 'name: existing')
+        (project / '.github/fea-workflow.md').write_text('changed', encoding='utf-8')
+        with self.assertRaisesRegex(ValueError, 'installed resource changed'):
+            attest(project, 'copilot')
+        with self.assertRaisesRegex(ValueError, 'rollback bytes changed'):
+            rollback(project, backup, 'copilot')
+
+    def test_local_mcp_configs_have_two_explicit_read_profiles(self):
+        project = self.root / 'render-codex'
+        project.mkdir()
+        install(project, self.out / PROJECTS['codex'][1], self.root / 'render-backup', 'codex')
+        product = self.root / 'Siemens Product'
+        executable = product / 'UGII/dcmcpserver/DcMcpServer.exe'
+        executable.parent.mkdir(parents=True)
+        executable.touch()
+        generated = profiles(project, product)
+        decoded = tomllib.loads(render(generated, 'codex'))['mcp_servers']
+        self.assertEqual(decoded, generated)
+        for name, server in decoded.items():
+            self.assertIn(name, server['args'])
+            self.assertIn('dc_connection_status', server['enabled_tools'])
+        self.assertNotIn('dcopen-execute-tool', decoded['designcenter']['enabled_tools'])
+        self.assertNotIn('surface-mesh-generation-tool', decoded['simcenter3d']['enabled_tools'])
+
+    def test_unsafe_paths_are_rejected(self):
+        for paths in (['../escape'], ['CON.md'], ['x/a', 'x/A'], ['a', 'A/b'], ['a/b:stream']):
+            with self.subTest(paths=paths), self.assertRaises(ValueError):
+                check_paths(paths)
+
+    def test_config_audit_reads_jsonc_and_reports_duplicate_profiles(self):
+        cfg = self.root / 'native-mcp.json'
+        cfg.write_text('{"mcpServers":{"foo":{"args":["--profile","designcenter"]}}}', encoding='utf-8')
+        editor = self.root / 'mcp.json'
+        editor.write_text('{"servers": { /* existing */ "designcenter": {}, }, }', encoding='utf-8')
+        before = editor.read_bytes()
+        result = audit([cfg, editor])
+        self.assertEqual(result['multiple_definitions'], ['designcenter'])
+        self.assertEqual(editor.read_bytes(), before)
+
+    def test_vendor_pointer_replaces_data_only_and_binds_exact_bundle(self):
+        name = 'skills/demo/SKILL.md'
+        original = b'---\nname: demo\ndescription: Tool description\n---\nBody'
+        pointer = b'---\nname: demo\ndescription: Tool description\nbundle: candidate\n---\n<!-- Content loaded from bundle on demand -->\n'
+        self.assertTrue(on_demand_pointer(name, pointer, original, 'candidate'))
+        self.assertFalse(on_demand_pointer(name, pointer, original, 'different-candidate'))
+        self.assertFalse(on_demand_pointer('skills/demo/scripts/controller.py', b'', b'code', 'candidate'))
+
+
+class CatalogAndSandbox(unittest.TestCase):
+    def test_copilot_negotiation_uses_initialize_only_when_configured(self):
+        discover = {'jsonrpc': '2.0', 'id': 0, 'method': 'server/discover'}
+        self.assertIsNone(launcher.discovery_compatibility_response(discover, False))
+        response = launcher.discovery_compatibility_response(discover, True)
+        self.assertEqual(response['id'], 0)
+        self.assertEqual(response['error']['code'], -32601)
+        vscode = {**discover, 'params': {'_meta': {
+            'io.modelcontextprotocol/clientInfo': {'name': 'vscode-agent-host'}}}}
+        self.assertEqual(launcher.discovery_compatibility_response(vscode, False), response)
+        for method in ('initialize', 'notifications/initialized', 'tools/list', 'tools/call'):
+            self.assertIsNone(launcher.discovery_compatibility_response(
+                {'jsonrpc': '2.0', 'id': 1, 'method': method}, True))
+    def test_batchpost_requires_its_announced_pipe(self):
+        worker = SimpleNamespace(stdout=io.BytesIO(
+            b'sc3d_batchpost_example\nMCP ready to connect on pipe:\nsc3d_batchpost_actual\n'))
+        with patch.object(batchpost_launcher, 'message'):
+            batchpost_launcher.await_pipe(worker, 'sc3d_batchpost_actual', 1, monotonic())
+            worker.stdout.seek(0)
+            with self.assertRaisesRegex(RuntimeError, 'before announcing pipe readiness'):
+                batchpost_launcher.await_pipe(worker, 'sc3d_batchpost_example', 1, monotonic())
+    def test_status_only_refresh_preserves_schema_and_original_request_id(self):
+        gate = launcher.InitialCatalog(5)
+        gate.client({'id': 1, 'method': 'tools/list'}, 10)
+        status = {'id': 1, 'result': {'tools': [{'name': 'dc_connection_status'}]}}
+        self.assertEqual(gate.server(status, 10), [])
+        _, internal = gate.tick(10)
+        self.assertEqual(gate.tick(10), ([], None))
+        domain = {'name': 'part-info-tool', 'inputSchema': {'type': 'object'}}
+        response = {'id': internal['id'], 'result': {'tools': [domain]}}
+        self.assertEqual(gate.server(response, 11), [{'id': 1, 'result': {'tools': [domain]}}])
+
+    def test_startup_timeout_returns_original_connected_status_capability(self):
+        gate = launcher.InitialCatalog(2)
+        gate.client({'id': 1, 'method': 'tools/list'}, 10)
+        status = {'id': 1, 'result': {'tools': [{'name': 'dc_connection_status'}]}}
+        self.assertEqual(gate.server(status, 10), [])
+        self.assertEqual(gate.tick(13), ([status], None))
+
+    def test_sandbox_error_and_empty_stdout_remain_distinct(self):
+        for text, reason in (('Exit code: 1', 'EXECUTION_FAILED'),
+                             ('No output captured', 'EXECUTION_UNVERIFIED')):
+            with self.subTest(text=text):
+                envelope = {'result': {'content': [{'type': 'text', 'text': text}]}}
+                guarded = launcher.guard_sandbox(envelope)
+                self.assertTrue(guarded['result']['isError'])
+                self.assertEqual(guarded['result']['content'][0]['text'], text)
+                self.assertIn(reason, guarded['result']['content'][1]['text'])
+                self.assertNotIn('isError', envelope['result'])
+
+
+class ControllerTests(unittest.TestCase):
+    def test_unknown_blocks_dependency_across_restart_until_fresh_readback(self):
+        with tempfile.TemporaryDirectory() as folder:
+            target = {'session': 'native', 'release': '2612', 'owner': 'fem',
+                      'model': 'work-copy.fem', 'revision': 'r1'}
+            operation = {'operation_id': 'mesh1', 'profile': 'simcenter3d',
+                         'tool': 'surface-mesh-generation-tool', 'effect': 'CAE_MUTATION',
+                         'target': target, 'arguments': {}, 'expected': {'count': 1},
+                         'baseline': {'count': 0}}
+            binding = {'profile': operation['profile'], 'target': target, 'evidence_ref': 'status.json',
+                       'schema': {'name': operation['tool'], 'inputSchema': {'type': 'object'}}}
+            authorization = {'operation_digest': controller.digest(operation), 'evidence_ref': 'intent.json'}
+            run = controller.Controller(folder)
+            prepared = run.prepare(operation, binding, authorization)
+            run.reserve('mesh1', binding, prepared['request_digest'])
+            self.assertEqual(run.record('mesh1', transport_error='timeout')['status'], 'UNKNOWN')
+            reopened = controller.Controller(folder)
+            next_operation = {**operation, 'operation_id': 'mesh2', 'depends_on': ['mesh1']}
+            next_auth = {**authorization, 'operation_digest': controller.digest(next_operation)}
+            with self.assertRaisesRegex(ValueError, 'unreconciled'):
+                reopened.prepare(next_operation, binding, next_auth)
+            observation = {'target': target, 'observed_at': datetime.now(timezone.utc).isoformat(),
+                           'evidence_ref': 'independent-native-probe.json', 'witnesses': {'count': 1}}
+            self.assertEqual(reopened.observe('mesh1', observation)['status'], 'ACCEPTED')
+            self.assertEqual(reopened.prepare(next_operation, binding, next_auth)['status'], 'PREPARED')
+            stored = json.loads((Path(folder) / 'controller-state.json').read_bytes())
+            self.assertEqual(stored['operations']['mesh1']['transport_error'], 'timeout')
+
+    def test_journal_checks_no_save_or_unqualified_import(self):
+        self.assertEqual(controller.normalize_journal('\ufeffdef main(args):\n    return {}\n'),
+                         'def main(args):\n    return {}\n')
+        for code in ('import os\ndef main(args): pass', 'def main(args): wp.Save()',
+                     'def main(path): return path'):
+            with self.subTest(code=code), self.assertRaises(ValueError):
+                controller.normalize_journal(code)

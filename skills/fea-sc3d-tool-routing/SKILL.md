@@ -11,7 +11,8 @@ Rules:
 1. **Never invent tool names.** List the current tool catalog at the start of each session and use only what is advertised. The names in [tool matrix](references/tool-matrix.md) were observed in installed host bundles and may change by release.
 2. Host references: "Simcenter 3D" (model inspection), "Designcenter Open" (NXOpen discovery/journals/model reads), "Product Support" (documentation `search`), "Simcenter Nastran MCP" (read-only deck/F06), "Batch Post" (result post-processing).
 3. Live mutation: mesh generation (`solid-mesh-generation-tool`, `surface-mesh-generation-tool`) and visibility tools are advertised live mutations; they are called only by the main agent after an explicit user request, on an owned copy, with `mesh-info-tool` readback. BC/load/solution/solve/save mutation is not advertised -> BLOCKED_BY_OFFICIAL_MCP_CAPABILITY. Live journal execution (`dcopen-execute-tool`) is main-agent only after explicit authorization. Read-only subagents have `available_tools` allowlists on their refs. Names marked dcopen-* must be discovered in the current catalog.
-4. Report gaps explicitly; never emulate a missing capability by guesswork.
+4. Report gaps explicitly. Live session access uses only official MCP. On `DCMCP-E002`, ask the operator to enable the named profile and keep affected reads `NOT_RUN`. Continue independent file-only work and BatchPost if their task inputs are available.
+5. Choose results from an explicit path or an exact saved result path returned by authorized MCP. Keep lookups inside the workspace and user-authorized roots. Request the path when the target is unresolved.
 
 ## Stage to route
 | Stage | Primary route | Subagent | Fallback / gap |

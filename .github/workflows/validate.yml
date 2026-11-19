@@ -23,14 +23,13 @@ jobs:
         run: python -m unittest discover -s tests -v
       - name: Validate source ownership and links
         run: python scripts/validate_distribution.py
-      - name: Package AgentAI bundle archive
-        run: python scripts/package_bundle.py
-      - name: Build portable source archive
-        run: python scripts/build_distribution.py
-      - name: Upload bundle and source archive
+      - name: Build all channels from one FEA candidate
+        run: python scripts/package_release.py
+      - name: Upload FEA candidate packages and manifests
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: simcenter-fea-expert-${{ matrix.os }}
-          path: dist/**
+          path: dist/simcenter-fea-expert/*-candidate-*/**
+          include-hidden-files: true
           if-no-files-found: error
           retention-days: 14

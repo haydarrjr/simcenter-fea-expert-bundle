@@ -1,3 +1,11 @@
+# 0.1.3 candidate
+
+- Build Agent Workspace, Codex and VS Code Copilot packages with one source digest.
+- Install or roll back project resources with package verification and ownership checks.
+- Render local MCP config for Designcenter Open, Model Inspection and optional BatchPost. The launcher refreshes the initial catalog and marks sandbox execution failures or unobserved output.
+- Qualify the two read profiles through a fresh Codex app-server thread and capture independent model and backend identity evidence.
+- Use the packaged FEA controller for prepared execution, raw response capture and native readback.
+
 # 0.1.2 — Integration skill hardening and canonical public repository
 
 - Make https://github.com/haydarrjr/simcenter-fea-expert-bundle the source of truth, preserving its initial main history.

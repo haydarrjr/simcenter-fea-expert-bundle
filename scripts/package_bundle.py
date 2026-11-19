@@ -9,7 +9,16 @@ Never copies an installed/extracted bundle. Usage:
   python scripts/package_bundle.py [--out dist/simcenter-fea-expert/<ver>]
 """
 from pathlib import Path
-import argparse, hashlib, json, zipfile
+import argparse, json, tomllib
+
+try:
+    from .package_identity import (BUNDLE_MANIFEST, PACKAGE_ID, add_manifest,
+                                   content_digest, read_zip, sha, verify_files, write_zip)
+    from .validate_distribution import distribution_files
+except ImportError:
+    from package_identity import (BUNDLE_MANIFEST, PACKAGE_ID, add_manifest,
+                                  content_digest, read_zip, sha, verify_files, write_zip)
+    from validate_distribution import distribution_files
 from ruamel.yaml import YAML
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -22,43 +31,6 @@ EXPECTED_SUBRECIPES = {
     'fea-verifier',
     'product-support-agent',
 }
-TOML = '''schema_version = "1"
-
-[bundle]
-id = "simcenter-fea-expert"
-name = "Simcenter 3D FEA Expert"
-version = "{v}"
-description = "Route Simcenter 3D FEA requests through expert FEA skills and specialist subagents, reusing the host-managed Simcenter 3D, Designcenter Open and Product Support MCPs."
-os = ["windows"]
-homepage = "https://github.com/haydarrjr/simcenter-fea-expert-bundle"
-tags = ["simcenter", "fea", "cae", "nastran"]
-
-[dependencies]
-products = ["Simcenter 3D 2612"]
-
-[[contacts]]
-role = "maintainer"
-name = "FEA Expert Bundle Maintainers"
-url = "https://github.com/haydarrjr/simcenter-fea-expert-bundle"
-
-[[contributions]]
-type = "recipes"
-source = "recipes/"
-
-[[contributions]]
-type = "skills"
-source = "skills/"
-
-[[contributions]]
-type = "readme"
-source = "README.md"
-
-[compat]
-product = "Simcenter 3D 2612"
-shell = "*"
-'''
-
-
 def load_recipe(raw):
     if isinstance(raw, bytes):
         raw = raw.decode('utf-8')
@@ -99,24 +71,36 @@ def check_layout(names, main):
     return errs
 
 
-def package(out, root=ROOT):
+def source_digest(root):
+    return content_digest({p.relative_to(root).as_posix(): p.read_bytes()
+                           for p in distribution_files(root)})
+
+
+def package(out, root=ROOT, *, candidate_digest=None):
     main, files = collect(root)
-    v = str(main['version'])
-    errs = check_layout(set(files), main)
-    if errs:
-        raise SystemExit('layout invalid: ' + '; '.join(errs))
-    out = Path(out); out.mkdir(parents=True, exist_ok=True)
-    zp = out / 'agents-artefact-windows.zip'
-    with zipfile.ZipFile(zp, 'w', zipfile.ZIP_DEFLATED) as z:
-        for n in sorted(files):
-            info = zipfile.ZipInfo(n, date_time=(2026, 1, 1, 0, 0, 0)); info.compress_type = zipfile.ZIP_DEFLATED
-            z.writestr(info, files[n])
-    (out / '.sim-ai-agents.toml').write_text(TOML.format(v=v), encoding='utf-8')
-    with zipfile.ZipFile(zp) as z:
-        errs = check_layout(set(z.namelist()), load_recipe(z.read(MAIN)))
-    if errs:
-        raise SystemExit('built archive invalid: ' + '; '.join(errs))
-    return {'version': v, 'archive': str(zp), 'sha256': hashlib.sha256(zp.read_bytes()).hexdigest(), 'files': len(files)}
+    version = str(main['version'])
+    metadata = (root / '.sim-ai-agents.toml').read_bytes()
+    spec = tomllib.loads(metadata.decode('utf-8'))['bundle']
+    if spec['id'] != PACKAGE_ID or spec['version'] != version:
+        raise ValueError('bundle metadata and recipe identity differ')
+    for name, raw in files.items():
+        if name.startswith('recipes/') and (str(load_recipe(raw)['version']) != version
+                or load_recipe(raw)['bundle'] != f'{PACKAGE_ID}-{version}'):
+            raise ValueError(f'recipe identity mismatch: {name}')
+    if errors := check_layout(list(files), main):
+        raise ValueError('layout invalid: ' + '; '.join(errors))
+    files = add_manifest(files, BUNDLE_MANIFEST, version=version, channel='agentsai',
+                         candidate_digest=candidate_digest or source_digest(root))
+    out = Path(out)
+    archive = out / 'agents-artefact-windows.zip'
+    if archive.is_symlink() or out.is_symlink():
+        raise ValueError('unsafe output path')
+    write_zip(archive, files)
+    manifest = verify_files(read_zip(archive), BUNDLE_MANIFEST, 'agentsai')
+    (out / '.sim-ai-agents.toml').write_bytes(metadata)
+    return {'version': version, 'archive': str(archive), 'sha256': sha(archive.read_bytes()),
+            'files': len(files), 'content_digest': manifest['content_digest'],
+            'candidate_source_digest': manifest['candidate_source_digest']}
 
 
 if __name__ == '__main__':
