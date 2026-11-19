@@ -65,7 +65,8 @@ class ProjectChannels(unittest.TestCase):
             if name.startswith('skills/') and name.endswith('.md'):
                 self.assertNotRegex(
                     raw.decode('utf-8').lower(),
-                    r'\b(?:fea_capabilities|fea_get_example|fea_inspect_artifact|fea_agent|pynastran)\b',
+                    r'\b(?:fea_capabilities|fea_get_example|fea_inspect_artifact|fea_agent|pynastran|'
+                    r'calculix|opensees|scikit-fem|gmsh|pylife)\b',
                     name,
                 )
         for _, filename in PROJECTS.values():
