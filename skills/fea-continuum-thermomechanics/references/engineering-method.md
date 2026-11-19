@@ -32,10 +32,10 @@ rejects negative Kelvin in both steady and transient solutions.
 
 Use a two-material reference with distinct expansion coefficients to test thermal load transfer and restrained stress. Declare initial and prescribed temperatures and force balance.
 
-Use analytical affine fields, independently assembled scikit-fem operators,
-published archived solid displacement/reaction data, time decay and refinement
-as distinct verification paths. Agreement with archived results checks the
-shared mathematical model and mapping; it is not an experiment on the part.
+Use analytical affine fields, independently assembled reference operators when
+available, source-bound archived Nastran displacement and reaction data, time
+decay and refinement as distinct verification paths. Agreement with archived
+results checks the mathematical model and mapping under the shared assumptions.
 
 ## Discriminating checks
 

@@ -111,10 +111,10 @@ under constant one-sided white force PSD `S0`, the all-frequency variance is
 \]
 
 A finite band omits positive tails; compare the actual integration limits.
-For independent verification of the gantry, OpenSees supplies separately
-assembled M/K, direct complex solves use a reconstructed modal damping matrix,
-and SciPy QUADPACK integrates the sensor variance. This uses neither the
-production element matrices nor its modal transfer/quadrature implementation.
+For independent verification, use a reference with separately assembled M/K
+and a declared damping matrix. Check the sensor variance with an independent
+direct complex response and quadrature when appropriate matrices and
+reference calculations are already available.
 
 ## Recover stress and interpret RMS
 
@@ -136,17 +136,17 @@ Peak estimation needs duration, bandwidth/spectral moments and a stated
 stochastic model. Fatigue needs appropriate stress process recovery, cycle
 statistics/validated time-history reconstruction, material S–N data, mean
 stress treatment and cumulative-damage assumptions. Non-Gaussian excitation,
-impact, sliding or changing contact requires additional modeling. The current
-implementation returns normal-stress RMS and covariance, and expressly does
-not return a full torsional/shear equivalent-stress peak or life.
+impact, sliding or changing contact requires additional modeling. Report
+normal-stress RMS and covariance only for the recovered components. Full
+torsional/shear equivalent-stress peaks and life need additional evidence.
 
 ## Worked case and falsifiers
 
 The flexible gantry's eccentric body excites sway, torsion and arm bending.
 Two deck load patterns apply X forces at different nodes. Over 5–120 Hz their
 constant cross spectrum is `[[4,1.2],[1.2,9]] /Hz`, with ζ=0.015. The sensor-X
-RMS is about **0.302 mm**. This agreement is with a separately executed
-OpenSees elastic reference, not a licensed Simcenter random run or test data.
+RMS is about **0.302 mm** in the worked independent elastic reference. The
+example provides no Simcenter solver or physical test evidence for a new model.
 
 Use these competing hypotheses and falsifiers:
 

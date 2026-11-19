@@ -30,7 +30,7 @@ native observations require the current Siemens MCP profile:
 2. **Section/material/support assignment.** Construct appropriate native beam
    properties and orientation; inspect effective offsets, density, E/G/nu and
    root boundary behavior. Resolve the exact PBEAM/CBEAM shear convention from
-   the installed release. The source package emits no new BDF or journal.
+   the installed release. Export only through a qualified native operation.
 3. **Native model changes.** Use the shared Runtime for every model/file effect,
    preserving originals and native ownership. Reconcile semantic selections and
    protected regions after modification using `reconcile_selection_recipe`

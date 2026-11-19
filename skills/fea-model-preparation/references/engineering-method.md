@@ -17,11 +17,10 @@ selection to its owning part, occurrence transform, revision, semantic purpose
 and geometric invariants. Re-evaluate membership after topology change or remesh;
 never retain a stale finite-element ID list merely because its integers exist.
 
-The source package can audit model graphs, read source artifacts, calculate
-section mechanics and aggregate hierarchical mass/inertia. Native geometry
-editing belongs to the Runtime. Request an owned work copy and verify the
-unchanged original independently of model undo. File export and saving have
-separate effects and recovery; deleting a builder cannot undo a saved file.
+Audit model graphs and compare section or hierarchical mass properties where
+the needed evidence is available. Use an owned work copy for an approved native
+geometry edit and independently verify the original. Admit file export and
+persistent save as separate effects with separate readback.
 
 ## Choose a reduction from the mechanics
 
@@ -93,17 +92,15 @@ Its 2 MPa example acts on 0.01 m² and produces -20 kN in the defined direction;
 the opposite surface has the same area and centroid but the wrong normals and
 is rejected. This is more discriminating than checking selection cardinality.
 
-Use existing graph/region audits for CAD–idealized part–FEM–AFEM–SIM dependencies,
-and the current Runtime client for qualified observations. For persistent CAE
-Selection Recipes (`fea.selection-recipe-intent.v1` / `fea.selection-reconciliation.v1`),
+Use existing graph/region audits for CAD–idealized part–FEM–AFEM–SIM dependencies
+and the current official Siemens reads. For persistent CAE Selection Recipes,
 prefer owner-qualified CAD group or attribute strategies qualified by FEM/AFEM
 component and occurrence path, use documented Boolean/stacked strategies only
 when operand recipes exist and remain homogeneous, and verify area, normal,
 centroid, and load resultant/moment after topological splits or remeshing.
-Use `classify_associativity`, `plan_associative_retrofit_or_rebind`,
-`evaluate_mesh_and_connection_replay`, and `plan_sim_rebind` in
-the [parametric SOL101 workflow](../../simcenter-parametric-sol101/SKILL.md) to evaluate associativity classes, inspect-before-create
-duplicate guards, freeze states (`FEM_GEOMETRY_FROZEN`, `CAE_RECIPE_FROZEN`,
+Use the [parametric SOL101 workflow](../../simcenter-parametric-sol101/SKILL.md)
+to evaluate associativity, inspect targets before creating duplicate objects,
+and record freeze states (`FEM_GEOMETRY_FROZEN`, `CAE_RECIPE_FROZEN`,
 `AFEM_ASSEMBLY_FROZEN`), mesh update log completeness, and SIM BC/load/contact
 propagation. Missing owner accessors, SDK signatures or installed handlers remain
 named gaps (`BLOCKED_BY_OFFICIAL_MCP_CAPABILITY`).

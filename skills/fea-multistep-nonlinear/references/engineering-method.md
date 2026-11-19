@@ -7,19 +7,10 @@
 - [Worked investigation](#worked-apparently-converged-case)
 - [Recovery](#recovery-and-outcome)
 
-Use the following diagnostic method.
-for its exact input contract, source parsers and evidence ledger. Use
-the exact-release Siemens Help API references
-to prepare or admit native operations through the Runtime owner. Diagnosis
-must remain grounded in the actual submitted model/deck and accepted result
-state, not merely a solution name in the UI.
-
-For a new analysis that can run independently of Siemens, use the
-[external solver workflow](open-solver-workflows.md). It builds and executes
-actual 3D plastic/contact/thermal histories and retains raw FRD/DAT/STA
-evidence. Apply the same distinction between solver convergence, physical
-consistency and engineering acceptance. An absent native host is not a reason
-to defer a feasible open-source analysis.
+Use the exact-release Siemens Help API and the current global catalog to
+qualify native operations. Ground diagnosis in the actual submitted deck, job
+and achieved result state. Use the [multistep load-path checks](open-solver-workflows.md)
+to evaluate plastic, contact and thermal histories recovered from the result.
 
 ## Reconstruct what the solver actually attempted
 
@@ -29,11 +20,9 @@ global and local Case Control scopes. State inheritance and load selection
 inheritance are different: a later static subcase can retain a deformed state
 while removing an earlier service load that is no longer selected.
 
-The source parser handles bounded free-field, small-field and large-field
-continuations, with line provenance and finite Fortran/compact numeric notation.
-It does not follow INCLUDE paths or validate every opaque model card. Surface
-an unresolved include or unsupported executive option rather than interpreting
-missing information as a default favorable to the result.
+Use an advertised Nastran deck reader or scoped original text. Preserve line
+provenance and the applicable continuation and numeric conventions. Report
+unresolved INCLUDEs or unsupported executive options.
 
 Choose controls by actual solver family:
 

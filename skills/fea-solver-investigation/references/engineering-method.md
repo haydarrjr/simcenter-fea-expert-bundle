@@ -96,18 +96,12 @@ stress, notch stress or weld/bolt capacity.
 
 ## Job/result interpretation and independent checks
 
-The F06 reader consumes real formatted displacement, applied-load, SPC-force,
-eigenvalue and eigenvector tables. It retains source line numbers, explicit
-subcase and static/time/frequency/mode state. Missing subcase context remains
-missing. Header order, a single end-of-job marker and printed numbers cannot
-prove complete solver success or imply units. Fatal evidence from a separately
-bound console log overrides an apparently complete result table.
-
-The OpenSees reader consumes actual Node recorder whitespace rows. The job
-sidecar explicitly supplies node order, quantity, units and time. It checks
-every row, rejects duplicate/reversed states and selects the **exact requested
-time**, never the last available row. This is not an F06 dialect or a claim
-that a licensed Siemens solver executed the source deck.
+Use scoped original F06 tables and qualified readers for displacement,
+applied-load, SPC-force, eigenvalue and eigenvector evidence. Retain the
+source line numbers, subcase and static/time/frequency/mode state. Check
+the exact requested state, recording any missing or duplicate rows.
+Check the separately bound job log for fatal evidence even when printed
+tables and an end-of-job marker are available.
 
 Apply independent checks in physically meaningful groups:
 
@@ -163,12 +157,11 @@ The static benchmark applies the **47 kg payload weight only**, 461.07 N;
 tube self-weight is deliberately absent. It therefore cannot be described as
 the complete gravity loading of the 72.125 kg assembly.
 
-An independently constructed OpenSees model uses circular-tube areas/inertias,
-consistent beam mass and separate geometric transforms. Actual solver recorders
-and eigenvectors are compared against the deck-based implementation. Its first
-mode is about 7.915 Hz. Sensor displacement under payload weight is about
-0.804 mm in Y and −2.344 mm in Z. The typed output provides all reactions,
-element-end actions, recovered normal stresses and the complete modal basis.
+The worked reference uses circular-tube areas/inertias, consistent beam mass
+and separate geometric transforms. Its first mode is about 7.915 Hz. Sensor
+displacement under payload weight is about 0.804 mm in Y and −2.344 mm in Z.
+For the actual case, compare only available reactions, element-end actions,
+recovered stresses and correctly mapped modal vectors.
 
 `wrong_support_case.json` adds +350 N and −350 N along the line connecting
 the feet. Net force and moment remain unchanged. Local equilibrium and support

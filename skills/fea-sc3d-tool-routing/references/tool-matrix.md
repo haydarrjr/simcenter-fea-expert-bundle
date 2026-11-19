@@ -7,7 +7,7 @@ Sources of the names: installed bundle skills/recipes/mcps.json of simcenter-3d 
 |---|---|
 | Simcenter 3D (model inspection) | `dc_connection_status`, `part-info-tool`, `body-info-tool`, `material-info-tool`, `mesh-info-tool`, `mesh-quality-tool`, `boundary-condition-tool`, `surface-mesh-generation-tool`, `solid-mesh-generation-tool`, `mesh-selection-visibility-tool`, `body-selection-visibility-tool` |
 | Designcenter Open | `dc_connection_status`, `dcopen-pattern-lookup-tool`, `dcopen-keyword-search-tool`, `dcopen-semantic-search-tool`, `dcopen-list-namespaces`, `dcopen-list-classes`, `dcopen-class-info`, `dcopen-member-info`, `dcopen-run-snippet-tool`, `dcopen-run-journal-tool`, `dcopen-execute-tool`, `explore-model-structure`, `read-model-data`; `documentation-search-tool` only if advertised in the current catalog (unverified) |
-| Product Support | `search` (product=STS_SIMCENTER3D for Nastran; HyperMesh for OptiStruct) |
+| Siemens Help Server / Product Support | `search` (STS_SIMCENTER3D for Nastran and Pre/Post, STS_DESIGNCENTER for NXOpen) |
 | Simcenter Nastran MCP | `parse_f06_file`, `parse_contact_log`, `diagnose_sol401_failure_context`, `classify_simulation_intent`, `compare_decks`, `search_file`, `read_file_excerpt`, `resolve_elements`, `list_deck_cards`, `read_deck_cards`, `discover_job`, `list_allowed_roots`, `request_file_access` |
 | Batch Post | see host skill `batchpost-actions` (exports, contours, CSV, templates) |
 
