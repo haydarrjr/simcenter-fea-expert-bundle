@@ -22,6 +22,7 @@ ADDITIONAL_TOOLS = {
                     'mesh-selection-visibility-tool', 'body-selection-visibility-tool'],
     'batchpost': ['open', 'list', 'contour', 'graphi', 'set', 'close'],
 }
+BATCHPOST_LICENSE_ENV = ['SALT_LICENSE_SERVER', 'SALT_LICENSE_TYPE', 'SPLM_LICENSE_SERVER']
 
 
 def profiles(project, product, *, host='codex', engineering=False, batchpost=False, logs=None):
@@ -53,6 +54,8 @@ def profiles(project, product, *, host='codex', engineering=False, batchpost=Fal
         server = {'command': sys.executable, 'args': argv}
         if host == 'codex':
             server.update(enabled_tools=tools, startup_timeout_sec=95, tool_timeout_sec=240)
+            if name == 'batchpost':
+                server['env_vars'] = BATCHPOST_LICENSE_ENV.copy()
         else:
             server.update(type='stdio', tools=tools)
         result[name] = server

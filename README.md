@@ -76,6 +76,8 @@ The Siemens 2612 Copilot launcher uses `--legacy-discovery` for Designcenter Ope
 
 On installations with global Copilot MCP definitions, configure each profile once in the native harness. The optional Copilot BatchPost launcher starts `sc3d_batchpost.exe --mcp` on a private pipe. It attaches `sc3d_batchpost_mcpconnector.exe` after the worker announces readiness and reports this interval on stderr. A fresh session can incur worker initialization time. List the available tools for a startup check. Use `open` with the intended absolute results path before requesting result inventory via `list`.
 
+The Codex BatchPost profile forwards the existing Siemens license environment variables by name through `env_vars`. Ensure the Codex process inherits the Siemens licensing environment. If the worker reports `ERROR: Initialization failed` before announcing its pipe, inspect the worker diagnostic and license environment before changing protocol settings. Keep license values out of workspace files and release artifacts.
+
 Use `python -B scripts/render_mcp_config.py --audit <config> [<config> ...]` to inventory selected config scopes and detect repeated Siemens profiles. This audit does not start a server.
 
 With Designcenter and Model Inspection enabled in the same open Simcenter 3D Pre/Post session, qualify the installed Codex channel through a fresh Codex app-server thread. The command records skill discovery, the two tool catalogs, part and mesh reads, and the trusted backend PID from each official connector log. It opens only read-only tools. Use a new output directory outside the project and keep raw evidence local.
