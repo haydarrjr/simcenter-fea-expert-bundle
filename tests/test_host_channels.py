@@ -127,6 +127,15 @@ class ProjectChannels(unittest.TestCase):
             self.assertIn('dc_connection_status', server['enabled_tools'])
         self.assertNotIn('dcopen-execute-tool', decoded['designcenter']['enabled_tools'])
         self.assertNotIn('surface-mesh-generation-tool', decoded['simcenter3d']['enabled_tools'])
+        binaries = product / 'NXBIN'
+        binaries.mkdir()
+        (binaries / 'sc3d_batchpost_mcpconnector.exe').touch()
+        with self.assertRaisesRegex(ValueError, 'worker and connector'):
+            profiles(project, product, batchpost=True)
+        (binaries / 'sc3d_batchpost.exe').touch()
+        batchpost = profiles(project, product, batchpost=True)['batchpost']
+        self.assertEqual(Path(batchpost['args'][2]).name, 'batchpost_mcp.py')
+        self.assertIn('open', batchpost['enabled_tools'])
 
     def test_unsafe_paths_are_rejected(self):
         for paths in (['../escape'], ['CON.md'], ['x/a', 'x/A'], ['a', 'A/b'], ['a/b:stream']):
