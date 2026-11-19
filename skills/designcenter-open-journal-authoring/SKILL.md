@@ -116,6 +116,20 @@ read-only live journal, verify the expected SIM and iterate
 and returned solution identities. The 2612 Python collection was iterable
 and did not expose the .NET `ToArray()` method.
 
+### Sandbox test with empty MCP output
+
+Designcenter 2612.1700 can complete snippet and journal calls with exit zero
+and empty stdout even when the code ran. For a bounded test, generate a fresh
+128-bit nonce. Write `FEA_SANDBOX_PASS:<nonce>` through
+`NXOpen.Session.GetSession().LogFile.WriteLine(...)` only after the specific
+test checks pass. For snippets the provided `theSession` exposes the same log.
+Retain the system log from that exact `run_journal.exe` worker while the call
+is active because successful workers may remove it on exit. Use the observed
+worker PID and [verify_sandbox_syslog.py](scripts/verify_sandbox_syslog.py) with
+the raw request and reply, system log, `--pid` and `--nonce`. Report this as a
+system-log witness for the test. Keep MCP output status and any live model
+acceptance separate. [Siemens guide to standard output](https://docs.sw.siemens.com/en-US/doc/PL20251024323638784.nxopen_prog_guide/html/xid2302954?audience=external)
+
 ## Known gotchas
 
 - No `NewPart` on PartCollection — use
