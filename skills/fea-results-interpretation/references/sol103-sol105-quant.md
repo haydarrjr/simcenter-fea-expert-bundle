@@ -1,17 +1,16 @@
 # SOL103/SOL105 quantitative source procedure
 
-Use this path for explicit K/M/eigenpair data or a justified Euler-column
-comparison with a pinned static load state. Run `assess-sol103` or
-`assess-sol105` on closed v1 JSON; retain unknown physical facts as unresolved.
-Do not infer native results, capacity or authenticated provenance from source
-arithmetic. Keep SOL106 nonlinear history **NEXT WAVE / NOT IMPLEMENTED**.
+Use these independent checks on supplied, state-bound K/M/eigenpair evidence
+or a justified Euler-column comparison at a pinned static preload. Use the
+[free-free modal workflow](../../fea-dynamics/references/sol103-free-free.md)
+for near-zero modes or a semidefinite stiffness operator.
 
 ## SOL103 inputs and checks
 
-Require 1–12 Cartesian translational DOFs, real positive eigenvalues,
-exactly symmetric positive-definite K (N/m) and M (kg), and explicit
-mass-normalized vectors (`1/sqrt(kg)`). Reject asymmetric, singular, massless,
-rigid, damped, complex or mixed translation/rotation cases; never repair K/M.
+For the restrained Cartesian reference below, require real positive
+eigenvalues, symmetric positive-definite K (N/m) and M (kg), and explicit
+mass-normalized vectors (`1/sqrt(kg)`). Keep damped, complex or mixed DOF
+problems outside this reference. Preserve the as-reported matrices.
 Pin model/revision, owner, material, BC/load state, frame, solution step and
 ordered DOF identities across the supplied and reference data. Preserve
 separate reference artifact and per-mode provenance; declarations remain
@@ -29,9 +28,9 @@ Evaluate the following against the supplied policy:
 | Separate normalized correlation | Raw M-inner product divided by both mass norms' square roots |
 | Matching MAC | `(phi.T*M*ref)^2 / ((phi.T*M*phi)*(ref.T*M*ref))` |
 
-Apply `max_relative_residual` to **both** residuals: unrelated stiff DOFs
-must not conceal an incorrect soft mode. Apply `max_mass_orthogonality` to
-the **raw** M-inner product; do not substitute normalized correlation.
+Apply the declared relative tolerance to both residuals. Unrelated stiff DOFs
+can conceal an incorrect soft mode in a normwise check. Apply the orthogonality
+tolerance to the raw M-inner product and report normalized correlation separately.
 
 For each near-degenerate cluster, compare the mass-whitened subspaces.
 Require full supplied/reference ranks and the minimum squared principal
@@ -40,9 +39,8 @@ missing direction. Report individual MAC values without treating them as
 unique mode matches. A near-degenerate cluster still requires
 **INDETERMINATE** review. A partial supplied basis also remains
 **INDETERMINATE** because unseen repeated modes have not been excluded.
-Any computed failure takes precedence as **SOURCE_CHECKS_FAIL**. Malformed
-or unsupported contracts, including mismatched reference physical identities,
-reject with CLI exit 2; do not relabel those requests as executed comparisons.
+A numerical failure takes precedence over an indeterminate match. Mark
+unsupported inputs and mismatched physical identities before comparison.
 
 Use the optional uniform, linear-elastic, undamped, fixed-free
 Euler–Bernoulli beam reference only for modes 1 and 2:
@@ -87,6 +85,4 @@ do not generalize the band to another declared solver or release.
 
 Return computed metrics, declared tolerances, retained identities and
 assumptions, and all rejection/review findings. Keep native, solver, client
-and engineering statuses **NOT_RUN**, `authenticated=false`,
-`native_executable=false` and `engineering_accepted=false`. Read
-Use the [free-free modal workflow](../../fea-dynamics/references/sol103-free-free.md) for actual SOL 103 acceptance evidence.
+and engineering outcomes tied to independently recorded evidence.

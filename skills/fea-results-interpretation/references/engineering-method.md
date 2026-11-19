@@ -93,8 +93,9 @@ maximum stress extracted from that unaccepted state cannot repair its provenance
 
 ## Readback and debugging
 
-Run `assess-tensor`, `assess-sol103`, `assess-sol105` or the v2 case runner
-according to the actual data contract. Use the exact-release Siemens Help API and a qualified read path for element-nodal extraction. Preserve the actual result-position and state labels.
+Use the linked tensor and elevated-mode or buckling checks on the actual data.
+Use the exact-release Siemens Help API and a qualified read path for
+element-nodal extraction. Preserve the actual result position and state.
 
 On disagreement, test units, component/shear convention, frame, location,
 parent ownership and step identity before adjusting tolerances. Compare a

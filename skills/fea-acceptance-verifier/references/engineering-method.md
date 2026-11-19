@@ -15,11 +15,9 @@ load split; it cannot establish continuum hotspot stress or thread stripping
 capacity. State which quantity each independent reference actually predicts.
 
 Bind model/revision/owner, mesh, case, frame, units and step to the actual
-artifacts. In `run-case`, the manifest lists source paths and SHA-256 hashes;
-the runner reads bounded regular files, checks bytes, joins physical identities
-and executes the relevant engineering processors. Those hashes establish which
-bytes were assessed. They do not authenticate the author or prove a native run.
-Reject a model/mesh/case join conflict before comparing numerical values.
+artifacts. Record source paths and SHA-256 hashes, then reconcile physical
+identities before comparing numerical values. Use independent tool and job
+evidence for origin and native execution.
 
 For nonlinear evidence, the implemented `fea.nonlinear-diagnosis.v2` request
 binds the effective deck and log hashes plus exact Nastran2606 release SKU
@@ -60,9 +58,8 @@ constant force blindly re-applied at every service step.
 
 ## Worked false-convergence case
 
-Run the bundled eight-bolt flange case:
-
-Use the magnitudes below as a worked example of independent acceptance checks.
+Use the magnitudes below as a worked example of independent acceptance checks
+on an eight-bolt flange.
 
 The nonlinear example is explicitly manufactured. Its deck fragment selects
 SOL401, a preload subcase and dependent service loading. Its F06 fragment uses
