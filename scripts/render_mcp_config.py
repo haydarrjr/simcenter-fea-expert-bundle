@@ -43,8 +43,10 @@ def profiles(project, product, *, host='codex', engineering=False, batchpost=Fal
         else:
             argv = ['-B', '-u', str(launcher), '--profile', name,
                     '--ugii-base-dir', str(product), '--tool-timeout', '40']
+            if host == 'copilot' or name == 'simcenter3d':
+                argv.append('--legacy-discovery')
             if host == 'copilot':
-                argv += ['--legacy-discovery', '--catalog-wait', '12']
+                argv += ['--catalog-wait', '12']
         if logs is not None and name != 'batchpost':
             # This Siemens build writes a generated log filename inside this directory.
             argv += ['--log-file', str(Path(logs).resolve() / name)]

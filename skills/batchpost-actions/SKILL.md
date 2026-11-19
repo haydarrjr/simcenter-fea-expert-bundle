@@ -42,6 +42,8 @@ metadata:
 
 # BatchPost
 
+For a solver job, use the [Solution Sequence](../fea-solver-investigation/references/solution-sequence.md). Open its qualified SCD5 when it contains the required states and fields. Use the original OP2 through BatchPost when needed for additional fields. Send F06 status or diagnostic inspection to the official Nastran diagnostic tools or read only the scoped original text using the workflow.
+
 Use the existing BatchPost post-processor through its configured MCP connector. This folder is one portable skill, not an agent definition. Agent roles, orchestration, and MCP server configuration belong to the host/user; no Agent YAML or solver workflow is supplied here.
 
 ## Normal Workflow

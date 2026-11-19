@@ -4,6 +4,7 @@ import importlib.util
 import io
 import json
 from pathlib import Path
+import sys
 import tempfile
 import tomllib
 import unittest
@@ -29,6 +30,52 @@ def runtime(name):
 launcher = runtime('launch_mcp')
 batchpost_launcher = runtime('batchpost_mcp')
 controller = runtime('fea_controller')
+with patch.dict(sys.modules, {'fea_controller': controller}):
+    official_adapter = runtime('official_mcp_adapter')
+
+
+class OfficialAdapterTests(unittest.IsolatedAsyncioTestCase):
+    async def test_chain_builds_only_after_independent_acceptance(self):
+        class Session:
+            async def call_tool(self, tool, *, arguments):
+                events.append(('call', tool, arguments))
+                return {'content': [{'type': 'text', 'text': json.dumps({
+                    'toolExecutionStatus': 'ToolExecutionStatus::Completed'})}]}
+
+        target = dict(session='pid', release='2612', model='model.sim', owner='model.fem', revision='r')
+        catalog = [{'name': 'read-model-data', 'inputSchema': {
+            'type': 'object', 'properties': {'schemaForExtraction': {'type': 'string'}},
+            'required': ['schemaForExtraction']}}]
+        events = []
+        adapter = official_adapter.OfficialMcpAdapter(Session(), 'designcenter', catalog, target, 'identity')
+
+        def builder(name, expected, dependency):
+            async def build(previous):
+                events.append(('build', name))
+                self.assertEqual(previous['status'] if previous else None, 'ACCEPTED' if dependency else None)
+                return dict(operation_id=name, profile='designcenter', tool='read-model-data',
+                            target=target, effect='PURE_READ', expected={'count': expected},
+                            depends_on=[dependency] if dependency else [],
+                            arguments={'schemaForExtraction': '{}'}), 'fresh identity', None
+            return build
+
+        async def readback(request):
+            events.append(('readback', request['operation_id']))
+            return dict(target=target, observed_at=controller.now(), evidence_ref='new result',
+                        witnesses={'count': 1})
+
+        with tempfile.TemporaryDirectory() as folder:
+            receipts = await adapter.execute_chain(controller.Controller(folder), [
+                builder('first', 1, None), builder('second', 2, 'first'),
+                builder('third', 1, 'second')], readback)
+        self.assertEqual([r['status'] for r in receipts], ['ACCEPTED', 'UNKNOWN'])
+        self.assertEqual([e[0] for e in events], ['build', 'call', 'readback', 'build', 'call', 'readback'])
+
+    def test_vendor_error_inside_successful_transport(self):
+        self.assertTrue(controller.response_failed({'isError': False, 'content': [{
+            'type': 'text', 'text': json.dumps({
+                'toolExecutionStatus': 'ToolExecutionStatus::Completed',
+                'toolResponse': {'error': 'No active part'}})}]}))
 
 
 class ProjectChannels(unittest.TestCase):
@@ -128,6 +175,8 @@ class ProjectChannels(unittest.TestCase):
             self.assertIn('dc_connection_status', server['enabled_tools'])
         self.assertNotIn('dcopen-execute-tool', decoded['designcenter']['enabled_tools'])
         self.assertNotIn('surface-mesh-generation-tool', decoded['simcenter3d']['enabled_tools'])
+        self.assertIn('--legacy-discovery', decoded['simcenter3d']['args'])
+        self.assertNotIn('--legacy-discovery', decoded['designcenter']['args'])
         binaries = product / 'NXBIN'
         binaries.mkdir()
         (binaries / 'sc3d_batchpost_mcpconnector.exe').touch()

@@ -8,12 +8,13 @@ instructions: |
   ROUTING & SKILL LOADING
   - Start every FEA request by loading `fea-chief-engineer` with `load_skill`, then load only the minimal specialist skills it selects (`fea-model-preparation`, `fea-mesh-quality`, `fea-materials-properties`, `fea-connector-contact`, `fea-composite-laminates`, `fea-continuum-thermomechanics`, `fea-thermal`, `fea-dynamics`, `fea-random-response`, `fea-durability`, `fea-modal-correlation`, `fea-multistep-nonlinear`, `fea-solver-investigation`, `fea-artifact-forensics`, `fea-results-interpretation`, `fea-acceptance-verifier`, `fea-vvuq-review`, `fea-open-meshing`, `fea-native-runtime-gate`).
   - Always load and apply `fea-sc3d-tool-routing` to map each workflow stage to the correct subagent or live host tool.
-  - For free-free SOL 103, use `fea-dynamics` and its SOL 103 reference. Qualify persistence and solve separately before performing native operations.
+  - For solver submission, use the Solution Sequence reference in `fea-solver-investigation`. For free-free SOL 103, also load `fea-dynamics` and its SOL 103 reference.
   - For parametric SOL 101 cantilever benchmark workflows, load `simcenter-parametric-sol101`.
   - For Airframe Structural Verification and Simcenter 3D Aerostructures workflows (associative CAD -> Idealized Part -> Component FEM -> Structural Assembly FEM / GFEM -> Aeroelastic Assembly FEM -> SOL 144 static aeroelastic trim -> Nodal Force Reports / FreeBodyLoadExtraction -> Custom Python/XML/XMD Load Case Filtering via `ABB.Lcf1dMinMax` and `ABB.LcfConvexHull` -> associative Knowledge Fusion `ExtractProperty` Margin of Safety -> `.msz`/`.mslog` audit -> Word Report Writer), load `simcenter-airframe-structural-verification`, `simcenter-aerostructures-load-filtering`, and `simcenter-aerostructures-margin-of-safety`.
   - Load skills with the `load_skill` tool (never the recipe/source `load` tool). Confirm full instructions were returned; if not, report the blocker and do not substitute remembered guidance.
 
   CONNECTIONS & PREREQUISITES
+  - Use Designcenter Open directly for CAD/NXOpen in a plain Designcenter session. Use Simcenter 3D Model Inspection for FEM/SIM inventory, mesh and boundary conditions. A missing active part or a disconnected profile affects only the stages that require it.
   - `Simcenter 3D` (Model Inspection) and `Designcenter Open` tools are published only while a running Simcenter 3D / Designcenter session is attached. Before calling their tools, and on any tool failure or timeout, call the corresponding `dc_connection_status` tool first. Expect a brief startup gap (1-2 seconds after server launch): retry up to 3 times about 2 seconds apart, then relay the recovery guidance and stop that route. Never conclude from a failed call that tools do not exist, and never start servers or processes yourself.
   - Reuse host-managed Siemens MCP profiles. Batch Post attaches its connector to a separate Siemens worker's announced pipe. Allow the configured startup window before reporting unavailability. Consult the current catalog and never install alternate readers, dependencies or solvers to cover missing tools.
 
@@ -47,7 +48,7 @@ instructions: |
   - Live NXOpen Journal Execution (`dcopen-execute-tool`):
     - Delegate discovery and sandbox testing to `fea-journal-author` first. Execute live with `dcopen-execute-tool` only if the user explicitly requests live application on an owned working copy, then verify the effect via an independent readback tool (`mesh-info-tool`, `part-info-tool`, or `read-model-data`). Never replay an uncertain or timed-out mutation before reconciling session state.
   - Capability Boundary & Model Protection:
-    - Direct MCP tools for BC/load/solution/solve/save mutation are not advertised; report `BLOCKED_BY_OFFICIAL_MCP_CAPABILITY` rather than inventing tools or reviving deprecated bridges.
+    - Qualify live solution setup and deck export using official Designcenter Open MCP. Submit verified decks with the installed Siemens batch executable. Prefer compatible SCD5 in BatchPost and preserve the original result files. The user saves the SIM/FEM.
     - Never overwrite, save over, or delete original models, result files, or solver decks.
 
   EVIDENCE CLASSES (Issue #21) & REPORTING CONTRACT

@@ -39,6 +39,27 @@ def now():
     return datetime.now(timezone.utc).isoformat()
 
 
+def response_failed(raw):
+    if not isinstance(raw, dict) or raw.get('isError') or 'error' in raw:
+        return True
+    payloads = [raw, raw.get('structuredContent')]
+    for block in raw.get('content', []):
+        if isinstance(block, dict) and block.get('type') == 'text':
+            try:
+                payloads.append(json.loads(block.get('text', '')))
+            except ValueError:
+                continue
+    for payload in payloads:
+        if not isinstance(payload, dict):
+            continue
+        status = payload.get('toolExecutionStatus')
+        body = payload.get('toolResponse')
+        if (status and status != 'ToolExecutionStatus::Completed'
+                or isinstance(body, dict) and body.get('error')):
+            return True
+    return False
+
+
 def normalize_journal(source):
     source = source.removeprefix('\ufeff')
     tree = ast.parse(source)
@@ -175,7 +196,7 @@ class Controller:
                 raise ValueError('operation has no pending reservation')
             serialized = canonical(raw).decode('utf-8').lower()
             license_stop = 'licensed number of users already reached' in serialized or 'nx_design_token' in serialized
-            unknown = raw is None or transport_error or license_stop or not isinstance(raw, dict) or raw.get('isError')
+            unknown = transport_error or license_stop or response_failed(raw)
             record.update(status='UNKNOWN' if unknown else 'OBSERVATION_REQUIRED',
                           raw_response=raw, raw_digest=digest(raw), transport_error=transport_error,
                           response_at=now())

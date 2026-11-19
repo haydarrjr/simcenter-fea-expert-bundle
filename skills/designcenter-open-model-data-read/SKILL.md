@@ -74,7 +74,9 @@ API discovery or journal authoring.
 
 ## Workflow
 
-1. Call `explore-model-structure` with the relevant `application` domain(s).
+Use the global Designcenter Open profile directly. A CAD read in plain Designcenter uses this profile independently of Simcenter 3D Model Inspection and BatchPost.
+
+1. Check Designcenter Open `dc_connection_status` and verify the advertised schemas. Call `explore-model-structure` with the relevant `application` domain(s).
    If `hasMoreSchema` is true, if the current input schema supports PAGE, call again with `PAGE` set to `nextPageToCall`
    (keep `application` unchanged) and merge every schema page before proceeding.
 2. Build a MINIMAL `schemaForExtraction` using ONLY names from the discovery
@@ -86,8 +88,10 @@ API discovery or journal authoring.
 4. Call `read-model-data`. If `hasMoreData` is true, if the current input schema supports CURSOR, call again with `CURSOR`
    set to the returned value and the SAME `schemaForExtraction`; retrieve every
    page before answering.
-5. Re-run `explore-model-structure` if the active part, application domain, or
+5. Inspect the application response for an error even when transport reports success. `No active part` means there is no current model target. Report the connection and active part status independently. Re-run `explore-model-structure` if the active part, application domain, or
    schema context changes.
+
+Use [verify_read.py](scripts/verify_read.py) to check captured JSON envelopes against the returned schema. Save each as an object with `request` (tool `name` and `arguments`) and `reply` (original MCP response). Supply ordered captures via `--structure ... --data ...`, plus `--expected-part` when binding a task to a specific part. Include an observed `PartInfo` identity in that data request. For paged data, supply `--data-cursor-field` only when the live contract identifies the exact returned field. A continuation without an available next page produces a partial result. Preserve the captures and verification report.
 
 ## Extraction schema shape
 

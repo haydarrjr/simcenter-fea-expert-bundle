@@ -50,7 +50,8 @@ metadata:
 # Designcenter Open Connection Status
 
 Confirm that the Designcenter Open MCP server is attached to a live Designcenter
-session, and guide the user to recover the connection when it is not. The NXOpen
+session, including plain Designcenter for CAD/NXOpen work. Check this profile
+directly through the host's global MCP configuration. The NXOpen
 discovery, snippet, journal, execute, model-data, and documentation tools are
 published by the backend only while a session is active; when the session is not
 attached, `dc_connection_status` is the one tool that is always present.
@@ -77,8 +78,7 @@ attached, `dc_connection_status` is the one tool that is always present.
 
 1. Call `dc_connection_status` to read the current connection state. Never assume
    the server is down without this check.
-2. If it reports connected: retry the user's original tool call once, then
-   continue the normal workflow from that fresh result.
+2. If it reports connected, continue with the tool advertised by the same profile. A model-data response reporting no active part establishes that a data target is missing. A sandbox call with exit zero and no captured output needs independent execution evidence. Both cases can occur on a live connection.
 3. If it reports not connected: relay its guidance to the user — start (or
    re-attach) the MCP server session from the Designcenter UI, wait until it
    reports ready, then retry the original request.
