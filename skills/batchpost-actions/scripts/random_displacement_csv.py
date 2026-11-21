@@ -86,6 +86,7 @@ def prepare(catalog, loadcase, unique_name, component, node, output, *, input_un
                     "iteration_index": {"type": "list", "values": [s["iteration"] for s in states]},
                     "result": selected(str(path)), "node_ids": str(node)},
         "states": states, "node": node, "component": component,
+        "loadcase_name": next(case["name"] for case in catalog["loadcases"] if case["index"] == loadcase),
     }
 
 
@@ -106,7 +107,10 @@ def verify_csv(path, plan, unit):
     expected_rms_header = {"X": "1", "Y": "2", "Z": "3"}[plan["component"]]
     by_frequency = {s["frequency_hz"]: s for s in states}
     result = []
+    prefix = plan["loadcase_name"] + " - "
     for label, header, value in zip(labels, headers, values):
+        if not label.startswith(prefix):
+            raise ValueError("unexpected loadcase label")
         if None in by_frequency:
             if not label.endswith(" - Root Mean Square Results") or header != expected_rms_header:
                 raise ValueError("unexpected RMS state or component")
@@ -114,7 +118,7 @@ def verify_csv(path, plan, unit):
         else:
             if not Path(path).stem.endswith(f"-{plan['component']}"):
                 raise ValueError("PSD export filename does not identify the selected component")
-            match = re.search(r" - Frequency \d+, (\d+(?:\.\d+)?)\s*Hz$", label)
+            match = re.fullmatch(r"Frequency \d+, (\d+(?:\.\d+)?)\s*Hz", label.removeprefix(prefix))
             if not match:
                 raise ValueError("missing PSD frequency label")
             frequency = float(match[1])

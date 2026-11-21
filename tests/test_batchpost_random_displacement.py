@@ -16,7 +16,7 @@ PSD = "[PSD Displacement][Nodal]"
 
 
 def catalog():
-    return {"loadcases": [{"index": 1, "iterations": [
+    return {"loadcases": [{"index": 1, "name": "case", "iterations": [
         {"index": i, "value_types": [] if f is None else [{"type": "frequency", "value": f, "unit": "Hz"}],
          "result_types": [{"unique_name": kind, "name": name, "components": ["X", "Y", "Z"]}]}
         for i, f, kind, name in (
@@ -56,6 +56,10 @@ class RandomDisplacementTests(unittest.TestCase):
                              [{"iteration": 1, "frequency_hz": None, "value": 3.5}])
             with self.assertRaisesRegex(ValueError, "unit"):
                 post.verify_csv(target, plan, "m")
+            table(target, "Root Mean Square Displacement - Nodal", "mm",
+                  ["another case - Root Mean Square Results"], ["1"], [3.5])
+            with self.assertRaisesRegex(ValueError, "loadcase"):
+                post.verify_csv(target, plan, "mm")
             with self.assertRaises(FileExistsError):
                 post.prepare(catalog(), 1, RMS, "X", 17, output)
 
