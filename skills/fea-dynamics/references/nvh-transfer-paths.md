@@ -6,4 +6,6 @@ Compute path contributions `cᵢ(f) = Hᵢ(f)fᵢ(f)` and combine coherent paths
 
 A request for a stored contribution plot starts at its bound datasets and scenario. Use [artifact forensics](../../fea-artifact-forensics/SKILL.md) for source, convention and state. Check the qualified native route separately if authoring or evaluation is requested.
 
+The 2612 Hermes `FRFResponse` route accepts recovered complex operational forces and response-over-force FRFs. Evaluate all selected paths together and then evaluate each path with its own excitation and FRF scope. Keep the receiver, frequency grid, coordinate system and phase reference fixed across those jobs. Reopen the named result datasets through the native Post-Processing data source and read their complex curves. Compare each path with an independent reference, compare the coherent sum with the combined result, and check closure against the held-out receiver. A contribution magnitude plot drops the phase information needed for this comparison.
+
 [Simcenter 3D transfer path analysis](https://docs.sw.siemens.com/en-US/doc/PL20251024315444291.advanced/html/xid1665256?audience=external)
