@@ -1,5 +1,5 @@
-bundle: simcenter-fea-expert-0.1.7
-version: 0.1.7
+bundle: simcenter-fea-expert-0.1.8
+version: 0.1.8
 title: FEA Results Post (BatchPost Subagent)
 description: Post-processes Simcenter 3D / Nastran solver result files (.op2, .rst, .odb, .bun, .scd5) via Batch Post to build contour plots, XY graphs, and CSV exports with engineering context.
 instructions: |

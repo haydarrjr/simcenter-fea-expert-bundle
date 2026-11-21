@@ -34,6 +34,7 @@ Paths in this table are relative to this `SKILL.md`, not to the user's result di
 | --- | --- |
 | Create/change a post template, result computation, deformation, contour display, legend or colors | [Post template](./references/post-template.md) |
 | Store reusable result and computation settings in a result-options XML file | [Result variable](./references/result-variable.md), including the corrected template wrapper and dedicated reader's field coverage |
+| Export nodal random displacement RMS or frequency-resolved PSD | [Random displacement CSV](./references/random-displacement-csv.md) |
 | Create/change a reusable selection of known FEM node or element labels | [Selection entities](./references/selentity.md) |
 | Create/change an XML camera, custom orientation, clipping or scale | [Camera file](./references/camera-file.md) |
 

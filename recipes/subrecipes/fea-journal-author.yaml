@@ -1,5 +1,5 @@
-bundle: simcenter-fea-expert-0.1.7
-version: 0.1.7
+bundle: simcenter-fea-expert-0.1.8
+version: 0.1.8
 title: FEA Journal Author (Designcenter Open Journal Subagent)
 description: Discovers the NXOpen API and writes, refines, and sandbox-tests verified NXOpen Python journals for Simcenter 3D CAE and Designcenter tasks without live execution.
 instructions: |

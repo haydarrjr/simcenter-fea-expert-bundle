@@ -1,3 +1,9 @@
+# 0.1.8 candidate
+
+- Export verified nodal displacement RMS and frequency-resolved PSD through the official BatchPost XML path, with explicit units and CSV state checks.
+- Record native NXOpen Save As and Designcenter 2612 qualification for synthetic SRS generation, modal damping transfer, external superelement assembly results and NVH methods.
+- Add independent solver fixtures and preserve one portable skill tree and three verified client archives. See [0.1.8 qualification](docs/qualification/0.1.8.md).
+
 # 0.1.7 candidate
 
 - Route dynamics by requested output across SRS, deterministic FRFs, time histories, stationary PSD/CSD, damping and NVH. Add component representations and external superelement guidance within the existing 39 skills.
