@@ -34,6 +34,7 @@ class DistributionTests(unittest.TestCase):
         b = build()
         self.assertEqual(a['sha256'], b['sha256'])
         with ZipFile(ROOT / 'dist' / a['archive']) as archive:
+            self.assertTrue(all(info.create_system == 3 for info in archive.infolist()))
             self.assertEqual(set(archive.namelist()), {p.relative_to(ROOT).as_posix() for p in distribution_files()})
             for name in archive.namelist():
                 self.assertNotIn('.work/', name)
