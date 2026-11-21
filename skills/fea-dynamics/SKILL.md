@@ -1,6 +1,6 @@
 ---
 name: fea-dynamics
-description: "Analyze assembly mass/inertia, mounts, modal subspaces, harmonic and real transient 3D field response. Resolve stress/time histories, energy and time-step accuracy before fatigue; route stationary spectra, cyclic, rotor, aeroelastic or acoustic questions to their explicit methods and limits."
+description: "Analyze modal, harmonic or transient response and assembly inertia or mounts."
 metadata:
   copyright: "Unpublished work. Copyright 2026 Siemens"
 ---

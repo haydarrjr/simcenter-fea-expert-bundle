@@ -24,28 +24,9 @@ Defun: ExtractProperty(string $sourceName; string $extractionType; list $extract
 } number;
 ```
 
-### Complete Set of 17 `ExtractProperty` Rules Used in `AO_Aeroelastic.s1.sim`
-```
-ExtractProperty("1D Mesh", "BEAM_SECTION_PROP", {"Area"})
-ExtractProperty("1D Mesh", "BEAM_SECTION_PROP", {"h"})
-ExtractProperty("1D Mesh", "MATERIAL_PROP", {"Yield", "71.330000[F]"})
-ExtractProperty("1D Mesh", "MATERIAL_PROP", {"YoungsModulusConstant", "71.330000[F]"})
-ExtractProperty("Loaded_Edge", "AVG_CURVRAD", {})
-ExtractProperty("Loaded_Edge", "TOTAL_LENGTH", {})
-ExtractProperty("Panel", "MATERIAL_PROP", {"Yield", "71.330000[F]"})
-ExtractProperty("Polygon Edge", "BEAM_SECTION_PROP", {"Area"})
-ExtractProperty("Polygon Face", "MATERIAL_PROP", {"PoissonsRatioConstant", "71.330000[F]"})
-ExtractProperty("Polygon Face", "MATERIAL_PROP", {"Yield", "71.330000[F]"})
-ExtractProperty("Polygon Face", "MATERIAL_PROP", {"YoungsModulusConstant", "71.330000[F]"})
-ExtractProperty("Polygon Face", "MIN_THICKNESS", {})
-ExtractProperty("Polygon Face", "PROJ_LENGTH", {"171115 - csys", "X"})
-ExtractProperty("Polygon Face", "PROJ_LENGTH", {"171116 - csys", "Y"})
-ExtractProperty("Polygon Face", "PROJ_LENGTH", {"171117 - csys", "X"})
-ExtractProperty("Polygon Face", "PROJ_LENGTH", {"171118 - csys", "Y"})
-ExtractProperty("Unloaded_Edge", "TOTAL_LENGTH", {})
-```
+### Bind associative inputs
 
----
+Use the extraction names and argument signatures from the installed authoring method. For example, a supported `BEAM_SECTION_PROP` query supplies the selected beam mesh and section-property key. A `MATERIAL_PROP` query supplies the selected entity, property key and temperature with units. A `PROJ_LENGTH` query needs the actual coordinate system and axis. Audit values against the underlying selection, section and material before accepting the calculation.
 
 ## 2. Standard Margin of Safety Method Schemas (`$UGII_BASE_DIR/SIMULATION/aerostructures/margin_solution/`)
 
@@ -67,7 +48,7 @@ ExtractProperty("Unloaded_Edge", "TOTAL_LENGTH", {})
   - `Behaviour`: `"Elastic"` or `"Elastic-Plastic"` (`string`)
   - `E`: Young's modulus in compression (`scalar`, `Stress`)
   - `nu`: Poisson's ratio (`scalar`, `Unitless`, $0 < \nu < 0.5$)
-  - `n`: Ramberg-Osgood parameter (`scalar`, `Unitless`, default `10`)
+  - `n`: Ramberg-Osgood parameter (`scalar`, `Unitless`, method-specific)
   - `Fy`: Compression yield stress (`scalar`, `Stress`)
   - `sigma`: Applied compressive stress (`load_extraction`, `Stress`)
 - **Outputs**:
@@ -92,7 +73,7 @@ ExtractProperty("Unloaded_Edge", "TOTAL_LENGTH", {})
 ### 2.4 `MS_InterRivetBuckling_Column.xml` (`Inter-Rivet Buckling Column`)
 - **Failure Mode**: `InterRivetBuckling_Column` (`Inter-Rivet Buckling Column`)
 - **Inputs**:
-  - `FixityCoeff`: Rivet fixity coefficient $c$ (`scalar`, `Unitless`, e.g. `1.0` flat head, `2.0` countersunk/spotweld)
+  - `FixityCoeff`: Rivet fixity coefficient $c$ (`scalar`, `Unitless`, method-specific)
   - `Pitch`: Rivet pitch $p$ (`scalar`, `Length`)
   - `Ts`: Sheet thickness $t_s$ (`scalar`, `Length`)
   - `MaterialBehaviour`: `"Elastic"` or `"Elastic-Plastic"` (`string`)
@@ -106,38 +87,6 @@ ExtractProperty("Unloaded_Edge", "TOTAL_LENGTH", {})
 
 ---
 
-## 3. Python Forensic Parser for `.msz` Margin Archives
+## 3. Archive inspection
 
-Use this standalone read-only script pattern to audit any `<sim>_<solution>.msz` archive and rank all calculations by minimum Margin of Safety:
-
-```python
-import re
-import zipfile
-
-
-def audit_msz_archive(msz_path: str):
-    rank1_pattern = re.compile(
-        r"1\s*\|\s*([^|]+)\|\s*([^|]+)\|\s*([-+0-9.eEINF]+)"
-    )
-    results = []
-    with zipfile.ZipFile(msz_path, "r") as zf:
-        for entry in zf.namelist():
-            if not entry.endswith(".mslog"):
-                continue
-            text = zf.read(entry).decode("utf-8", errors="replace")
-            m = rank1_pattern.search(text)
-            if m:
-                fm, lc, ms_str = (
-                    m.group(1).strip(),
-                    m.group(2).strip(),
-                    m.group(3).strip(),
-                )
-                ms_val = (
-                    float("inf")
-                    if "INF" in ms_str.upper()
-                    else float(ms_str)
-                )
-                results.append((ms_val, entry[:-6], fm, lc))
-    results.sort(key=lambda x: x[0])
-    return results
-```
+Read the requested archive without extracting untrusted member paths. Check supported format, entry limits, unique calculation IDs, units, sign conventions, applicable failure modes, governing states and warnings. Parse the actual column schema, preserve signed infinities, and record unparsed rows. Compare each governing entry with the evaluated calculation and source result. Preserve the exact archive identity and terminal solve evidence.

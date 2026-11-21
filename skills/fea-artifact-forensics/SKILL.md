@@ -1,6 +1,6 @@
 ---
 name: fea-artifact-forensics
-description: "Inspect original Simcenter Nastran deck, F06 and OP2 evidence through Siemens MCPs. Verify provenance, scope and physical result identity."
+description: "Trace a solver deck, log or result file to the exact job, model and result state."
 metadata:
   copyright: "Unpublished work. Copyright 2026 Siemens"
 ---

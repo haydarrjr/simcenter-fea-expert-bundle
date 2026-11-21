@@ -1,50 +1,16 @@
 ---
 name: batchpost-actions
-description: "Post-process simulation result files with the BatchPost MCP connector. Use when exporting contours, graphs across iterations, CSV or SCE, or creating/modifying post templates, result variables, selection entity XML, or camera files."
+description: "Export or inspect solver results through the BatchPost MCP."
 metadata:
   copyright: Unpublished work. Copyright 2026 Siemens
 ---
 
 <!-- FEA integration safety v1 -->
-## FEA integration safety contract (overrides conflicting legacy guidance)
-
-- Discover the current BatchPost catalog and exact input schemas. A successful
-  catalog check proves connector readiness. Use tool results to distinguish a
-  pipe or startup failure from an absent result, file error or failed export.
-- Documentation: use documentation-search-tool only when currently advertised.
-  If absent after connectivity recovery, route to the advertised Product Support
-  search tool using its current schema and version-specific Siemens sources.
-  If neither route is available, report BLOCKED_BY_OFFICIAL_MCP_CAPABILITY /
-  NOT_RUN; do not invent syntax, citations, or answers from memory.
-- Pagination: send PAGE or CURSOR only if that exact parameter exists in the
-  current tool input schema. A response mentioning hasMoreSchema/hasMoreData
-  does not authorize unsupported arguments. If continuation is unavailable,
-  report the read as PARTIAL with the unresolved scope; do not claim completeness.
-- Journal sandbox: import only NXOpen modules. Never import sys or another
-  standard-library module. Use sys.argv only when the current journal tool
-  explicitly supplies sys; otherwise stop and verify the supported entry point.
-  Keep main(args), session acquisition and builder cleanup requirements.
-- A sandbox SUCCESS, exit code zero, or no captured stdout is not observable
-  proof that statements, assertions, or error paths executed. Report execution
-  transport status separately from observable test evidence. Without inspectable
-  output/readback, the claimed behavior remains UNVERIFIED, not tested-correct.
-- Action verbs alone do not authorize an ambiguous target, save, solve, or
-  overwrite. Live changes require explicit user intent, an identified owned
-  working copy, current advertised capability and applicable host approval.
-  After a change, obtain independent native readback tied to model identity.
-- Mesh metrics: null, zero, placeholder, unavailable or uncomputed values are
-  UNVERIFIED unless the metric definition, element applicability and computation
-  status establish their meaning. Never convert missing evidence into PASS.
-  Free edges may be intentional shell boundaries; interpret topology explicitly.
-  Use project/solver/element-specific documented thresholds, not universal limits.
-  Shape quality alone does not establish QoI mesh convergence or solve acceptance.
-<!-- End FEA integration safety v1 -->
-
 # BatchPost
 
 For a solver job, use the [Solution Sequence](../fea-solver-investigation/references/solution-sequence.md). Open its qualified SCD5 when it contains the required states and fields. Use the original OP2 through BatchPost when needed for additional fields. Send F06 status or diagnostic inspection to the official Nastran diagnostic tools or read only the scoped original text using the workflow.
 
-Use the existing BatchPost post-processor through its configured MCP connector. This folder is one portable skill, not an agent definition. Agent roles, orchestration, and MCP server configuration belong to the host/user; no Agent YAML or solver workflow is supplied here.
+Use the existing BatchPost post-processor through its configured MCP connector. Use the worker and connector selected by the host.
 
 ## Normal Workflow
 

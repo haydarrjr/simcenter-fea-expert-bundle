@@ -13,7 +13,7 @@ availability of any necessary figures or equations.
 | Simcenter Nastran 2606, PL20251024315120185 | `element.id489151` | CBEAM provides beam mechanics including bending/shear and section variation; the analytic evaluator is not an implementation/qualification of that native element. |
 | Simcenter Nastran 2606 | `element.id489051` | Element orientation determines section directions. Local y/depth and z/bending moment must be mapped explicitly. |
 | Simcenter Nastran 2606 | `QRG.id508621` | PBEAM remark 12 distinguishes zero/nonzero shear fields for EB/Timoshenko, independently by plane. This does not establish that analytical kappa is numerically identical to a card field. |
-| Simcenter 3D 2606 | `advanced.id625621`, `advanced.id629976` | Midsurface source association and effective shell thickness/normal/offset require separate checks. A vendor sampling switch is not an engineering error budget. No shell algorithm is implemented by this slice. |
+| Simcenter 3D 2606 | `advanced.id625621`, `advanced.id629976` | Midsurface source association and effective shell thickness/normal/offset require separate checks. A vendor sampling switch is not an engineering error budget. Verify shell behavior on the current model. |
 
 Confirm native availability, installed SDK signatures and numerical parity
 independently of documentation retrieval.
@@ -54,6 +54,4 @@ native observations require the current Siemens MCP profile:
    effective property/coordinate mapping, solver logs, result location/unit
    semantics, refinement history and expected-versus-observed quantities.
 
-The historical fixture registry remains unchanged. Source tests supply bounded
-algorithm evidence; SDK compilation, native execution, solver acceptance and
-real engineering acceptance remain separate and unperformed here.
+Tie each native claim to the current release, case and observed result.

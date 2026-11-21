@@ -3,7 +3,8 @@ import json, tempfile, unittest
 from pathlib import Path
 from zipfile import ZipFile
 from ruamel.yaml import YAML
-from scripts.validate_distribution import ROOT, validate, distribution_files, EXPECTED_SUBRECIPES, missing_recipe_skills
+from scripts.validate_distribution import (CODEX_MARKETPLACE, ROOT, validate, distribution_files,
+                                           EXPECTED_SUBRECIPES, missing_recipe_skills)
 from scripts.build_distribution import build
 
 
@@ -37,7 +38,8 @@ class DistributionTests(unittest.TestCase):
             for name in archive.namelist():
                 self.assertNotIn('.work/', name)
                 self.assertNotIn('__pycache__', name)
-                self.assertNotIn('.agents/', name)
+                if name.startswith('.agents/'):
+                    self.assertEqual(name, CODEX_MARKETPLACE)
                 self.assertNotIn('overlay/', name)
                 self.assertFalse(name.lower().endswith(('.prt', '.step', '.log', '.zip', '.bundle')))
 

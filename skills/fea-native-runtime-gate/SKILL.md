@@ -1,6 +1,6 @@
 ---
 name: fea-native-runtime-gate
-description: "Prepare documented Siemens CAE operations through an existing official Designcenter or Simcenter 3D MCP. Bind profile, model, owner and revision to the exact tool schema. Record independent readback and reconcile uncertain effects before dependent work."
+description: "Prepare and verify an authorized native Simcenter operation with independent readback."
 metadata:
   copyright: "Unpublished work. Copyright 2026 Siemens"
 ---
@@ -20,7 +20,7 @@ Use the [existing-session adapters](references/official-mcp-adapter.md) for a ho
 
 `DECK_EXPORT` accepts only `export_journal(target, fem, solution_tag)` from the controller, on the witnessed 2612.1700 modal route. Bind SIM path as `target.model`, and `fem` / `solution_tag` in the binding from the independent live snapshot. Preflight the native export settings and exact destination: a new file beside the owned SIM, no overwrite, no unresolved output overrides. Use the same `deck_path` and `original_solution_signature` in `expected` and `baseline`, and `deck_present: false` before and `true` after. Include `export_finished: true` and `deck_qualified: true` in `expected`. Archive the resulting hash. An absent file while the exporter may still run is not `NOT_APPLIED`. Prove the exporter is terminal before observing a negative outcome. Generic `CAE_MUTATION` still refuses `Solve`.
 
-Read [runtime and API admission](references/engineering-method.md). Distinguish API documentation from a qualified installed operation. For SOL 103, use the [qualified live setup path](../fea-dynamics/references/sol103-free-free.md) and the [Solution Sequence](../fea-solver-investigation/references/solution-sequence.md) for direct Nastran batch. The user saves the SIM/FEM.
+Read [runtime and API admission](references/engineering-method.md). Distinguish API documentation from a qualified installed operation. For SOL 103, use the [qualified live setup path](../fea-dynamics/references/sol103-free-free.md) and the [Solution Sequence](../fea-solver-investigation/references/solution-sequence.md) for direct Nastran batch. Verify persistence through an admitted save and independent reopen, or record operator save evidence when needed.
 
 ## Completion boundary
 

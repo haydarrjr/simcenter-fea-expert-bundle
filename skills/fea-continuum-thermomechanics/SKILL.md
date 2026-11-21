@@ -1,6 +1,6 @@
 ---
 name: fea-continuum-thermomechanics
-description: "Verify Simcenter structural solids, conduction, heat balance, thermal stress, temperature histories and model applicability."
+description: "Check solid or thermoelastic formulation, heat balance, and continuum assumptions."
 metadata:
   copyright: "Unpublished work. Copyright 2026 Siemens"
 ---

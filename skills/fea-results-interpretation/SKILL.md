@@ -1,6 +1,6 @@
 ---
 name: fea-results-interpretation
-description: "Interpret identity-bound FEA results, recovery locations, tensors, modal subspaces and eigen-buckling references. Use for component decoding, principal/von-Mises/Tresca quantities, frame changes and coherent envelopes; unsupported complex or averaged fields stay explicit."
+description: "Interpret FEA quantities, tensor components, recovery locations, or modal and buckling results."
 metadata:
   copyright: "Unpublished work. Copyright 2026 Siemens"
 ---

@@ -1,3 +1,11 @@
+# 0.1.6 candidate
+
+- Refine triggers for all 39 skills. Replace model-specific Airframe, load-filter, margin and SOL 101 workflows with task-scoped methods. Consolidate Siemens operation guidance and shorten the seven agent recipes.
+- Read SIM, FEM and AFM through the 2612 NXOpen journal. Capture AFM occurrence IDs, root collectors, active solution and per-field errors. Distinguish missing or uncomputed mesh-quality evidence from a measured result.
+- Produce Agent Workspace and project archives alongside the Agent Plugins 1.0 archive and local marketplace catalogs. Validate shared skill bytes, installed resource identity and packaged links.
+- Add independent SOL 101 and SOL 103 input fixtures and CAE journal regression coverage.
+- Qualify creation and persistence of a synthetic tetrahedral FEM and SOL 103 SIM on Designcenter 2612.1700. Verify reopen in a fresh native process and through the two live Siemens MCP profiles.
+
 # 0.1.5 candidate
 
 - Add the 2612 Python CAE operation catalog and live SIM/subcase readback journal. Reuse known APIs and profile bindings; stop after a connected read times out instead of repeating status and the same query.

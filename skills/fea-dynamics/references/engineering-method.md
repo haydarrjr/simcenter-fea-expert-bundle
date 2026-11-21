@@ -5,7 +5,7 @@
 1. Model and state evidence
 2. Coupled assembly equations
 3. Modal and harmonic interpretation
-4. Worked three-component assembly
+4. Verify assembly coupling
 5. Transfer, specialized dynamics and native readback
 
 ## Model and state evidence
@@ -81,28 +81,9 @@ the static rotation norm plus the norm of harmonic component amplitudes against
 is the exact phase-dependent peak. A large harmonic response cannot bypass the
 small-rotation assumption merely because the static load was small.
 
-## Worked three-component assembly
+## Verify assembly coupling
 
-Use these values as a worked dimensional and mechanics example.
-The manufactured model contains a 90 kg housing, 25 kg gearbox and 3 kg nested
-accessory, with distinct local frames and four anisotropic tilted mounts.
-It derives a coupled mass matrix from the hierarchy instead of accepting an
-already diagonal modal matrix. The six frequencies are approximately:
-
-`46.038953, 46.871132, 81.924452, 99.940607, 137.154560, 148.704339 Hz`.
-
-Cold, hot and hot-limit source states are solved in order. Their force and
-moment residuals are below 1e-8 in their respective SI units. Heating reverses
-the local axial reaction of M1. The case runner identifies this changed load
-path and requests proof of a tensile attachment; a compression-only interface
-would need a different active set and different modes. It does not equate
-small equilibrium residual with a valid support assumption.
-
-Independent holdouts use a symmetric four-mount closed-form six-mode system,
-global coordinate rotation, origin translation and characteristic-length
-changes. The realistic case has off-diagonal mass/inertia and stiffness coupling;
-those invariance tests would fail if the code dropped a moment arm or composed
-the hierarchy in the wrong order.
+Sum component mass and rotate and translate each inertia into the assembly frame. Compare free and constrained mode families and force-driven transfer around resonance. When changing a mount, check changes in mode participation and relative motion across the interface.
 
 ## Transfer, specialized dynamics and native readback
 
@@ -114,10 +95,7 @@ a rigid six-DOF transfer is not a flexible submodel interface.
 
 Read [specialized dynamic methods](advanced-dynamics.md) for cyclic phase,
 random-response coherence, rotor gyroscopy, aeroelastic damping and acoustic
-interfaces. Those methods have explicit gaps; this six-DOF reference does not
-silently become any of those solvers. The legacy SOL103 checker accepts only
-pure translational supplied matrices; use the assembly implementation for this
-mixed-coordinate reference instead of relabeling rotations as translations.
+interfaces. Keep rotation and translation coordinates distinct and preserve their work-conjugate quantities. Verify formulation and result coverage for the actual solver and analysis family.
 
 Use the documented result-access path in the
 exact-release Siemens Help Server documentation.

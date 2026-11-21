@@ -1,6 +1,6 @@
 ---
 name: fea-vvuq-review
-description: "Verify numerical methods and solution convergence, distinguish input uncertainty from model-form error, and design discriminating validation studies. Use for GCI, sensitivity, robust comparisons and optimization credibility; do not infer reliability from arbitrary ranges."
+description: "Review FEA verification, validation, mesh convergence and input or model-form uncertainty."
 metadata:
   copyright: "Unpublished work. Copyright 2026 Siemens"
 ---

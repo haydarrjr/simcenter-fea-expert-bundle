@@ -1,0 +1,26 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "simcenter-fea-expert",
+  "version": "0.1.6",
+  "description": "Inspect, automate and verify finite element analysis in Simcenter 3D and Simcenter Nastran.",
+  "author": {
+    "name": "FEA Expert Bundle Maintainers",
+    "url": "https://github.com/haydarrjr/simcenter-fea-expert-bundle"
+  },
+  "homepage": "https://github.com/haydarrjr/simcenter-fea-expert-bundle",
+  "repository": "https://github.com/haydarrjr/simcenter-fea-expert-bundle",
+  "license": "MIT",
+  "keywords": [
+    "simcenter",
+    "fea",
+    "cae",
+    "nastran"
+  ],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Simcenter 3D FEA Expert"
+      }
+    }
+  }
+}

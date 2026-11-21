@@ -90,7 +90,7 @@ U=\int_0^L\left(\frac{M^2}{2EI_z}+\frac{V^2}{2\kappa GA}\right)dx
 +\frac{F_{total}^2}{2k_t}+\frac{M_{root}^2}{2k_r}.
 \]
 
-A fixed degree of freedom contributes no spring energy. For the worked case,
+A fixed degree of freedom contributes no spring energy. For a compliant support,
 kappa=5/6 is obtained by matching the energy of the parabolic shear distribution
 in a solid rectangle: integral_A(tau^2/G)dA=V^2/(kappa G A). This is an explicit
 approximation, not a universal exact elasticity coefficient or a qualified

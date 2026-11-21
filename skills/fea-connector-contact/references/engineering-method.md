@@ -65,35 +65,9 @@ actual unilateral potential; the elastic reference used for a descent
 direction is not an added physical spring. Check the final contact/bolt
 branch, force/moment balance and reported tangent independently.
 
-## Worked eight-bolt decision
+## Check preload redistribution
 
-Run:
-
-Use this worked load-path example to define independent falsifiers for the actual joint.
-
-Eight bolts on an 80 mm radius have E=200 GPa, area 84.3 mm², grip 50 mm and
-initial preload 20 kN. The member prisms have E=70 GPa, effective area 800 mm²
-and grip 40 mm. The derived stiffnesses are 337.2 and 1,400 MN/m. Heating the
-bolt/member groups by 80/120 K, with expansion coefficients 12/23 microstrain/K,
-raises the preload to **36,957.053 N per bolt** in the constant-modulus model.
-
-An axial load 160 kN with moments 15/3 kN·m and 4 micrometres settlement then
-opens stations B2–B5. Maximum axial bolt force becomes **56,048.306 N**. The
-correct modeling decision is to retain unilateral contact and refine the
-deformable flange/bolt representation where prying or bearing matters.
-After cooling/unloading, the retained preload is **18,913.009 N per bolt**.
-
-The tangential stick trial solves shear and torsional balance over the remaining
-closed stations. Check every local Coulomb limit `|T_i|<=mu_i*C_i`. The source
-falsifier passes both global shear and torsion friction upper bounds but still
-fails locally. A global `mu*sum(clamp force)` calculation therefore does not
-establish stick. A failed trial requires post-slip contact/bearing analysis;
-the source model does not predict that redistribution.
-
-Apply the small-rotation guard to the complete relative rotation, including
-torsional twist from the stick trial. Zero bending rotation does not establish
-small overall rotation. A trial may satisfy every friction inequality while
-its twist exceeds the explicitly selected model-validity limit.
+Compare bolt axial forces and interface contact reactions before and after preload locking, then after each service increment. Close force and moment balance in one frame. Check whether separation or sliding invalidates the linear compatibility estimate and identify the locations that require local assessment.
 
 ## Construct, debug and falsify
 

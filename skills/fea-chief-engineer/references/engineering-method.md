@@ -4,7 +4,7 @@
 
 1. Evidence and physical intent
 2. Coupled decision procedure
-3. Executable flange investigation
+3. Independent joint verification
 4. API and Runtime boundary
 5. Interpreting failures and choosing the next experiment
 
@@ -51,31 +51,9 @@ and inferred root causes separately labeled. Rank a hypothesis by the evidence
 it explains and prescribe a one-variable experiment; do not assert that a
 residual plateau proves a unique contact-penalty problem.
 
-## Executable flange investigation
+## Independent joint verification
 
-Use the worked case as an example of the verification logic.
-The manufactured eight-bolt case is an engineering reference, not a solver run.
-It contains pretension, lock, differential heating, eccentric service and unload
-states, plus a deliberately contradictory nonlinear evidence record.
-
-The model derives station stiffness from E, area and grip length. Initial bolt
-force is 20 kN each. Heating increases it to approximately 36.957 kN before
-the eccentric service load redistributes it. Under 160 kN separation with
-15 kN m and 3 kN m bending moments, B2–B5 open and the maximum bolt force is
-approximately 56.048 kN. A local stick trial exceeds the Coulomb limit at some
-remaining contacts, so a post-slip solution is required. Returning a universal
-linear safety factor at this point would discard the changed mechanism.
-
-The second artifact says the final increment converged, while its corresponding
-contact summary does not. Independent observations show an 18 kN axial balance
-defect and 120 J artificial energy against 1000 J strain energy. The case runner
-returns `SOURCE_EVIDENCE_REJECTED`, identifies the offending artifact and retains
-the ranked diagnostic evidence. A polished report containing the right model
-name and a converged label cannot override those calculations.
-
-The tests also compare the normal-contact solution with an independent
-50-digit Decimal enumeration of all 256 contact sets. That comparison is a
-source numerical oracle; it is not a substitute for flexible-flange validation.
+For a preload-controlled joint, compare installation, lock and service states. Assess residual clamp force, contact opening, slip and load redistribution with an independent compatibility model. Rank sensitivity to preload, temperature and friction before choosing a discriminating native rerun.
 
 ## API and Runtime boundary
 

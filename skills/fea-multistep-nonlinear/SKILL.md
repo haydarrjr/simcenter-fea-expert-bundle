@@ -1,6 +1,6 @@
 ---
 name: fea-multistep-nonlinear
-description: "Investigate Simcenter Nastran multistep nonlinear histories. Use for SOL 106/401/402, preload locking, contact, friction, plasticity, thermal transfer and false convergence."
+description: "Diagnose nonlinear subcase sequencing, convergence, plasticity or load history."
 metadata:
   copyright: "Unpublished work. Copyright 2026 Siemens"
 ---

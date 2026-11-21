@@ -1,0 +1,15 @@
+{
+  "name": "simcenter-fea",
+  "owner": {
+    "name": "FEA Expert Bundle Maintainers"
+  },
+  "plugins": [
+    {
+      "name": "simcenter-fea-expert",
+      "source": ".",
+      "version": "0.1.6",
+      "description": "Inspect, automate and verify finite element analysis in Simcenter 3D and Simcenter Nastran.",
+      "strict": true
+    }
+  ]
+}

@@ -68,33 +68,9 @@ unphysical stiffness/damping may represent a different model. The output records
 the declared axis and explicitly leaves full 3D force and moment equilibrium
 unassessed. A balanced projection cannot establish transverse equilibrium.
 
-## Worked apparently converged case
+## Diagnose an apparently converged increment
 
-Run:
-
-Use the worked diagnosis below as an example of how to reject false convergence.
-
-The source example contains a two-subcase SOL401 control excerpt, a manufactured
-documented-column log fragment and separately identified adapter CSV. They are
-not claimed as a native run. The final imported record says converged, but its
-log row has **EQU=y, CON=n, BLT=y**. Force error is 0.04 against explicit
-EPSP 0.001. In frame `joint-z`, the signed positive-Z applied-force projection
-160 kN and reaction projection -142 kN leave **18 kN imbalance along that axis**.
-Artificial energy 120 J against strain energy 1,000 J gives **12%**, exceeding
-the explicit 5% project budget. These independent reasons reject the claim.
-
-Across iterations, residual grows while closed contact count falls from 75 to 30.
-The system ranks contact chatter and loss of load path as hypotheses. First
-inspect the displacement mode, retained preload, region normals and actual
-contact pairing. Then halve the increment at fixed penalty and vary penalty
-at fixed increment. Compare contact state, penetration and bolt-force QoIs.
-Changing both controls simultaneously would obscure which mechanism improved.
-
-The iteration CSV is explicitly an FEA-owned interchange, with its own source
-hash and exact case/model/mesh/frame/deck/log identity. It preserves exported vendor
-error values; it does not relabel a new normalization as the solver's residual.
-A stale mesh or artifact hash is rejected before diagnosis. Unrecognized raw
-log text remains a parsing gap; the word “success” cannot close it.
+Compare consecutive accepted increments using a consistent signed convention and the same support and contact scopes. Check that the preload state and step dependency reached the intended step and that residuals, equilibrium and histories agree. Use a smaller increment or targeted contact change to discriminate between numerical difficulty and loss of load path.
 
 ## Recovery and outcome
 

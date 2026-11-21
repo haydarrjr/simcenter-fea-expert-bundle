@@ -1,6 +1,6 @@
 ---
 name: fea-materials-properties
-description: "Evaluate constitutive assumptions, effective material/property ownership, temperature dependence, orthotropy and laminate coupling. Use for stiffness and thermal load-path decisions; distinguish average stress from strength, fatigue and ply-failure claims."
+description: "Verify constitutive data, material assignment and effective FEA properties."
 metadata:
   copyright: "Unpublished work. Copyright 2026 Siemens"
 ---

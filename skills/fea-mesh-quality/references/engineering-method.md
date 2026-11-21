@@ -74,11 +74,7 @@ Fine-level error is 1/32; a 1.25 factor yields an absolute estimate 5/128.
 Changing every level to a different model identity must stop this otherwise
 perfect numerical fit. The source tests exercise precisely that failure.
 
-A connected 20,000-node, 19,998-TRI3 source example at tolerance 0.51 takes
-51,568 candidate comparisons rather than 199,990,000 all-pairs comparisons.
-This demonstrates a useful distribution, not a universal complexity guarantee.
-Small randomized cases are independently compared with brute force; dense
-clusters test the declared incomplete-scan behavior.
+Use a reproducible mesh and report distance tolerance in model units, the candidate pair count and the reviewed connectivity effects.
 
 For an eight-bolt flange, converged total reaction is a weak mesh acceptance
 metric: equilibrium can hold while the opening sector and maximum bolt force

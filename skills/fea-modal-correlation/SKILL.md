@@ -1,6 +1,6 @@
 ---
 name: fea-modal-correlation
-description: "Compare measured, imported or recalculated modal evidence with explicit DOF maps and physical metrics. Use for repeated/nearly repeated modes, basis rotation, mode switching, mass weighting, misleading MAC and cross-model eigenvector comparisons."
+description: "Compare mode shapes or modal subspaces across simulations or test data."
 metadata:
   copyright: "Unpublished work. Copyright 2026 Siemens"
 ---

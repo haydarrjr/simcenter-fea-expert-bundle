@@ -1,6 +1,6 @@
 ---
 name: fea-open-meshing
-description: "Verify geometry-to-mesh and boundary transfer for Simcenter solid models. Use for unit-scale, physical face selection, pressure, traction, and heat-flux conservation checks."
+description: "Verify geometry-to-mesh and load or heat-flux transfer by conservation checks."
 metadata:
   copyright: "Unpublished work. Copyright 2026 Siemens"
 ---

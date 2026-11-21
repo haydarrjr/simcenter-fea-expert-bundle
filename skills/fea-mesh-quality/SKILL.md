@@ -1,6 +1,6 @@
 ---
 name: fea-mesh-quality
-description: "Design and assess mesh approximation, element geometry, connectivity and QoI convergence. Use for TRI3/TET4 checks, coincident nodes, refinement studies and meshing API preparation; a valid element shape does not prove solution accuracy."
+description: "Assess discretization, connectivity, element validity or quantity-of-interest convergence."
 metadata:
   copyright: "Unpublished work. Copyright 2026 Siemens"
 ---

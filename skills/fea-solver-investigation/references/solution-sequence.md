@@ -2,8 +2,7 @@
 
 Use the global Siemens MCPs for live SIM/FEM setup, deck export and
 post-processing. Submit the verified deck directly to Simcenter Nastran in
-batch. Keep solver submission and SIM/FEM persistence independent. The user
-owns the manual save.
+batch. Qualify solver submission and SIM/FEM persistence independently.
 
 1. **Bind the live target.** Check release, exact SIM/FEM paths, work and display
    roles, and original solutions. Adopt an authorized working copy. For CAE
@@ -22,12 +21,12 @@ owns the manual save.
    verify the entire closure before running. Keep raw and verified files.
 4. **Run the installed Siemens batch solver.** On the observed Windows 2612
    Desktop Bundle installation the executable is
-   `C:\Siemens\Designcenter2612\NXNASTRAN\bin\nastranw.exe`. Launch with the
+   `NXNASTRAN\bin\nastranw.exe` under the product root. Launch with the
    isolated job directory as the working directory. For the verified
    standalone SOL 103 desktop bundle deck the observed invocation is:
 
    ```powershell
-   & 'C:\Siemens\Designcenter2612\NXNASTRAN\bin\nastranw.exe' 'solution.dat' 'prog=bundle' 'old=no' 'scratch=yes' 'sys442=2'
+   & (Join-Path $productRoot 'NXNASTRAN\bin\nastranw.exe') 'solution.dat' 'prog=bundle' 'old=no' 'scratch=yes' 'sys442=2'
    ```
 
    Confirm applicable runtime and license options for other installations.
@@ -54,8 +53,4 @@ owns the manual save.
    outside its catalog, use the official Nastran diagnostic MCP when available
    or scoped original F06/log text. Preserve F06 and OP2 custody. Do not
    install alternate solvers or binary readers.
-7. **Close out.** Independently verify the solution and affected quantities,
-   preserve the static baseline, record actual solver and post results, and
-   validate the report. If the model remains dirty and the solver is complete,
-   tell the user to save the SIM/FEM manually. The warning concerns model
-   persistence. Report completed solver evidence separately.
+7. **Close out.** Verify the solution and affected engineering quantities. Record the native model state, solver and post results, and report artifact. If the workflow requires persistence, confirm an admitted save and independent reopen or obtain operator save evidence. A dirty model may still have a completed solver run with qualified deck lineage.
