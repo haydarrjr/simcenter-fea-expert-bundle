@@ -5,7 +5,7 @@
 1. Obtain ownership and load-path evidence
 2. Choose a reduction from the mechanics
 3. Preserve hierarchy, frames and interface work
-4. Worked mounted-assembly case
+4. Check assembly scope and support mapping
 5. Native construction and failure recovery
 
 ## Obtain ownership and load-path evidence
@@ -41,20 +41,14 @@ have different purposes; neither choice is justified solely by solver stability.
 
 Defeaturing is a model-form decision. Removing a fillet may leave displacement
 almost unchanged while invalidating peak stress. Keep separate global and local
-QoIs. A global energy match never certifies a notch-root fatigue stress. The
-[section mechanics](mechanics.md), [decision procedure](decision-procedure.md)
-and [support-arm case](worked-case.md) contain the existing quantitative arm
-implementation and its boundaries.
+QoIs. A global energy match never certifies a notch-root fatigue stress. Use [beam mechanics](mechanics.md) and the [decision procedure](decision-procedure.md) to verify applicability across the entire load-bearing span.
 
 ## Preserve hierarchy, frames and interface work
 
 For a component, rotate its center inertia with `I_global = R I_local R^T` and
 use the parallel-axis term `m ((r.r) I - r r^T)`. Compose occurrence transforms
 through the hierarchy; do not rotate a child twice or count assembly mass again
-when it already includes its children. The v2 mounted-assembly contract explicitly
-requires each component's mass to exclude children. Cycles, duplicate instances,
-missing parents, nonproper rotations and physically unrealizable inertia are
-rejected before solving.
+when it already includes its children. Use component mass without children when summing a hierarchy. Check for duplicate occurrences, missing parents, improper rotations and invalid inertia tensors.
 
 At an interface point r, rigid motion is `u(r)=u0 + theta x r = B(r) q`.
 The work-conjugate load is `Q = sum B(r)^T f(r)`, containing both resultant
@@ -62,35 +56,13 @@ force and moment. Therefore `sum f.u = Q.q`. A transfer that preserves force
 but omits `r x f` changes the model's work and load path. Model revision and
 frame must match before comparing these quantities.
 
-## Worked mounted-assembly case
+## Check assembly scope and support mapping
 
-Use these mechanics checks as a worked mount-assembly example.
-The example is a manufactured housing, gearbox and nested accessory with
-different occurrence orientations, off-center inertia and four tilted mounts.
-Their exclusive masses are 90, 25 and 3 kg. Aggregation gives **118 kg** and
-center approximately `(0.112392, 0.0130494, 0.0397458) m`. The reference-origin
-mass matrix has nonzero translation/rotation coupling; deleting those terms
-would change the modes even if total mass stayed correct.
-
-Two interface loads at x = -0.5 and +0.5 m are respectively -1000 and
-3000 N in Z. Their resultant is 2000 N in Z and **-2000 N m about Y**.
-For the supplied virtual displacement, boundary and reduced work are both
-3 J. The wrong-looking-right alternative `[0,0,2000,0,0,0]` passes a force-only
-check but is rejected for a 2000 N m moment defect.
-
-Independent tests translate the entire reference origin and rotate the whole
-assembly. Frequencies and physical point displacement remain invariant after
-the corresponding force/moment and inertia transformations. Changing the
-arbitrary numerical characteristic length also leaves the physics unchanged.
+Transform all loads, inertias and supports to a common origin and frame. Confirm occurrence identity, selected region and coupling DOFs. Check force and moment at interfaces and compare compliance or deflection independently across candidate representations.
 
 ## Native construction and failure recovery
 
-Use exact-release Siemens Help and installed API discovery
-to bind geometry ownership and exact API declarations. The pressure compiler
-audits per-face normal, area, centroid, owner and revision before emission.
-Its 2 MPa example acts on 0.01 m² and produces -20 kN in the defined direction;
-the opposite surface has the same area and centroid but the wrong normals and
-is rejected. This is more discriminating than checking selection cardinality.
+Use exact-release Siemens Help and installed API discovery. Independently check face normal, area, centroid, ownership and revision before applying a pressure and verify the integrated force and moment afterward.
 
 Use existing graph/region audits for CAD–idealized part–FEM–AFEM–SIM dependencies
 and the current official Siemens reads. For persistent CAE Selection Recipes,

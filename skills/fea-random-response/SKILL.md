@@ -1,6 +1,6 @@
 ---
 name: fea-random-response
-description: "Analyze stationary random structural vibration, cross PSD, coherence, modal coverage and RMS stress/displacement. Use for correlated multi-input spectra; distinguish transient shock, rotating systems and nonlinear contact from a valid linear stationary response."
+description: "Assess stationary vibration PSDs, correlated inputs, modal coverage and RMS response."
 metadata:
   copyright: "Unpublished work. Copyright 2026 Siemens"
 ---

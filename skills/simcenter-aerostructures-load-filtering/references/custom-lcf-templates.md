@@ -1,27 +1,29 @@
 # Custom Load Case Filtering Module Templates (`.xmd`, `.xml`, `.py`)
 
+These authoring patterns require validation against the installed module schema and ABB binding. Confirm input and tolerance measures, array lengths, result labels and status semantics before deployment. In this synthetic hull, both inputs use the same force unit. Mixed force and moment pairs require an explicit scaling and tolerance definition.
+
 Parent skill: [simcenter-aerostructures-load-filtering](../SKILL.md)
 
-## 1. Module Descriptor: `NFRCompatModule.xmd`
+## 1. Module Descriptor: `ExampleLoadFiltering.xmd`
 
 Place this file in the directory pointed to by `UGII_AEROSTRUCTURES_MODULE_PATH`:
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
-<module id="NFRCompatModule" path=".">
-  <method id="NFRCompat_1DMinMax" path="NFRCompat_1DMinMax.xml"/>
-  <method id="NFRCompat_FvF_ConvexHull" path="NFRCompat_FvF_ConvexHull.xml"/>
+<module id="ExampleLoadFiltering" path=".">
+  <method id="ExampleNfrExtremes" path="ExampleNfrExtremes.xml"/>
+  <method id="ExampleNfrHull" path="ExampleNfrHull.xml"/>
 </module>
 ```
 
 ---
 
-## 2. 1D Min/Max Filtering Method (`NFRCompat_1DMinMax`)
+## 2. 1D Min/Max Filtering Method (`ExampleNfrExtremes`)
 
-### Method Descriptor: `NFRCompat_1DMinMax.xml`
+### Method Descriptor: `ExampleNfrExtremes.xml`
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
-<method id="NFRCompat_1DMinMax" version="1" uiname="NFR 1D Min Max" type="loadfiltering" category="Load Case Filtering" script="python" author="Aerostructures" description="1D Min/Max load case filtering on Nodal Force Report free-body loads">
+<method id="ExampleNfrExtremes" version="1" uiname="NFR 1D Min Max" type="loadfiltering" category="Load Case Filtering" script="python" author="Aerostructures" description="1D Min/Max load case filtering on Nodal Force Report free-body loads">
   <input>
     <parameter id="F" uiname="F" type="free_body_load_extraction" measure="Force" description="Extracted Free Body Force"/>
     <parameter id="positiveOnly" uiname="Positive Only" type="boolean" default="false" description="Consider only positive values"/>
@@ -33,7 +35,7 @@ Place this file in the directory pointed to by `UGII_AEROSTRUCTURES_MODULE_PATH`
 </method>
 ```
 
-### Evaluation Script: `NFRCompat_1DMinMax.py`
+### Evaluation Script: `ExampleNfrExtremes.py`
 ```python
 # nx: threaded
 import NXOpen
@@ -58,21 +60,21 @@ def evaluate(context):
     output_table = context.GetOutputTable()
     B_prop = output_table.GetBooleanArrayPropertyValue("B")
     B_prop.SetValues(B_values)
-    context.Log("NFRCompat_1DMinMax status: " + str(status))
+    context.Log("ExampleNfrExtremes status: " + str(status))
 ```
 
 ---
 
-## 3. 2D Force-vs-Moment Convex Hull Method (`NFRCompat_FvF_ConvexHull`)
+## 3. 2D Convex Hull of Force Components (`ExampleNfrHull`)
 
-### Method Descriptor: `NFRCompat_FvF_ConvexHull.xml`
+### Method Descriptor: `ExampleNfrHull.xml`
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
-<method id="NFRCompat_FvF_ConvexHull" version="1" uiname="NFR Force vs Moment Convex Hull" type="loadfiltering" category="Load Case Filtering" script="python" author="Aerostructures" description="2D Convex Hull load case filtering on Nodal Force Report Force vs Moment">
+<method id="ExampleNfrHull" version="1" uiname="NFR Force Convex Hull" type="loadfiltering" category="Load Case Filtering" script="python" author="Aerostructures" description="2D Convex Hull load case filtering on Nodal Force Report two force components">
   <input>
     <parameter id="F1" uiname="F1" type="free_body_load_extraction" measure="Force" description="Primary Free Body Force"/>
-    <parameter id="F2" uiname="F2" type="free_body_load_extraction" measure="Moment" description="Secondary Free Body Moment"/>
-    <parameter id="Tolerance" uiname="Tolerance" type="scalar" measure="Length" default="0.02" lowerbound="0.0" upperbound="1.0" description="Relative tolerance inside convex hull boundary"/>
+    <parameter id="F2" uiname="F2" type="free_body_load_extraction" measure="Force" description="Secondary Free Body Force"/>
+    <parameter id="Tolerance" uiname="Tolerance" type="scalar" measure="Force" default="0.0" lowerbound="0.0" description="Tolerance in the coordinate units of the input force pair"/>
   </input>
   <output>
     <parameter id="B" uiname="Selected" type="boolean" description="Output list of boolean" indexby="lc"/>
@@ -80,7 +82,7 @@ def evaluate(context):
 </method>
 ```
 
-### Evaluation Script: `NFRCompat_FvF_ConvexHull.py`
+### Evaluation Script: `ExampleNfrHull.py`
 ```python
 # nx: threaded
 import NXOpen
@@ -107,5 +109,5 @@ def evaluate(context):
     output_table = context.GetOutputTable()
     B_prop = output_table.GetBooleanArrayPropertyValue("B")
     B_prop.SetValues(B_values)
-    context.Log("NFRCompat_FvF_ConvexHull status: " + str(status))
+    context.Log("ExampleNfrHull status: " + str(status))
 ```

@@ -1,6 +1,6 @@
 ---
 name: fea-composite-laminates
-description: "Analyze anisotropic composite laminates using ABD coupling, thermal gradients, mixed generalized constraints and ply-surface stress. Use for stacking/orientation errors, unsymmetric thermal warpage and composite OP2 ply interpretation; distinguish CLT from interlaminar failure."
+description: "Evaluate laminate stiffness, ply recovery, thermal coupling, or failure assumptions."
 metadata:
   copyright: "Unpublished work. Copyright 2026 Siemens"
 ---

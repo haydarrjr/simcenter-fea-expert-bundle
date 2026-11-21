@@ -1,6 +1,6 @@
 ---
 name: simcenter-nastran
-description: Qualify Simcenter Nastran SOL 101/103 decks, identify effective solver inputs and diagnostics, and route authorized Windows batch jobs without rediscovering NXOpen or searching the installation.
+description: "Qualify SOL 101/103 decks, effective sets, and local Simcenter Nastran execution."
 metadata:
   copyright: "Unpublished work. Copyright 2026 Siemens"
 ---

@@ -1,0 +1,19 @@
+{
+  "name": "simcenter-fea",
+  "interface": {
+    "displayName": "Simcenter FEA tools"
+  },
+  "plugins": [
+    {
+      "name": "simcenter-fea-expert",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
+      "policy": {
+        "installation": "AVAILABLE"
+      },
+      "category": "Engineering"
+    }
+  ]
+}

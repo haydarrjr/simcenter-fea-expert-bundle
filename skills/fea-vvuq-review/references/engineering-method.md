@@ -5,7 +5,7 @@
 1. Separate uncertainty sources
 2. Numerical verification
 3. Independent model-form checks
-4. Worked preload sensitivity and falsification
+4. Evaluate preload sensitivity
 5. Evidence and acceptance
 
 ## Separate uncertainty sources
@@ -61,28 +61,9 @@ scenario envelope is useful without pretending to be a calibrated reliability
 model. Material strength statistics, preload scatter, friction and temperature
 uncertainty must match the relevant population and operating condition.
 
-## Worked preload sensitivity and falsification
+## Evaluate preload sensitivity
 
-Use the eight-bolt source example as a scenario study. Change every initial
-preload by factors 0.9, 1.0 and 1.1, retain all physical service loads, and give
-each variant a distinct case identity. The executable mechanics predicts:
-
-| Preload factor | Maximum service bolt force | Open contact stations |
-| --- | ---: | --- |
-| 0.9 | 55,961.977 N | B2, B3, B4, B5 |
-| 1.0 | 56,048.306 N | B2, B3, B4, B5 |
-| 1.1 | 56,663.311 N | B2, B3, B4 |
-
-The contact set changes at the upper variant. A single linear preload-to-force
-coefficient would miss that transition. All three still require nonlinear
-contact/slip review; none is a thread-capacity or fatigue acceptance result.
-For the actual joint, change each evidenced station preload consistently and record each variant's independently identified decks, states and checks.
-
-An independent transfer falsifier uses -1000 and +3000 N at x=-0.5 and +0.5 m.
-The net force is 2000 N, but the Y moment is -2000 N m. A claimed transfer
-with zero moment has correct force and incorrect work. The assembly checker
-rejects it. This illustrates why choosing an easy scalar agreement metric can
-hide the error that matters to the engineering decision.
+Perturb the initial preload and each independent thermal or friction input within justified bounds. Record any change in contact state before interpreting derivatives. When important quantities depend on separation or slip, compare at least one native response on either side of the transition.
 
 ## Evidence and acceptance
 
@@ -90,13 +71,11 @@ Compare source artifacts and receipts on separate axes. Hash equality pins
 bytes; it does not authenticate a native run or physical measurement. A source
 model can pass internal arithmetic while lacking experimental or flexible-model
 correlation. Preserve model-form limitations and the domain where the benchmark
-applies. The 1,320 historical native acceptance fixtures remain independent of
-the new source tests.
+applies. Historical acceptance evidence is scoped to its observed model and release.
 
 Record the strongest falsifier exercised, the numerical/physical discrepancy
 that remains, its effect on the decision and the next experiment that would
 reduce it. Optimization is only credible if every candidate preserves constraints,
 physical identity and an appropriate validation model; reducing a surrogate
 objective must not exploit missing contact, an omitted loadcase or an invalid
-transfer. Use the case runner to re-evaluate the full evidence bundle for each
-accepted variant, and the acceptance skill for any claim of engineering closure.
+transfer. Re-evaluate the engineering evidence for each candidate variant.

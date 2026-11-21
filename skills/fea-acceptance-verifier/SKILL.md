@@ -1,6 +1,6 @@
 ---
 name: fea-acceptance-verifier
-description: "Evaluate engineering claims against independent physical checks, exact source state and authenticated native evidence. Use for acceptance decisions and engineering reports, including rejecting apparently converged cases; source CI never establishes licensed-host or engineering qualification."
+description: "Accept or reject an FEA engineering claim using independent physical and numerical evidence."
 metadata:
   copyright: "Unpublished work. Copyright 2026 Siemens"
 ---

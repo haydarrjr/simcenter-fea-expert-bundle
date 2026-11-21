@@ -1,45 +1,45 @@
-# Simcenter 3D FEA Expert — Canonical Skill Catalog (39 Skills)
+# Simcenter 3D FEA Expert skill catalog
 
-All 39 skills live under top-level `skills/<skill-name>/SKILL.md`.
+The 39 canonical skills live under `skills/`.
 
-| # | Skill | Description |
-|---:|---|---|
-| 1 | [`batchpost-actions`](../skills/batchpost-actions/SKILL.md) | Post-process simulation result files with the BatchPost MCP connector. Use when exporting contours, graphs across iterations, CSV or SCE, or creating/modifying post templates, result variables, selection entity XML, or camera files. |
-| 2 | [`designcenter-open-api-discovery`](../skills/designcenter-open-api-discovery/SKILL.md) | >- |
-| 3 | [`designcenter-open-connection-status`](../skills/designcenter-open-connection-status/SKILL.md) | >- |
-| 4 | [`designcenter-open-documentation-search`](../skills/designcenter-open-documentation-search/SKILL.md) | >- |
-| 5 | [`designcenter-open-journal-authoring`](../skills/designcenter-open-journal-authoring/SKILL.md) | >- |
-| 6 | [`designcenter-open-model-data-read`](../skills/designcenter-open-model-data-read/SKILL.md) | >- |
-| 7 | [`fea-acceptance-verifier`](../skills/fea-acceptance-verifier/SKILL.md) | Evaluate engineering claims against independent physical checks, exact source state and authenticated native evidence. Use for acceptance decisions and engineering reports, including rejecting apparently converged cases; source CI never establishes licensed-host or engineering qualification. |
-| 8 | [`fea-artifact-forensics`](../skills/fea-artifact-forensics/SKILL.md) | Inspect original Simcenter Nastran deck, F06 and OP2 evidence through Siemens MCPs. Verify provenance, scope and physical result identity. |
-| 9 | [`fea-chief-engineer`](../skills/fea-chief-engineer/SKILL.md) | Lead coupled FEA investigations from physical evidence, choose modeling and verification methods, and execute multi-artifact engineering cases. Use for whole-analysis decisions spanning solver-linked artifacts, contacts, nonlinear history, assembly dynamics, random response and acceptance. |
-| 10 | [`fea-composite-laminates`](../skills/fea-composite-laminates/SKILL.md) | Analyze anisotropic composite laminates using ABD coupling, thermal gradients, mixed generalized constraints and ply-surface stress. Use for stacking/orientation errors, unsymmetric thermal warpage and composite OP2 ply interpretation; distinguish CLT from interlaminar failure. |
-| 11 | [`fea-connector-contact`](../skills/fea-connector-contact/SKILL.md) | Analyze preloaded bolted joints, connector stiffness, unilateral contact, friction, separation and pressure/load introduction. Use for pretension-lock-thermal-service histories and thread-load interpretation; post-slip redistribution and local capacity need separate models. |
-| 12 | [`fea-continuum-thermomechanics`](../skills/fea-continuum-thermomechanics/SKILL.md) | Verify Simcenter structural solids, conduction, heat balance, thermal stress, temperature histories and model applicability. |
-| 13 | [`fea-durability`](../skills/fea-durability/SKILL.md) | Assess actual signed time histories, fatigue method selection, stress reversals, mean stress, damage or life and their evidence requirements. |
-| 14 | [`fea-dynamics`](../skills/fea-dynamics/SKILL.md) | Analyze assembly mass/inertia, mounts, modal subspaces, harmonic and real transient 3D field response. Resolve stress/time histories, energy and time-step accuracy before fatigue; route stationary spectra, cyclic, rotor, aeroelastic or acoustic questions to their explicit methods and limits. Includes the Siemens SOL 103 free-free workflow. |
-| 15 | [`fea-materials-properties`](../skills/fea-materials-properties/SKILL.md) | Evaluate constitutive assumptions, effective material/property ownership, temperature dependence, orthotropy and laminate coupling. Use for stiffness and thermal load-path decisions; distinguish average stress from strength, fatigue and ply-failure claims. |
-| 16 | [`fea-mesh-quality`](../skills/fea-mesh-quality/SKILL.md) | Design and assess mesh approximation, element geometry, connectivity and QoI convergence. Use for TRI3/TET4 checks, coincident nodes, refinement studies and meshing API preparation; a valid element shape does not prove solution accuracy. |
-| 17 | [`fea-modal-correlation`](../skills/fea-modal-correlation/SKILL.md) | Compare measured, imported or recalculated modal evidence with explicit DOF maps and physical metrics. Use for repeated/nearly repeated modes, basis rotation, mode switching, mass weighting, misleading MAC and cross-model eigenvector comparisons. |
-| 18 | [`fea-model-preparation`](../skills/fea-model-preparation/SKILL.md) | Plan and verify Simcenter 3D idealization, FEM/SIM ownership, mesh, connections, units and associative changes from model evidence. |
-| 19 | [`fea-multistep-nonlinear`](../skills/fea-multistep-nonlinear/SKILL.md) | Investigate Simcenter Nastran multistep nonlinear histories. Use for SOL 106/401/402, preload locking, contact, friction, plasticity, thermal transfer and false convergence. |
-| 20 | [`fea-native-runtime-gate`](../skills/fea-native-runtime-gate/SKILL.md) | Prepare documented Siemens CAE operations through an existing official Designcenter or Simcenter 3D MCP. Bind profile, model, owner and revision to the exact tool schema. Record independent readback and reconcile uncertain effects before dependent work. |
-| 21 | [`fea-open-meshing`](../skills/fea-open-meshing/SKILL.md) | Verify geometry-to-mesh and boundary transfer for Simcenter solid models. Use for unit-scale, physical face selection, pressure, traction, and heat-flux conservation checks. |
-| 22 | [`fea-random-response`](../skills/fea-random-response/SKILL.md) | Analyze stationary random structural vibration, cross PSD, coherence, modal coverage and RMS stress/displacement. Use for correlated multi-input spectra; distinguish transient shock, rotating systems and nonlinear contact from a valid linear stationary response. |
-| 23 | [`fea-results-interpretation`](../skills/fea-results-interpretation/SKILL.md) | Interpret identity-bound FEA results, recovery locations, tensors, modal subspaces and eigen-buckling references. Use for component decoding, principal/von-Mises/Tresca quantities, frame changes and coherent envelopes; unsupported complex or averaged fields stay explicit. |
-| 24 | [`fea-sc3d-tool-routing`](../skills/fea-sc3d-tool-routing/SKILL.md) | Route FEA stages (inventory, mesh, BC/load, deck, solve, results, verification, docs) of the fea-* skills to the real Simcenter 3D host tools and subagents (Simcenter 3D model-inspection, Designcenter Open, Product Support, Simcenter Nastran MCP, Batch Post). Use when deciding which tool or subagent performs an FEA step, when a tool is missing or SC3D is not connected, or to report capability gaps such as BLOCKED_BY_OFFICIAL_MCP_CAPABILITY. |
-| 25 | [`fea-solver-investigation`](../skills/fea-solver-investigation/SKILL.md) | Investigate the effective Simcenter Nastran deck, FEM/SIM ownership, solver log, reactions, strain energy, warnings and archived result consistency. |
-| 26 | [`fea-thermal`](../skills/fea-thermal/SKILL.md) | Reason about heat balance, temperature mapping, stress-free references and thermo-structural restraint. Use for differential expansion, temperature-sequenced joints and mounts; imported temperature fields are not automatically validated heat-transfer solutions. |
-| 27 | [`fea-vvuq-review`](../skills/fea-vvuq-review/SKILL.md) | Verify numerical methods and solution convergence, distinguish input uncertainty from model-form error, and design discriminating validation studies. Use for GCI, sensitivity, robust comparisons and optimization credibility; do not infer reliability from arbitrary ranges. |
-| 28 | [`simcenter-3d-connection-status`](../skills/simcenter-3d-connection-status/SKILL.md) | >- |
-| 29 | [`simcenter-3d-material-and-body-inspection`](../skills/simcenter-3d-material-and-body-inspection/SKILL.md) | >- |
-| 30 | [`simcenter-3d-mesh-generation`](../skills/simcenter-3d-mesh-generation/SKILL.md) | >- |
-| 31 | [`simcenter-3d-mesh-inspection`](../skills/simcenter-3d-mesh-inspection/SKILL.md) | >- |
-| 32 | [`simcenter-3d-mesh-quality-review`](../skills/simcenter-3d-mesh-quality-review/SKILL.md) | >- |
-| 33 | [`simcenter-3d-simulation-boundary-conditions`](../skills/simcenter-3d-simulation-boundary-conditions/SKILL.md) | >- |
-| 34 | [`simcenter-3d-visibility-and-selection`](../skills/simcenter-3d-visibility-and-selection/SKILL.md) | >- |
-| 35 | [`simcenter-aerostructures-load-filtering`](../skills/simcenter-aerostructures-load-filtering/SKILL.md) | Define Nodal Force Reports (NFR), configure FreeBodyLoadExtraction, author custom Python/XML/XMD Load Case Filtering modules using NXOpen.CAE.AeroStructures.Author.ABB (Lcf1dMinMax and LcfConvexHull), and solve LoadFilteringSolution to generate critical Load Case Sets in Simcenter 3D Aerostructures. |
-| 36 | [`simcenter-aerostructures-margin-of-safety`](../skills/simcenter-aerostructures-margin-of-safety/SKILL.md) | Configure, parameterize, solve, and audit Simcenter 3D Aerostructures Margin of Safety (MarginSolution and MarginCalculation) using associative Knowledge Fusion ExtractProperty rules, standard panel/column buckling and stress allowable methods, .msz/.mslog forensic analysis, and automated Word Report Writer templates. |
-| 37 | [`simcenter-airframe-structural-verification`](../skills/simcenter-airframe-structural-verification/SKILL.md) | Orchestrate the end-to-end Simcenter 3D Airframe Structural Verification workflow from associative CAD, Idealized parts, Component FEMs, Structural Assembly GFEM, and Aeroelastic Assembly FEM through SOL 144 static aeroelastic trim (multi-weight OP2 envelope), 49-station Nodal Force Reports, Load Case Filtering, associative Knowledge Fusion Margin of Safety, and automated Word report generation. |
-| 38 | [`simcenter-parametric-sol101`](../skills/simcenter-parametric-sol101/SKILL.md) | Build, update and accept a parametrically defined SOL101 cantilever beam pilot (CAD metadata, semantic selections, FEM/SIM, material, clamp and tip load, Euler-Bernoulli and mesh-convergence acceptance) using the real Designcenter Open, Simcenter 3D model-inspection, Product Support and Simcenter Nastran MCP tools. Use for this structural benchmark, reusable cantilever automation, or to judge PASS/FAIL/PARTIAL/NOT_RUN/UNVERIFIED status of such a workflow. |
-| 39 | [`simcenter-nastran`](../skills/simcenter-nastran/SKILL.md) | Qualify SOL 101/103 solver input and diagnostics; resolve deck includes and effective case control without a replacement solver or binary result reader. |
+| Skill | Use |
+|---|---|
+| [`batchpost-actions`](../skills/batchpost-actions/SKILL.md) | Export or inspect solver results through the BatchPost MCP. |
+| [`designcenter-open-api-discovery`](../skills/designcenter-open-api-discovery/SKILL.md) | Resolve an unfamiliar NXOpen class, member, signature, or execution pattern. |
+| [`designcenter-open-connection-status`](../skills/designcenter-open-connection-status/SKILL.md) | Diagnose Designcenter Open startup, attachment, or loss of connection. |
+| [`designcenter-open-documentation-search`](../skills/designcenter-open-documentation-search/SKILL.md) | Find versioned Siemens documentation for a Designcenter or Simcenter CAE question. |
+| [`designcenter-open-journal-authoring`](../skills/designcenter-open-journal-authoring/SKILL.md) | Author or test an NXOpen Python journal, or run a scoped operation in Designcenter. |
+| [`designcenter-open-model-data-read`](../skills/designcenter-open-model-data-read/SKILL.md) | Read CAD features, parts, expressions, attributes, or relationships from the live model. |
+| [`fea-acceptance-verifier`](../skills/fea-acceptance-verifier/SKILL.md) | Accept or reject an FEA engineering claim using independent physical and numerical evidence. |
+| [`fea-artifact-forensics`](../skills/fea-artifact-forensics/SKILL.md) | Trace a solver deck, log or result file to the exact job, model and result state. |
+| [`fea-chief-engineer`](../skills/fea-chief-engineer/SKILL.md) | Plan a coupled FEA study or resolve a decision spanning several analysis stages. |
+| [`fea-composite-laminates`](../skills/fea-composite-laminates/SKILL.md) | Evaluate laminate stiffness, ply recovery, thermal coupling, or failure assumptions. |
+| [`fea-connector-contact`](../skills/fea-connector-contact/SKILL.md) | Assess bolt preload, connector load transfer, contact opening, or friction. |
+| [`fea-continuum-thermomechanics`](../skills/fea-continuum-thermomechanics/SKILL.md) | Check solid or thermoelastic formulation, heat balance, and continuum assumptions. |
+| [`fea-durability`](../skills/fea-durability/SKILL.md) | Assess fatigue from signed load or stress histories and material life data. |
+| [`fea-dynamics`](../skills/fea-dynamics/SKILL.md) | Analyze modal, harmonic or transient response and assembly inertia or mounts. |
+| [`fea-materials-properties`](../skills/fea-materials-properties/SKILL.md) | Verify constitutive data, material assignment and effective FEA properties. |
+| [`fea-mesh-quality`](../skills/fea-mesh-quality/SKILL.md) | Assess discretization, connectivity, element validity or quantity-of-interest convergence. |
+| [`fea-modal-correlation`](../skills/fea-modal-correlation/SKILL.md) | Compare mode shapes or modal subspaces across simulations or test data. |
+| [`fea-model-preparation`](../skills/fea-model-preparation/SKILL.md) | Select idealization and verify CAD, FEM, assembly FEM and SIM ownership. |
+| [`fea-multistep-nonlinear`](../skills/fea-multistep-nonlinear/SKILL.md) | Diagnose nonlinear subcase sequencing, convergence, plasticity or load history. |
+| [`fea-native-runtime-gate`](../skills/fea-native-runtime-gate/SKILL.md) | Prepare and verify an authorized native Simcenter operation with independent readback. |
+| [`fea-open-meshing`](../skills/fea-open-meshing/SKILL.md) | Verify geometry-to-mesh and load or heat-flux transfer by conservation checks. |
+| [`fea-random-response`](../skills/fea-random-response/SKILL.md) | Assess stationary vibration PSDs, correlated inputs, modal coverage and RMS response. |
+| [`fea-results-interpretation`](../skills/fea-results-interpretation/SKILL.md) | Interpret FEA quantities, tensor components, recovery locations, or modal and buckling results. |
+| [`fea-sc3d-tool-routing`](../skills/fea-sc3d-tool-routing/SKILL.md) | Select the Siemens MCP profile or fallback for an FEA operation. |
+| [`fea-solver-investigation`](../skills/fea-solver-investigation/SKILL.md) | Investigate solver setup or termination and choose a discriminating repair. |
+| [`fea-thermal`](../skills/fea-thermal/SKILL.md) | Assess thermal load mapping, restraint, stress-free temperature and thermal stress. |
+| [`fea-vvuq-review`](../skills/fea-vvuq-review/SKILL.md) | Review FEA verification, validation, mesh convergence and input or model-form uncertainty. |
+| [`simcenter-3d-connection-status`](../skills/simcenter-3d-connection-status/SKILL.md) | Diagnose Simcenter 3D Model Inspection startup, attachment or disconnection. |
+| [`simcenter-3d-material-and-body-inspection`](../skills/simcenter-3d-material-and-body-inspection/SKILL.md) | Read bodies, material records or material assignments in the active Simcenter model. |
+| [`simcenter-3d-mesh-generation`](../skills/simcenter-3d-mesh-generation/SKILL.md) | Create or edit a shell or solid mesh through Simcenter 3D Model Inspection. |
+| [`simcenter-3d-mesh-inspection`](../skills/simcenter-3d-mesh-inspection/SKILL.md) | Read mesh collectors, element families, counts and property assignments in a FEM or AFM. |
+| [`simcenter-3d-mesh-quality-review`](../skills/simcenter-3d-mesh-quality-review/SKILL.md) | Read and interpret native Simcenter mesh quality metrics. |
+| [`simcenter-3d-simulation-boundary-conditions`](../skills/simcenter-3d-simulation-boundary-conditions/SKILL.md) | Read Simcenter loads, constraints, simulation objects and their solution or subcase assignments. |
+| [`simcenter-3d-visibility-and-selection`](../skills/simcenter-3d-visibility-and-selection/SKILL.md) | Show, hide, select or deselect scoped bodies or meshes in the active session. |
+| [`simcenter-aerostructures-load-filtering`](../skills/simcenter-aerostructures-load-filtering/SKILL.md) | Extract station forces and moments or filter coherent Simcenter Aerostructures load cases. |
+| [`simcenter-aerostructures-margin-of-safety`](../skills/simcenter-aerostructures-margin-of-safety/SKILL.md) | Set up or audit Aerostructures margin calculations, allowables and governing load cases. |
+| [`simcenter-airframe-structural-verification`](../skills/simcenter-airframe-structural-verification/SKILL.md) | Plan or audit the integrated GFEM, SOL 144 trim and airframe structural verification workflow. |
+| [`simcenter-parametric-sol101`](../skills/simcenter-parametric-sol101/SKILL.md) | Create or update an associative parametric Simcenter SOL 101 study. |
+| [`simcenter-nastran`](../skills/simcenter-nastran/SKILL.md) | Qualify SOL 101/103 decks, effective sets, and local Simcenter Nastran execution. |

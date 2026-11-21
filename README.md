@@ -6,11 +6,14 @@ Repository: <https://github.com/haydarrjr/simcenter-fea-expert-bundle>
 
 ## Repository Layout (Unified Single-Source Architecture)
 
-Matching the clean, self-contained layout of `simcenter_nx_expert`, all recipes and skills live in a single canonical top-level hierarchy with zero split `overlay/`, `.agents/`, or external submodule dependencies:
+The repository owns one canonical skill tree and a portable Agent Plugins manifest. The AgentsAI recipes and Copilot agent use that same skill tree.
 
 ```text
 simcenter-fea-expert-bundle/
 ├── .sim-ai-agents.toml                  # Bundle sidecar manifest and release version
+├── plugin.json                         # Agent Plugins 1.0 manifest
+├── com.github.copilot/agents/           # Canonical Copilot agent
+├── fea-workflow.md                     # Shared entry point
 ├── recipes/
 │   ├── fea-expert-agent.yaml            # Single top-level orchestrator agent
 │   └── subrecipes/                      # 6 specialist subagents
@@ -34,7 +37,7 @@ simcenter-fea-expert-bundle/
     └── test_distribution.py             # Verifies offline source contract
 ```
 
-See the complete [Skill Catalog (39 skills)](docs/skill-catalog.md) and [Release Notes](RELEASE_NOTES.md).
+See the [skill catalog](docs/skill-catalog.md), [implementation plan](docs/fea-skill-tailoring-implementation-plan.md), and [release notes](RELEASE_NOTES.md).
 
 ## Referenced MCP Servers (`type: ref`)
 
@@ -54,7 +57,9 @@ python -B -m unittest discover -s tests -v
 python -B scripts/package_release.py
 ```
 
-Set `$candidate` to the printed output directory. Each target must already exist. Use new backup directories outside the project being installed.
+The build also writes `simcenter-fea-expert-plugin.zip` for native plugin hosts. Extract it to a directory. Codex can register that directory with `codex plugin marketplace add <directory>` and then install `simcenter-fea-expert@simcenter-fea`. VS Code can register the extracted path using `chat.pluginLocations` when the feature is available. Use one discovery path per workspace to avoid loading both the native plugin and project mirror. The plugin relies on the existing Siemens MCP profiles. [OpenAI package guide](https://developers.openai.com/plugins/build/plugins) · [VS Code plugin authoring](https://code.visualstudio.com/docs/agents/reference/agent-plugin-reference)
+
+For the project archive path, set `$candidate` to the printed output directory. Each target must already exist. Use new backup directories outside the project being installed.
 
 ```powershell
 python -B scripts/sync_project_runtime.py --project $codexProject --archive "$candidate/codex-project-windows.zip" --backup $codexBackup

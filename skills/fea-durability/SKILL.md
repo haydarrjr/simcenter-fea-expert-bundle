@@ -1,6 +1,6 @@
 ---
 name: fea-durability
-description: "Assess actual signed time histories, fatigue method selection, stress reversals, mean stress, damage or life and their evidence requirements."
+description: "Assess fatigue from signed load or stress histories and material life data."
 metadata:
   copyright: "Unpublished work. Copyright 2026 Siemens"
 ---

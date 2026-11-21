@@ -2,7 +2,7 @@
 
 ## Contents
 
-- [Elasticity and thermal compatibility](#isotropic-elasticity-and-the-executable-joint-case)
+- [Elasticity and thermal compatibility](#isotropic-elasticity-and-thermal-compatibility)
 - [Tangent and secant](#tangent-secant-and-path-dependence)
 - [Tensor meaning](#tensor-conventions-are-part-of-the-material-contract)
 - [Laminate reasoning](#orthotropy-and-laminate-reasoning)
@@ -14,7 +14,7 @@ range, units and source identity. A material name alone does not select a valid
 curve or prove an allowable. Reconcile the effective solver property with the
 intended physical state before interpreting stiffness or stress.
 
-## Isotropic elasticity and the executable joint case
+## Isotropic elasticity and thermal compatibility
 
 For small-strain isotropic elasticity, enforce `E=2G(1+nu)` and positive bulk
 and shear stiffness. In this package's compressible elastic calculations,
@@ -22,25 +22,9 @@ and shear stiffness. In this package's compressible elastic calculations,
 by replacing nu=0.5 with an arbitrary nearby number; choose an appropriate
 formulation and verify volumetric locking.
 
-The coupled [joint method](../../fea-connector-contact/references/engineering-method.md) derives bolt/member axial stiffness from `EA/L` and member tangential stiffness
-from `GA/L`. A 200 GPa bolt with 84.3 mm² area and 50 mm grip has 337.2 MN/m
-axial stiffness. A 70 GPa member prism with 800 mm² effective area and 40 mm
-grip has 1,400 MN/m. These areas and lengths represent an idealization: head
-bearing, cone overlap, flange bending and gasket compliance can invalidate it.
+Use the [joint method](../../fea-connector-contact/references/engineering-method.md) for axial and tangential compliance. Establish the effective areas and lengths from the load path. Check whether head bearing, flange bending, member contact or gasket compliance controls.
 
-Thermal strain must refer to the correct stress-free temperature. With constant
-alpha, free expansion is `alpha*L*deltaT`; with temperature-varying expansion,
-distinguish an instantaneous coefficient from a mean/secant coefficient before
-integrating. In the eight-bolt example, member/bolt temperature rises 120/80 K
-and coefficients 23/12 microstrain/K produce 62.4 micrometres differential free
-extension. The series compliance predicts a preload rise of 16,957.053 N per
-bolt. After cooling with 4 micrometres permanent settlement, the retained
-preload is 18,913.009 N, not the original 20,000 N.
-
-Use the worked values below as an illustration of the relevant material effects. The independent
-tests check thermal compatibility, common free expansion and energy/work.
-The model assumes constant elastic moduli; a high-temperature alloy requiring
-E(T), plasticity or creep needs the appropriate constitutive history.
+Thermal strain depends on the stress-free temperature and the material coefficient over the actual interval. Integrate an instantaneous expansion coefficient with temperature before computing free extension. Apply the relevant bolt and member compliance and contact state to evaluate any preload change. Include permanent settlement or inelastic strain when supported by the load history.
 
 ## Tangent, secant and path dependence
 

@@ -6,7 +6,7 @@
 2. Input and response spectral matrices
 3. Numerical integration and coverage
 4. Recover stress and interpret RMS
-5. Worked case and falsifiers
+5. Test correlated inputs
 6. Solver/API operations and unsupported families
 
 ## Select the physical and stochastic model
@@ -140,24 +140,9 @@ impact, sliding or changing contact requires additional modeling. Report
 normal-stress RMS and covariance only for the recovered components. Full
 torsional/shear equivalent-stress peaks and life need additional evidence.
 
-## Worked case and falsifiers
+## Test correlated inputs
 
-The flexible gantry's eccentric body excites sway, torsion and arm bending.
-Two deck load patterns apply X forces at different nodes. Over 5–120 Hz their
-constant cross spectrum is `[[4,1.2],[1.2,9]] /Hz`, with ζ=0.015. The sensor-X
-RMS is about **0.302 mm** in the worked independent elastic reference. The
-example provides no Simcenter solver or physical test evidence for a new model.
-
-Use these competing hypotheses and falsifiers:
-
-| Apparent conclusion | Discriminating check | Result that changes the decision |
-| --- | --- | --- |
-| A coarse frequency grid establishes the RMS | Seed poles using ζ, refine quadrature and compare an independent integral | A missed narrow mode materially increases variance |
-| Inputs can be treated as independent | Retain measured complex cross spectra and compute the auto-only counterfactual | Correlated addition/cancellation changes governing output |
-| All pairwise coherences ≤1 make a valid input | Check eigenvalues of the full cross-spectral matrix | A negative eigenvalue makes the proposed joint excitation impossible |
-| Small static displacement validates random response | Compute all-node rotations and all-member relative RMS motion | A held-out 0.4 m member develops about 84.8 mm chord RMS and requires another model |
-| The local maximum is sqrt(sum of component RMS²) | Recover the full joint stress process/covariance with physical states | The constructed envelope combines incompatible phases/components |
-| Real symmetric modes represent a spinning rotor | Inspect speed, gyroscopic matrix and forward/backward branches | Nonzero gyroscopic coupling requires a different eigenproblem |
+Compare independent, fully correlated and phase-shifted inputs using the same auto-spectra. Evaluate the actual complex cross terms in the response. Check Hermitian symmetry, positive semidefiniteness and frequency integration. Separate sensitivity to the correlation model from errors introduced by modal truncation.
 
 ## Solver/API operations and unsupported families
 

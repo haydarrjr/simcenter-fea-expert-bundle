@@ -1,6 +1,6 @@
 ---
 name: fea-sc3d-tool-routing
-description: Route FEA stages (inventory, mesh, BC/load, deck, solve, results, verification, docs) of the fea-* skills to the real Simcenter 3D host tools and subagents (Simcenter 3D model-inspection, Designcenter Open, Product Support, Simcenter Nastran MCP, Batch Post). Use when deciding which tool or subagent performs an FEA step, when a tool is missing or SC3D is not connected, or to report capability gaps such as BLOCKED_BY_OFFICIAL_MCP_CAPABILITY.
+description: "Select the Siemens MCP profile or fallback for an FEA operation."
 metadata:
   copyright: "Unpublished work. Copyright 2026 Siemens"
 ---
@@ -12,7 +12,7 @@ Use the installed global host definitions. Select the profile by operation. Use 
 Rules:
 1. **Never invent tool names.** Discover only the selected profile's current catalog/schema, once per workflow unless the host changes. Reuse the bound profile, model, observed fault and attempted fallback across agents. Historical names are in the [tool matrix](references/tool-matrix.md).
 2. Host references: "Simcenter 3D" (model inspection), "Designcenter Open" (NXOpen discovery/journals/model reads), "Product Support" (documentation `search`), "Simcenter Nastran MCP" (read-only deck/F06), "Batch Post" (result post-processing).
-3. Use advertised mesh generation and visibility mutations only after an explicit request, on an owned copy, with readback. For solution setup and deck export, qualify the live Designcenter Open journal and its exact operation on the identified working copy. Run it through the current official MCP with the authorized scope and read back the effect. Read-only subagents use their tool allowlists. The user saves the SIM/FEM.
+3. Use advertised mesh generation and visibility mutations only after an explicit request, on an owned copy, with readback. For solution setup and deck export, qualify the live Designcenter Open journal and its exact operation on the identified working copy. Run it through the current official MCP with the authorized scope and read back the effect. Read-only subagents use their tool allowlists. Verify persistence through an admitted save and independent reopen, or record operator save evidence when needed.
 4. Follow the recovery budget below. A missing tool, disconnection and connected session without an active part are different findings.
 5. Choose results from an explicit path or an exact saved result path returned by authorized MCP. Keep lookups inside the workspace and user-authorized roots. Request the path when the target is unresolved.
 
@@ -42,4 +42,4 @@ Rules:
 Use the qualified batched CAE read directly for 2612 SIM identity, solutions, step BCs and result references. Use Model Inspection only for needed mesh/body/material fields not supplied by that read or accepted deck evidence. This does not promote a CAD data tool to a FEM reader.
 
 ## Skill to stage
-See the table in [tool matrix](references/tool-matrix.md) for all 20 fea-* skills. Pilot workflow: [simcenter-parametric-sol101](../simcenter-parametric-sol101/SKILL.md). Airframe & Aerostructures workflows: [simcenter-airframe-structural-verification](../simcenter-airframe-structural-verification/SKILL.md), [simcenter-aerostructures-load-filtering](../simcenter-aerostructures-load-filtering/SKILL.md), and [simcenter-aerostructures-margin-of-safety](../simcenter-aerostructures-margin-of-safety/SKILL.md).
+See the table in [tool matrix](references/tool-matrix.md) for all 20 fea-* skills. Parametric static study: [simcenter-parametric-sol101](../simcenter-parametric-sol101/SKILL.md). Airframe & Aerostructures workflows: [simcenter-airframe-structural-verification](../simcenter-airframe-structural-verification/SKILL.md), [simcenter-aerostructures-load-filtering](../simcenter-aerostructures-load-filtering/SKILL.md), and [simcenter-aerostructures-margin-of-safety](../simcenter-aerostructures-margin-of-safety/SKILL.md).

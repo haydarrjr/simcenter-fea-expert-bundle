@@ -56,36 +56,9 @@ friction demand. Do not treat an elastic stick trial beyond friction capacity as
 a computed post-slip solution. Locked pretension is a retained state, not a
 constant force blindly re-applied at every service step.
 
-## Worked false-convergence case
+## Test an apparently converged solution
 
-Use the magnitudes below as a worked example of independent acceptance checks
-on an eight-bolt flange.
-
-The nonlinear example is explicitly manufactured. Its deck fragment selects
-SOL401, a preload subcase and dependent service loading. Its F06 fragment uses
-documented `ACCUM / ITER / EQU / CON / BLT` column semantics. The numerical
-history is a separately hash-bound FEA interchange CSV. Do not describe these
-files as a native solver execution or a complete solvable deck.
-
-The last CSV record claims convergence, and the final summary has EQU=y and
-BLT=y. That looks reassuring, but CON=n. Independent checks expose the failure:
-
-| Evidence | Calculation | Engineering implication |
-|---|---|---|
-| Applied force 160,000 N, reaction −142,000 N | Unbalanced force = 18,000 N; 11.25% of applied load | Exceeds the declared 1% budget. |
-| Artificial energy 120 J, strain energy 1,000 J | Ratio = 12% | Exceeds the declared 5% numerical-energy budget. |
-| Force convergence error 0.04; selected EPSP 0.001 | Error is 40 times the selected criterion | A converged Boolean cannot replace the selected numerical test. |
-| Final load factor 0.8 | Only 80% of requested target | Terminal status cannot establish the full service load. |
-| Contact summary CON=n | Contact criterion remains unsatisfied | Investigate changing/open contact and residual-bearing interfaces. |
-
-Reject the claimed converged engineering state. Rank checks that discriminate
-causes: inspect effective contact selection and reaction completeness; compare
-pretension/lock inheritance and zero-service bolt force; correlate contact
-change with residual growth; inspect stabilization contribution; then vary load
-increments or the constitutive/contact model under a controlled revision.
-Merely increasing iteration count or changing a flag cannot remove the measured
-18 kN equilibrium defect. Preserve each alternative as a hypothesis with the
-specific observation that would falsify it.
+Select an independent check sensitive to the proposed failure. Compare the predicted and observed reaction, residual, energy change and active contact state at the same accepted increment. A change to load step or contact enforcement can expose an apparent terminal solution that is unstable or violates equilibrium.
 
 ## Separate artifact integrity, authenticated observation and acceptance
 

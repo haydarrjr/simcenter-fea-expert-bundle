@@ -1,9 +1,12 @@
-# SOL101 engineering evidence contract
+# Parametric SOL 101 evidence
 
-Resolve documented APIs with the Designcenter Open discovery tools (`dcopen-pattern-lookup-tool`, `dcopen-keyword-search-tool`, `dcopen-semantic-search-tool`, `dcopen-list-classes`, `dcopen-class-info`, `dcopen-member-info`) and release-specific documentation via the Product Support `search` tool (`documentation-search-tool` only if advertised in the current Designcenter Open catalog). Never invent tool or symbol names; discover the catalog each session. Preserve product, documentation set, release/SKU, document ID, provenance and source/content status. Record reaction, displacement, units and benchmark checks separately.
+1. Record CAD/FEM/SIM revisions, parameters, target regions, all active load and constraint inputs, units, and acceptance quantities.
+2. For each parameter change, record expected and observed geometry, semantic selection regions, applied resultants and solution membership. Trace the new deck revision and source analysis. Protect task-owned targets from accidental duplication.
+3. Compare the submitted deck, F06 and OP2 by exact job, subcase and content identity. Record solver termination and warnings. Keep strength claims scoped to the stress recovery location and model assumptions.
+4. Report separately the observed associative update, saved-and-reopened model, licensed solve, result recovery and engineering comparison. Use [acceptance verification](../../fea-acceptance-verifier/SKILL.md) for scoped status.
 
-Include a public URL only when externally resolvable. Never expose internal or synthetic locators, `*.invalid`, localhost or snapshot locators as public links; those belong only in requested debug diagnostics. Local engineering artifacts may be linked separately as files.
+## Synthetic benchmarks
 
-Preserve distinct failure classes: invalid argument, backend failure, license failure, solver fatal, timeout, not connected (`dc_connection_status`). For documentation-search punctuation parser errors, retry once replacing raw ASCII apostrophes and backticks without changing release/product.
+For a uniform axial bar, compare tip displacement to `FL/(EA)`, axial stress to `F/A` and the axial support reaction to `-F`. Use an explicit consistent unit system. Choose tolerances based on formulation and expected numerical error.
 
-Analytical reference or source tests establish PARTIAL evidence. Full PASS requires FEM/SIM, exported deck, licensed solve (parsed with `parse_f06_file`), reaction/displacement/convergence checks, associative updates and separate GUI acceptance. Missing steps are NOT_RUN; unknown outcomes UNVERIFIED. Tag every claim with an evidence class: SOURCE_TESTED, DOCUMENTED_2606_CANDIDATE, MCP_2612_DISCOVERED, HOST_QUALIFIED, NATIVE_EXECUTED, SOLVER_VERIFIED, ENGINEERING_ACCEPTED.
+For a slender prismatic cantilever under a transverse tip force, compare displacement to `FL^3/(3EI)`, rotation to `FL^2/(2EI)`, and reactions to the applied force and moment. Check the beam theory's applicability, element order, shear and extraction region before drawing conclusions from the comparison. Evaluate a local stress away from idealized load and support singularities. These are independently specified tests for the measured quantities.

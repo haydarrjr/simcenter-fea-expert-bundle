@@ -5,7 +5,7 @@
 1. Separate a temperature field from a thermal load
 2. Map temperature and mechanical work consistently
 3. Solve sequential restraint
-4. Worked assembly and bolt examples
+4. Verify restrained expansion
 5. Verification and API effects
 
 ## Separate a temperature field from a thermal load
@@ -27,7 +27,7 @@ solve heat conduction or infer temperature-dependent material behavior.
 Uniform free heating produces expansion without stress only when all relevant
 motions are unrestrained. Differential expansion, rigid links, attachments or
 contact can create force even if the entire analysis has one temperature value.
-A strong but wrong-looking-right shortcut is to apply an equivalent force to
+A strong but diagnostic shortcut is to apply an equivalent force to
 every support without solving compatibility; it can satisfy a global resultant
 while assigning incorrect local reactions.
 
@@ -60,30 +60,9 @@ state, individual component temperature and settlement. Applying preload again
 in the service step or dropping it during a restart produces a different
 physical problem even when the service pressure is unchanged.
 
-## Worked assembly and bolt examples
+## Verify restrained expansion
 
-Use the example to verify the signs and magnitudes of restrained thermal expansion.
-The manufactured 118 kg assembly has four tilted anisotropic mounts. A 100 K
-temperature change gives the four modeled local growth magnitudes
-`110, 192, 81, 121 micrometres`, derived from length times coefficient times
-temperature. Their directions and stiffnesses differ, so the body cannot
-satisfy all free growth simultaneously.
-
-Under the same gravity-equivalent inertial load, reference-origin Z translation
-changes from about **-34.427 micrometres cold to +92.245 micrometres hot**.
-Mount M1's local axial support reaction changes from **+206.174 N to -9.905 N**.
-The bilateral reference remains in force/moment equilibrium, but the changed
-sign requires a real tensile load path. If that interface is compression-only,
-its assumed active state is wrong. The case runner detects the reversal and
-routes the engineering question to contact analysis; it does not promote small
-residuals to engineering acceptance.
-
-The eight-bolt flange example offers an independent mechanism. Initial 20 kN
-preload rises to about 36.957 kN after different bolt/member temperature changes.
-Eccentric service then opens B2–B5; unloading with 4 micrometres settlement leaves
-about 18.913 kN per bolt. A single thermal stress number cannot represent that
-load history. Use the joint mechanics calculation
-and read the stepwise forces, contact states and energy.
+Use free expansion and complete restraint as limiting cases for a uniform prismatic member. For a joint with different bolt and member temperatures, compute the differential expansion using each path length and temperature-dependent material data. Check preload change against a compatibility estimate at the same contact state.
 
 ## Verification and API effects
 
@@ -95,13 +74,13 @@ Track thermal field uncertainty separately from mesh error and joint model form.
 
 The documented API workflow can attach a created load to an explicit solution
 step and read back membership. The load descriptor and property names must come
-from actual release-specific metadata; a contract fixture's strings are not
+from actual release-specific metadata; unverified descriptor strings are not
 vendor-defined identifiers. Consult the
 documentation for the current Siemens release and [runtime gate](../../fea-native-runtime-gate/SKILL.md).
 Thermal field creation, coupling, solve and persistent export need their own
 qualified capabilities; no generic CAD mutation grant covers these operations.
 
-Hot modes in the assembly source example use unchanged linear mount stiffness.
+For hot modes, verify the equilibrated operating state and the tangent mount stiffness used by the perturbation.
 Geometric stress stiffness, temperature-dependent stiffness, contact switching
 and flexible-body thermal modes are unresolved. Preserve that limitation when
 deciding whether the reference is adequate for the operating-frequency band.

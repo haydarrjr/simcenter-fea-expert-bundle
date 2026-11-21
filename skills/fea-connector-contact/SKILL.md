@@ -1,6 +1,6 @@
 ---
 name: fea-connector-contact
-description: "Analyze preloaded bolted joints, connector stiffness, unilateral contact, friction, separation and pressure/load introduction. Use for pretension-lock-thermal-service histories and thread-load interpretation; post-slip redistribution and local capacity need separate models."
+description: "Assess bolt preload, connector load transfer, contact opening, or friction."
 metadata:
   copyright: "Unpublished work. Copyright 2026 Siemens"
 ---

@@ -19,7 +19,7 @@ class BundleLayoutTests(unittest.TestCase):
     def test_all_39_skills_under_top_level_skills_dir(self):
         skills = sorted(p.parent.name for p in (ROOT / 'skills').glob('*/SKILL.md'))
         self.assertEqual(len(skills), 39)
-        self.assertFalse((ROOT / '.agents').exists())
+        self.assertFalse((ROOT / '.agents/skills').exists())
         self.assertFalse((ROOT / 'overlay').exists())
 
     def test_built_archive_layout(self):

@@ -6,7 +6,7 @@
 2. Effective deck and flexible mechanics
 3. Job/result interpretation and independent checks
 4. Discriminating repair
-5. Worked gantry and counterexamples
+5. Reconcile solver artifacts
 6. Siemens and Runtime operation boundary
 
 ## Evidence graph and physical state
@@ -149,28 +149,9 @@ response or another suitable model. The correct action can be to reject the
 apparent random-response solver while still identifying the discriminating
 measurement or computation needed next.
 
-## Worked gantry and counterexamples
+## Reconcile solver artifacts
 
-The gantry has two flexible columns, a cross tube, an eccentric sensor arm,
-two concentrated bodies and 36 free DOFs. Its tube/body mass is about 72.125 kg.
-The static benchmark applies the **47 kg payload weight only**, 461.07 N;
-tube self-weight is deliberately absent. It therefore cannot be described as
-the complete gravity loading of the 72.125 kg assembly.
-
-The worked reference uses circular-tube areas/inertias, consistent beam mass
-and separate geometric transforms. Its first mode is about 7.915 Hz. Sensor
-displacement under payload weight is about 0.804 mm in Y and −2.344 mm in Z.
-For the actual case, compare only available reactions, element-end actions,
-recovered stresses and correctly mapped modal vectors.
-
-`wrong_support_case.json` adds +350 N and −350 N along the line connecting
-the feet. Net force and moment remain unchanged. Local equilibrium and support
-distribution must reject it. `stale_mesh_case.json` retains plausible numeric
-GRID IDs but carries an old region mesh revision. `wrong_subcase_case.json`
-tries to use payload-weight results for a lateral-load subcase. The contact
-variant asks the same linear model to represent a pretensioned frictional
-operating structure; random response is withheld and a physical-state repair
-is required. These variants are explicitly manufactured falsifiers.
+Check that the effective deck defines the claimed model, solution and load scope. Compare response and reactions against the expected load path. If equilibrium and recovery disagree, isolate the first inconsistent mapping or physical assumption before rerunning the job.
 
 ## Siemens and Runtime operation boundary
 

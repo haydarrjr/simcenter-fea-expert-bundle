@@ -76,7 +76,7 @@ Retain structural-to-aerodynamic interpolation and its work-conjugate load
 transfer. An interface that preserves force but loses moment changes the work
 input and may move a predicted instability. Use the implemented conservative
 transfer falsifier before interpreting the coupled result. No aerodynamic matrix
-or flutter solver is implemented in the six-DOF source example.
+or flutter solver is implemented in a six-degree-of-freedom model.
 
 ## Vibroacoustics
 

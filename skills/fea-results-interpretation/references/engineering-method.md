@@ -5,7 +5,7 @@
 1. Result identity and recovery semantics
 2. Tensor invariants and representability
 3. Modal and buckling interpretation
-4. Worked wrong-looking-right examples
+4. Worked diagnostic examples
 5. Readback and debugging
 
 ## Result identity and recovery semantics
@@ -20,7 +20,7 @@ interface, contact discontinuity or incompatible result state without a justifie
 physical operation.
 
 The v2 vendor decoder preserves raw components, labels, parent elements and
-units before feeding the P09 tensor engine. Its result access objects are
+units before feeding the tensor calculation. Its result access objects are
 borrowed handles, not generic builders to destroy. Verify the current result
 type, loadcase/iteration, component mapping and actual array size. Unsupported
 beam/ply/complex recovery cannot be made into a solid real tensor by renaming
@@ -70,7 +70,7 @@ Contact-dependent stiffness requires review even if the Euler comparison passes;
 a failing comparison remains FAIL. See the
 [modal/buckling method](sol103-sol105-quant.md) for equations and exact scope.
 
-## Worked wrong-looking-right examples
+## Worked diagnostic examples
 
 For `diag(1e16+2,1e16,1e16)` Pa, J2 is 4/3 Pa² and von Mises is **2 Pa**.
 The previous normalization order produced approximately 2.22045 Pa. For

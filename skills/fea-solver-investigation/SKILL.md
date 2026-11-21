@@ -1,6 +1,6 @@
 ---
 name: fea-solver-investigation
-description: "Export and verify Simcenter Nastran solution decks, run Siemens batch analyses, and post-process compatible SCD5 with BatchPost. Investigate solver logs, reactions, energy, warnings and archived result consistency."
+description: "Investigate solver setup or termination and choose a discriminating repair."
 metadata:
   copyright: "Unpublished work. Copyright 2026 Siemens"
 ---

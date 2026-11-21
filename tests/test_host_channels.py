@@ -94,17 +94,22 @@ class ProjectChannels(unittest.TestCase):
                          (self.other_out / 'SHA256SUMS.txt').read_bytes())
         bundle = read_zip(self.out / 'agents-artefact-windows.zip')
         common = verify_files(bundle, BUNDLE_MANIFEST, 'agentsai')['candidate_source_digest']
-        for channel, (manifest, filename) in PROJECTS.items():
+        for channel, (manifest, filename) in {
+            **PROJECTS, 'portable': ('fea-expert-package.json', 'simcenter-fea-expert-plugin.zip')
+        }.items():
             with self.subTest(channel=channel):
                 path = self.out / filename
                 self.assertEqual(path.read_bytes(), (self.other_out / filename).read_bytes())
                 files = read_zip(path)
                 self.assertEqual(verify_files(files, manifest, channel)['candidate_source_digest'], common)
-                prefix = manifest.split('/')[0]
-                self.assertNotIn(f'{prefix}/{BUNDLE_MANIFEST}', files)
+                prefix = manifest.rsplit('/', 1)[0] + '/' if '/' in manifest else ''
+                self.assertNotIn(prefix + BUNDLE_MANIFEST, files)
                 for name, raw in bundle.items():
                     if name.startswith('skills/') and name != BUNDLE_MANIFEST:
-                        self.assertEqual(files[f'{prefix}/{name}'], raw)
+                        self.assertEqual(files[prefix + name], raw)
+                if channel == 'portable':
+                    self.assertIn('com.github.copilot/agents/simcenter-fea-expert.agent.md', files)
+                    self.assertNotIn('mcp.json', files)
 
     def test_packaged_fea_workflow_does_not_route_to_removed_engines(self):
         bundle = read_zip(self.out / 'agents-artefact-windows.zip')

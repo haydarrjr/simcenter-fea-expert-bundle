@@ -1,6 +1,6 @@
 ---
 name: fea-thermal
-description: "Reason about heat balance, temperature mapping, stress-free references and thermo-structural restraint. Use for differential expansion, temperature-sequenced joints and mounts; imported temperature fields are not automatically validated heat-transfer solutions."
+description: "Assess thermal load mapping, restraint, stress-free temperature and thermal stress."
 metadata:
   copyright: "Unpublished work. Copyright 2026 Siemens"
 ---
