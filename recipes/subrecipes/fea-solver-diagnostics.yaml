@@ -1,5 +1,5 @@
-bundle: simcenter-fea-expert-0.1.6
-version: 0.1.6
+bundle: simcenter-fea-expert-0.1.7
+version: 0.1.7
 title: FEA Solver Diagnostics Subagent
 description: Read-only diagnosis of Simcenter Nastran decks (.dat/.bdf/.nas), .f06, contact logs, and Aerostructures margin logs (.mslog/.msz).
 instructions: |

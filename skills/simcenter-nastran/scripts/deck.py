@@ -312,8 +312,7 @@ def _case_control(source, text):
     return key, Control(value, options, source)
 
 
-def read_deck(path, *, root=None, expected_hashes=None):
-    """Parse one complete deck from a hashed snapshot of its authorized text closure."""
+def _deck_closure(path, root, expected_hashes):
     try:
         entry = Path(path).resolve(strict=True)
         scope = Path(root).resolve(strict=True) if root is not None else entry.parent
@@ -322,7 +321,17 @@ def read_deck(path, *, root=None, expected_hashes=None):
     if not scope.is_dir() or not entry.is_relative_to(scope):
         raise DeckError("entry deck is outside the authorized directory")
     deck = Deck(entry.relative_to(scope).as_posix())
-    closure = Closure(scope, deck, root is not None, expected_hashes)
+    return entry, deck, Closure(scope, deck, root is not None, expected_hashes)
+
+
+def _verify_closure(deck, expected_hashes):
+    if expected_hashes is not None and deck.files.keys() != expected_hashes.keys():
+        raise DeckError("expected hashes contain files outside the effective INCLUDE closure")
+
+
+def read_deck(path, *, root=None, expected_hashes=None):
+    """Parse one complete deck from a hashed snapshot of its authorized text closure."""
+    entry, deck, closure = _deck_closure(path, root, expected_hashes)
     bulk = Bulk(deck.cards)
     phase = "executive"
     control = deck.global_control
@@ -366,9 +375,58 @@ def read_deck(path, *, root=None, expected_hashes=None):
             bulk.add(source, text)
     if phase != "end":
         raise DeckError(f"{deck.entry}: incomplete text deck; require SOL, CEND, BEGIN BULK and ENDDATA")
-    if expected_hashes is not None and deck.files.keys() != expected_hashes.keys():
-        raise DeckError("expected hashes contain files outside the effective INCLUDE closure")
+    _verify_closure(deck, expected_hashes)
     return deck
+
+
+def observe_deck(path, *, root=None, expected_hashes=None):
+    """Locate advanced records without interpreting effective sets or admitting a job."""
+    entry, deck, closure = _deck_closure(path, root, expected_hashes)
+    records = []
+    counts = Counter()
+    phase = "executive"
+    subcase = None
+    pending = None
+    for source, text in closure.lines(entry):
+        if text is None:
+            pending = None
+            continue
+        upper = text.strip().upper()
+        if phase == "bulk" and not re.match(r"^(BEGIN|ENDDATA)\b", upper):
+            head = (text.split(",", 1)[0] if "," in text else text[:8]).strip().upper()
+            if CARD_NAME.fullmatch(head.removesuffix("*")):
+                counts[head.removesuffix("*")] += 1
+            continue
+        item = {**source.summary(), "phase": phase, "record": text.strip()}
+        if phase == "executive":
+            if re.match(r"^(ASSIGN|INCLUDE|ALTER|NASTRAN|DBSET)\b", upper):
+                item["resolution"] = "NOT_RESOLVED"
+            if upper == "CEND" and source.file == deck.entry:
+                phase = "case"
+        elif phase == "case":
+            if match := re.fullmatch(r"SUBCASE +([1-9][0-9]{0,8})", upper):
+                subcase = int(match[1])
+                pending = None
+            item["subcase"] = subcase
+            if re.fullmatch(r"BEGIN +BULK", upper) and source.file == deck.entry:
+                phase = "bulk"
+            elif pending is not None and re.match(r"^[0-9 ,]", upper):
+                item["possible_continuation_of"] = pending
+            pending = source.summary() if upper.endswith(",") else None
+        elif ENDDATA.fullmatch(upper) and source.file == deck.entry:
+            phase = "end"
+        records.append(item)
+    _verify_closure(deck, expected_hashes)
+    return {
+        "status": "RECORDS_OBSERVED",
+        "effective_sets": "UNVERIFIED",
+        "entry": deck.entry,
+        "boundary_markers_seen": phase == "end",
+        "files": deck.files,
+        "includes": deck.includes,
+        "records": records,
+        "bulk_head_counts": dict(sorted(counts.items())),
+    }
 
 
 PROFILE_PARAMS = {
@@ -478,10 +536,13 @@ def main(argv=None):
     parser.add_argument("--expect-closure", type=Path, help="JSON object of relative filenames to SHA-256")
     parser.add_argument("--cards", action="store_true", help="include normalized Bulk Data in JSON")
     parser.add_argument("--free-free", action="store_true", help="check the standalone solid SOL 103 profile")
+    parser.add_argument("--observe", action="store_true", help="locate advanced records without validating effective sets")
     parser.add_argument("--nd", type=int, help="expected EIGRL root count (requires --free-free)")
     args = parser.parse_args(argv)
     if args.nd is not None and (not args.free_free or args.nd < 1):
         parser.error("--nd requires --free-free and a positive root count")
+    if args.observe and (args.free_free or args.cards):
+        parser.error("--observe cannot be combined with --free-free or --cards")
     try:
         expected = (
             json.loads(args.expect_closure.read_text(encoding="utf-8-sig"), object_pairs_hook=_unique_hashes)
@@ -489,10 +550,13 @@ def main(argv=None):
         )
         if args.expect_closure and not isinstance(expected, dict):
             raise DeckError("--expect-closure must contain a JSON object")
-        deck = read_deck(args.deck, root=args.root, expected_hashes=expected)
-        result = deck.summary(show_cards=args.cards)
-        if args.free_free:
-            result["free_free"] = free_free_profile(deck, expected_nd=args.nd)
+        if args.observe:
+            result = observe_deck(args.deck, root=args.root, expected_hashes=expected)
+        else:
+            deck = read_deck(args.deck, root=args.root, expected_hashes=expected)
+            result = deck.summary(show_cards=args.cards)
+            if args.free_free:
+                result["free_free"] = free_free_profile(deck, expected_nd=args.nd)
     except (DeckError, OSError, UnicodeError, RuntimeError, json.JSONDecodeError) as exc:
         print(json.dumps({"status": "UNRESOLVED", "error": str(exc)}, indent=2))
         return 2

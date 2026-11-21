@@ -22,6 +22,8 @@ Use the [existing-session adapters](references/official-mcp-adapter.md) for a ho
 
 Read [runtime and API admission](references/engineering-method.md). Distinguish API documentation from a qualified installed operation. For SOL 103, use the [qualified live setup path](../fea-dynamics/references/sol103-free-free.md) and the [Solution Sequence](../fea-solver-investigation/references/solution-sequence.md) for direct Nastran batch. Verify persistence through an admitted save and independent reopen, or record operator save evidence when needed.
 
+For a new isolated Windows part chain, use the [native persistence method](references/native-persistence.md). Match its batch-save and live-reopen scopes to the request.
+
 ## Completion boundary
 
 Return the calculated or evidence-backed decision, its physical assumptions, the strongest falsifier exercised, and the specific unresolved dependency. Use the exact qualified Siemens MCP capability for effects in the live model. Preserve separate source, native, solver and engineering outcomes.

@@ -1,0 +1,10 @@
+# Base excitation and response spectra
+
+Use the Simcenter 3D Response Dynamics route when the task needs peak response to a base spectrum. Start from the exact modal solution and check constraints, enforced-motion DOFs, output recovery, active modes and directional effective mass. Read response solutions, events and excitations through the qualified [2612 CAE reader](../../designcenter-open-journal-authoring/references/cae-2612.md). The alternative Nastran response-spectrum solver route has its own sequence, options and deck evidence.
+
+- For time-to-SRS conversion bind time and acceleration units, sampling, axis, polarity, initial state and decay window. Record the actual spectrum quantity, damping, frequency axis, peak convention and any envelope rule.
+- For relative displacement `z` use `z'' + 2ζωₙz' + ωₙ²z = −a_b(t)`. Absolute acceleration is `z'' + a_b`. Pseudo acceleration is `ωₙ² max|z|`. Keep separate labels and compare against an independent single-DOF time integration with converged time step and decay window.
+- Check the enforced DOF identity, mode cutoff, missing mass or residual treatment when supported, modal combination and directional combination. Use the applicable criteria for the actual modes and event. A peak combination does not carry phase, signed tensor history or simultaneous extrema.
+- Bind the solution, event, excitation, evaluation and recovered position when reading results. For native authoring use the [runtime gate](../../fea-native-runtime-gate/SKILL.md) and qualify the exact operation. For an actual time history use [transient field histories](transient-field-history.md). For stationary input spectral densities use [random response](../../fea-random-response/SKILL.md).
+
+[Simcenter 3D response spectrum](https://docs.sw.siemens.com/en-US/doc/PL20251024315444291.advanced/html/id631266?audience=external) · [Nastran response spectrum](https://docs.sw.siemens.com/en-US/doc/PL20251024315120185.basic_dynamics/html/id471026?audience=external)
