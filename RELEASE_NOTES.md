@@ -1,3 +1,8 @@
+# 0.1.9 candidate
+
+- Qualify synthetic Hermes 2612 PCA, inverse Load Identification and complex TPA with separate source and result identities. Record the Testlab project workflow as `TBD`.
+- Add independent checks for recovered load, held-out receiver closure, principal powers and reconstructed receiver power. See [0.1.9 qualification](docs/qualification/0.1.9.md).
+
 # 0.1.8 candidate
 
 - Export verified nodal displacement RMS and frequency-resolved PSD through the official BatchPost XML path, with explicit units and CSV state checks.
