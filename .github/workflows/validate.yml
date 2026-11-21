@@ -8,6 +8,11 @@ permissions:
   contents: read
 jobs:
   source:
+    env:
+      # The manifests attest exact source bytes across both runner operating systems.
+      GIT_CONFIG_COUNT: '1'
+      GIT_CONFIG_KEY_0: core.autocrlf
+      GIT_CONFIG_VALUE_0: 'false'
     strategy:
       matrix:
         os: [windows-latest, ubuntu-24.04]
