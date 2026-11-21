@@ -1,5 +1,6 @@
 """Verify Model Inspection and Designcenter Open in one fresh Codex app-server thread."""
 import argparse
+from ast import literal_eval
 from datetime import datetime, timezone
 import json
 import ntpath
@@ -11,12 +12,32 @@ import subprocess
 from threading import Thread
 import tomllib
 
-from install_project import attest
-from package_identity import atomic_write, json_bytes
-from render_mcp_config import profiles, toml_value
+if __package__:
+    from .install_project import attest
+    from .package_identity import atomic_write, json_bytes
+    from .render_mcp_config import profiles, toml_value
+else:
+    from install_project import attest
+    from package_identity import atomic_write, json_bytes
+    from render_mcp_config import profiles, toml_value
 
 
 MATCH_FIELDS = ('name', 'filePath', 'isWorkPart', 'isDisplayPart', 'isModified')
+CAE_PART_KEYS = ('path', 'isCurrentPart', 'isDisplayPart', 'isModified')
+CAE_PART_SUFFIXES = {'.sim', '.fem', '.afm'}
+NXOPEN_PART_ROLES = """import NXOpen
+
+def main(args):
+    parts = NXOpen.Session.GetSession().Parts
+    work, display = parts.BaseWork, parts.BaseDisplay
+    if not work or not display:
+        raise ValueError("Expected loaded work and display parts")
+    return {'parts': [
+        {'filePath': part.FullPath, 'isWorkPart': part.Tag == work.Tag,
+         'isDisplayPart': part.Tag == display.Tag, 'isModified': part.IsModified}
+        for part in parts if part.Tag in (work.Tag, display.Tag)
+    ]}
+"""
 
 
 class AppServer:
@@ -118,6 +139,27 @@ def compare_targets(design, inspection):
     return left
 
 
+def read_design_roles(call, inspection):
+    active = [part for part in find_rows(inspection, CAE_PART_KEYS)
+              if part['isCurrentPart'] or part['isDisplayPart']]
+    if any(isinstance(part['path'], str) and ntpath.splitext(part['path'])[1].lower() in CAE_PART_SUFFIXES
+           for part in active):
+        result = response_object(call('designcenter', 'dcopen-execute-tool', {'python_code': NXOPEN_PART_ROLES}))
+        return literal_eval(result['result']), 'nxopen_part_roles'
+    schema = response_object(call('designcenter', 'explore-model-structure', {
+        'application': ['modeling'], 'userQuery': 'Discover PartInfo for work and display part identity.'}))
+    part_info = next(entity for domain in schema['domain'] if domain['name'] == 'modeling'
+                     for entity in domain['entities'] if entity['name'] == 'PartInfo')
+    if not set(MATCH_FIELDS) <= {field['name'] for field in part_info['scalar_properties']}:
+        raise ValueError('current modeling schema does not contain the required PartInfo fields')
+    extraction = {'domain': [{'name': 'modeling', 'entities': [
+        {'name': 'PartInfo', 'scalar_properties': list(MATCH_FIELDS)}]}]}
+    result = response_object(call('designcenter', 'read-model-data', {'schemaForExtraction': json.dumps(extraction)}))
+    if result.get('hasMoreData'):
+        raise ValueError('incomplete PartInfo evidence; additional pages are required')
+    return result, 'modeling_part_info'
+
+
 def trusted_backend_pid(folder):
     pids = set()
     for log in folder.glob('*.log'):
@@ -134,6 +176,8 @@ def qualify(project, product, out, codex):
     out = Path(out).resolve()
     receipt = attest(project, 'codex')
     servers = profiles(project, product, logs=out / 'vendor')
+    # This harness dispatches only the fixed read-only NXOpen role query.
+    servers['designcenter']['enabled_tools'].append('dcopen-execute-tool')
     names = tuple(servers)
     # Override enablement for this child only. Existing Codex and MCP config files stay intact.
     config = Path(os.environ.get('CODEX_HOME', Path.home() / '.codex')) / 'config.toml'
@@ -189,19 +233,9 @@ def qualify(project, product, out, codex):
                                for block in status['content']):
                         raise ValueError(f'{name} did not report a connected application')
 
-                schema = response_object(call('designcenter', 'explore-model-structure', {
-                    'application': ['modeling'], 'userQuery': 'Discover PartInfo for work and display part identity.'}))
-                part_info = next(entity for domain in schema['domain'] if domain['name'] == 'modeling'
-                                 for entity in domain['entities'] if entity['name'] == 'PartInfo')
-                if not set(MATCH_FIELDS) <= {field['name'] for field in part_info['scalar_properties']}:
-                    raise ValueError('current modeling schema does not contain the required PartInfo fields')
-                extraction = {'domain': [{'name': 'modeling', 'entities': [
-                    {'name': 'PartInfo', 'scalar_properties': list(MATCH_FIELDS)}]}]}
-                design = response_object(call('designcenter', 'read-model-data', {
-                    'schemaForExtraction': json.dumps(extraction)}))
-                if design.get('hasMoreData'):
-                    raise ValueError('incomplete PartInfo evidence; additional pages are required')
                 inspection = response_object(call('simcenter3d', 'part-info-tool', {}))
+                design, route = read_design_roles(call, inspection)
+                evidence['designcenter_identity_route'] = route
                 mesh = response_object(call('simcenter3d', 'mesh-info-tool', {}))
                 inspection_after = response_object(call('simcenter3d', 'part-info-tool', {}))
                 targets = compare_targets(design, inspection)

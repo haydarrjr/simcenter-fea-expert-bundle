@@ -49,6 +49,8 @@ standard; do not invent Navy coefficients or claim that a generic modal sum is
 a qualified DDAM calculation. Rigid-body participation, missing mass and
 truncation residuals need explicit treatment.
 
+For base-motion SRS setup, verification and routing use [response spectra](response-spectrum.md).
+
 ## Rotating assemblies
 
 The rotating linearized equation generally contains

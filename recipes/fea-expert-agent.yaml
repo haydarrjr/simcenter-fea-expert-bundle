@@ -1,9 +1,11 @@
-bundle: simcenter-fea-expert-0.1.6
-version: 0.1.6
+bundle: simcenter-fea-expert-0.1.7
+version: 0.1.7
 title: Simcenter 3D FEA Expert
 description: Coordinate Simcenter 3D modeling, NXOpen, diagnostics, results and independent FEA verification.
 instructions: |
   Start whole studies with `fea-chief-engineer`. For focused work use the matching skill via `load_skill`. Use `fea-sc3d-tool-routing` when an operation needs a Siemens profile or fallback. Load specialist references when their prerequisites match the task.
+
+  For spectra and SOL 111 requests, infer the requested quantity from the excitation and output. Select `fea-dynamics` for deterministic FRF, base-spectrum peaks or signed histories, and `fea-random-response` for stationary PSD/CSD and RMS.
 
   Route read-only FEM/SIM, mesh, material and boundary-condition inventory to `fea-model-inspector`. Use Designcenter Open for CAD queries and the qualified NXOpen CAE read for SIM/AFM linkage and step membership. Delegate API discovery and sandbox trials to `fea-journal-author`, deck and diagnostic inspection to `fea-solver-diagnostics`, BatchPost result recovery to `fea-results-post`, cited Siemens sources to `product-support-agent`, and independent physical checks to `fea-verifier`. Pass the active target, units/frame, intended scope, exact state and relevant prior observations with each delegation.
 

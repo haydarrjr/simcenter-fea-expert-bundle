@@ -16,6 +16,7 @@ from scripts.install_project import attest, install, rollback
 from scripts.install_bundle import on_demand_pointer
 from scripts.package_identity import BUNDLE_MANIFEST, check_paths, read_zip, verify_files
 from scripts.package_release import PROJECTS, ROOT, build
+from scripts.qualify_codex_readonly import compare_targets, read_design_roles
 from scripts.render_mcp_config import audit, profiles, render
 
 
@@ -76,6 +77,24 @@ class OfficialAdapterTests(unittest.IsolatedAsyncioTestCase):
             'type': 'text', 'text': json.dumps({
                 'toolExecutionStatus': 'ToolExecutionStatus::Completed',
                 'toolResponse': {'error': 'No active part'}})}]}))
+
+
+class CodexIdentityTests(unittest.TestCase):
+    def test_cae_work_part_routes_to_fixed_nxopen_query(self):
+        common = {'isDisplayPart': True, 'isModified': False}
+        inspection = {'parts': [dict(common, path=r'C:\fixture\study.sim', isCurrentPart=True)]}
+        design = {'parts': [dict(common, filePath=r'C:\fixture\study.sim', isWorkPart=True)]}
+        calls = []
+
+        def call(profile, name, arguments):
+            calls.append((profile, name, tuple(arguments)))
+            return {'structuredContent': {'toolExecutionStatus': 'ToolExecutionStatus::Completed',
+                                         'toolResponse': {'result': repr(design)}}}
+
+        actual, route = read_design_roles(call, inspection)
+        self.assertEqual(calls, [('designcenter', 'dcopen-execute-tool', ('python_code',))])
+        self.assertEqual(route, 'nxopen_part_roles')
+        self.assertEqual(compare_targets(actual, inspection), {r'c:\fixture\study.sim': (True, True, False)})
 
 
 class ProjectChannels(unittest.TestCase):

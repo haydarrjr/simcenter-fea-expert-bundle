@@ -1,0 +1,10 @@
+# Deterministic forced frequency response
+
+Bind the linear operating state and complex convention. Map source to receiver by instance, DOF, frame, force or enforced motion, units, phase reference and frequency. Distinguish receptance, mobility, accelerance and transmissibility. For known complex loading compute `y(f) = H(f)u(f)`. For stationary random input use [random response](../../fea-random-response/SKILL.md).
+
+- Select SOL 108 for direct frequency response or SOL 111 for modal frequency response when their formulation matches the request. Mode-set-based NVH response is a separate route. Cross-check damping conventions, frequency-dependent load recipes and the exact requested output. For modal analysis, quantify the effect of basis cutoff and any residual vectors on the QoI.
+- For an uncoupled viscously damped oscillator with `exp(iωt)`, the receptance is `1/(k−mω²+i cω)`. Compare complex values across the grid, including resonance and off-resonance. Refine frequency sampling near narrow resonances. At an anti-resonance use complex absolute error because phase can be ill-conditioned.
+- Validate imported functions and load recipes against the intended channels and DOFs, including UNV function dataset identity where available. Check interpolation, phase convention and duplicate load application. Use [artifact forensics](../../fea-artifact-forensics/SKILL.md) to route function records and field outputs. Compare exact subcase, frequency, location and response component.
+- For native changes and solver execution, use the [runtime gate](../../fea-native-runtime-gate/SKILL.md) and [solution sequence](../../fea-solver-investigation/references/solution-sequence.md). For existing results use the reader that exposes the required complex component and state.
+
+[Simcenter Nastran forced response](https://support.sw.siemens.com/en-US/knowledge-base/KB000155524_EN_US) · [NVH modal-based frequency response](https://docs.sw.siemens.com/en-US/doc/PL20251024315444291.advanced/html/xid1975648?audience=external)

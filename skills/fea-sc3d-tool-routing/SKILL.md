@@ -17,6 +17,8 @@ Rules:
 5. Choose results from an explicit path or an exact saved result path returned by authorized MCP. Keep lookups inside the workspace and user-authorized roots. Request the path when the target is unresolved.
 
 ## Stage to route
+
+Choose the analysis by the requested quantity before choosing a tool. A name such as “spectrum” or “SOL 111” can refer to several distinct outputs. Use the [dynamics routing table](references/dynamics-routing.md) for these cases.
 | Stage | Primary route | Subagent | Fallback / gap |
 |---|---|---|---|
 | CAD connection and inventory | Designcenter Open `dc_connection_status`, `explore-model-structure`, then `read-model-data` | fea-model-inspector | Follow `designcenter-open-connection-status`; a connected empty session needs an active CAD part for model data |

@@ -1,3 +1,10 @@
+# 0.1.7 candidate
+
+- Route dynamics by requested output across SRS, deterministic FRFs, time histories, stationary PSD/CSD, damping and NVH. Add component representations and external superelement guidance within the existing 39 skills.
+- Add read-only advanced deck observation with hashed INCLUDE provenance and explicit unresolved effective sets. Keep the SOL 101/103 checker and solver admission rules.
+- Document the validated Designcenter 2612 PRT/FEM/SIM save and reopen boundary. Add synthetic SOL 108 and SOL 111 harmonic and random jobs with independent numerical checks.
+- Build AgentsAI, Codex and VS Code packages from the same source. See [0.1.7 qualification](docs/qualification/0.1.7.md) for observed capabilities and open checks.
+
 # 0.1.6 candidate
 
 - Refine triggers for all 39 skills. Replace model-specific Airframe, load-filter, margin and SOL 101 workflows with task-scoped methods. Consolidate Siemens operation guidance and shorten the seven agent recipes.

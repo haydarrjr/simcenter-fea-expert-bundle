@@ -17,11 +17,11 @@ The 39 canonical skills live under `skills/`.
 | [`fea-connector-contact`](../skills/fea-connector-contact/SKILL.md) | Assess bolt preload, connector load transfer, contact opening, or friction. |
 | [`fea-continuum-thermomechanics`](../skills/fea-continuum-thermomechanics/SKILL.md) | Check solid or thermoelastic formulation, heat balance, and continuum assumptions. |
 | [`fea-durability`](../skills/fea-durability/SKILL.md) | Assess fatigue from signed load or stress histories and material life data. |
-| [`fea-dynamics`](../skills/fea-dynamics/SKILL.md) | Analyze modal, harmonic or transient response and assembly inertia or mounts. |
+| [`fea-dynamics`](../skills/fea-dynamics/SKILL.md) | Analyze modes, FRFs, transient histories, shock spectra, modal damping or NVH source and path contributions. |
 | [`fea-materials-properties`](../skills/fea-materials-properties/SKILL.md) | Verify constitutive data, material assignment and effective FEA properties. |
 | [`fea-mesh-quality`](../skills/fea-mesh-quality/SKILL.md) | Assess discretization, connectivity, element validity or quantity-of-interest convergence. |
 | [`fea-modal-correlation`](../skills/fea-modal-correlation/SKILL.md) | Compare mode shapes or modal subspaces across simulations or test data. |
-| [`fea-model-preparation`](../skills/fea-model-preparation/SKILL.md) | Select idealization and verify CAD, FEM, assembly FEM and SIM ownership. |
+| [`fea-model-preparation`](../skills/fea-model-preparation/SKILL.md) | Select idealization or dynamic component representations and verify CAD, FEM, AFM or SIM ownership. |
 | [`fea-multistep-nonlinear`](../skills/fea-multistep-nonlinear/SKILL.md) | Diagnose nonlinear subcase sequencing, convergence, plasticity or load history. |
 | [`fea-native-runtime-gate`](../skills/fea-native-runtime-gate/SKILL.md) | Prepare and verify an authorized native Simcenter operation with independent readback. |
 | [`fea-open-meshing`](../skills/fea-open-meshing/SKILL.md) | Verify geometry-to-mesh and load or heat-flux transfer by conservation checks. |
@@ -42,4 +42,4 @@ The 39 canonical skills live under `skills/`.
 | [`simcenter-aerostructures-margin-of-safety`](../skills/simcenter-aerostructures-margin-of-safety/SKILL.md) | Set up or audit Aerostructures margin calculations, allowables and governing load cases. |
 | [`simcenter-airframe-structural-verification`](../skills/simcenter-airframe-structural-verification/SKILL.md) | Plan or audit the integrated GFEM, SOL 144 trim and airframe structural verification workflow. |
 | [`simcenter-parametric-sol101`](../skills/simcenter-parametric-sol101/SKILL.md) | Create or update an associative parametric Simcenter SOL 101 study. |
-| [`simcenter-nastran`](../skills/simcenter-nastran/SKILL.md) | Qualify SOL 101/103 decks, effective sets, and local Simcenter Nastran execution. |
+| [`simcenter-nastran`](../skills/simcenter-nastran/SKILL.md) | Inspect Simcenter Nastran decks and sets, qualify SOL 101/103, or locate advanced dynamics records. |

@@ -74,6 +74,39 @@ class DeckTests(unittest.TestCase):
         self.assertEqual((a["DISPLACEMENT"]["line"], b["DISPLACEMENT"]["line"]), (7, 7))
         self.assertEqual(result["cards"][2]["fields"], ("3", "2.", "1.", "4"))
 
+    def test_advanced_observation_reports_locations_without_effective_claims(self):
+        entry = self.write(
+            "advanced.dat", "ASSIGN INPUTT2='unavailable.op2' UNIT=20", "SOL 111", "CEND",
+            "METHOD(STRUCTURE) = 40", "SET 13 = 1 THRU 10,", "  15 THRU 20",
+            "SUBCASE 2", "SDAMPING = 42", "RANDOM(RPOSTS1=1) = 50", "BEGIN BULK",
+            "INCLUDE 'random.inc'", "BEGIN SUPER=1", "SECONCT,1,0", "ENDDATA",
+        )
+        dependency = self.write("random.inc", "RANDPS,50,1,1,1.,0.,51", "TABRND1,51")
+        expected_hashes = {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
+                           for p in (entry, dependency)}
+        with self.assertRaises(deck.DeckError):
+            deck.read_deck(entry, root=self.root)
+        observed = deck.observe_deck(entry, root=self.root, expected_hashes=expected_hashes)
+        self.assertEqual(observed["status"], "RECORDS_OBSERVED")
+        self.assertEqual(observed["effective_sets"], "UNVERIFIED")
+        self.assertTrue(observed["boundary_markers_seen"])
+        self.assertEqual(observed["records"][0]["resolution"], "NOT_RESOLVED")
+        self.assertEqual(observed["records"][5]["possible_continuation_of"],
+                         {"file": entry.name, "line": 5})
+        self.assertEqual(observed["records"][8]["subcase"], 2)
+        self.assertEqual(observed["bulk_head_counts"], {"RANDPS": 1, "SECONCT": 1, "TABRND1": 1})
+        self.assertEqual(observed["includes"], [{"file": entry.name, "line": 11, "target": dependency.name}])
+        self.assertEqual(self.cli(entry, "--observe", "--root", str(self.root)), (0, observed))
+        self.assertEqual(self.cli(entry, "--observe")[0], 2)
+        with self.assertRaisesRegex(deck.DeckError, "outside the effective"):
+            deck.observe_deck(entry, root=self.root, expected_hashes={**expected_hashes, "unused": "a" * 64})
+
+    def test_advanced_observation_keeps_incomplete_input_unverified(self):
+        entry = self.write("fragment.dat", "SOL 111", "CEND", "SUBCASE 1")
+        observed = deck.observe_deck(entry)
+        self.assertFalse(observed["boundary_markers_seen"])
+        self.assertEqual(observed["effective_sets"], "UNVERIFIED")
+
     def test_fixed_small_large_and_free_continuations_preserve_key_blanks(self):
         entry = self.entry(bulk=[
             fixed("CTETRA", ["8", "20", "1", "2", "3", "4", "5", "6"], marker="+S"),
