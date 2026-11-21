@@ -6,4 +6,6 @@ At each frequency decompose `Sxx = UΛUᴴ`. Eigenvalues represent component spe
 
 For forward structural response from an input PSD/CSD use [random response](../../fea-random-response/SKILL.md). For individual physical paths use [TPA](nvh-transfer-paths.md).
 
+The native 2612 PCA solution uses a Vibro-Acoustic SIM and the Acoustics and Vibration manager. Treat creation and reopen of the solution as native object evidence. The documented native PCA workflow requires a Testlab project supplying matching auto-power and cross-power functions. Preserve that source and independently compare the eigenvalue and response reconstruction. A matrix calculation alone can verify the mathematics on supplied data. [PCA workflow](https://docs.sw.siemens.com/en-US/doc/PL20251024315444291.advanced/html/xid1929446?audience=external)
+
 [Simcenter 3D Principal component analysis](https://docs.sw.siemens.com/en-US/doc/PL20251024315444291.advanced/html/xid1929445?audience=external)

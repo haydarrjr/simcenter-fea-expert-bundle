@@ -8,3 +8,5 @@ Use the [engineering method](engineering-method.md) to establish the linear stat
 - Use the [Nastran text observer](../../simcenter-nastran/SKILL.md) and original F06 for case-card lineage. Use BatchPost or an appropriate qualified native reader for actual response exports. A fresh solver run, native persistence and engineering acceptance are separate observations.
 
 [RANDOM](https://docs.sw.siemens.com/en-US/doc/PL20251024315120185.QRG/html/id510121?audience=external) · [RANDPS](https://docs.sw.siemens.com/en-US/doc/PL20251024315120185.QRG/html/id509066?audience=external) · [TABRND1](https://docs.sw.siemens.com/en-US/doc/PL20251024315120185.QRG/html/id509351?audience=external)
+
+For the verified nodal displacement RMS and PSD CSV path, use [BatchPost random displacement CSV](../../batchpost-actions/references/random-displacement-csv.md). Verify placement of the output request above the subcases, the SORT1 random state and the source/output units.

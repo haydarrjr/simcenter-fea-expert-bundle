@@ -7,7 +7,7 @@
     {
       "name": "simcenter-fea-expert",
       "source": ".",
-      "version": "0.1.7",
+      "version": "0.1.8",
       "description": "Inspect, automate and verify finite element analysis in Simcenter 3D and Simcenter Nastran.",
       "strict": true
     }
