@@ -6,11 +6,7 @@ values of `Qref.T Qcandidate`. Their arccosines are principal angles. This is
 invariant under nonsingular changes of basis within a fixed subspace; arbitrary
 individual MAC thresholds are not.
 
-The tool first reorders candidate DOFs by the explicit string identifiers, then
-checks shape, rank, metric positivity, cluster bandwidth and frequency agreement.
-It rejects unknown or duplicate maps instead of truncating arrays to equal length.
-The full dense metric is bounded separately from diagonal weights; preserve the
-meaning of the metric rather than substituting identity solely to fit a limit.
+Align candidate and reference DOFs by explicit identifiers and check map uniqueness, matrix dimensions, rank, metric positivity and frequency coverage. Use diagonal observation weights or a full mass metric according to the physical comparison and available data.
 
 An exact double mode may be represented by `[v1,v2]` or a 45-degree rotation of
 that pair. Individual squared correlations can be 0.5 while both principal
@@ -19,5 +15,4 @@ hide a direction outside the reference subspace. Test both situations.
 
 Use the actual exported mode vectors and verify their physical basis. Treat repeated-mode matching, mode-tracking across parameter
 changes, damping identification and modal experimental validation as distinct
-problems. This implementation handles the first with declared clusters; it
-does not pretend that a source match supplies measured damping or rotor stability.
+problems. Declare the compared clusters and limit conclusions to the state, modes and observation coordinates actually compared.

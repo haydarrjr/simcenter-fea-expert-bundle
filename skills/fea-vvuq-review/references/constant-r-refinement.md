@@ -25,4 +25,4 @@ differences, increasing corrections, unstable order, singularity or
 governing-location jump, altered physical identity, unavailable tolerances
 or invalid h order return indeterminate/error as appropriate.
 This source comparison neither validates production local stress peaks nor
-runs Siemens adaptivity or a solver. See
+runs Siemens adaptivity or a solver.

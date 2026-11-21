@@ -1,49 +1,29 @@
-# Tool matrix (observed host catalog; re-discover every session)
+# Siemens profile catalog and recovery
 
-Sources of the names: installed bundle skills/recipes/mcps.json of simcenter-3d (skills simcenter-3d-*, designcenter-open-*, batchpost-actions; recipes simcenter-3d-model-inspection-agent, -designcenter-open-agent, -doc-agent, -batchpost-agent), simcenter-nastran (mcps.json, recipe nastran-sol401-debugger, skills nastran-sol401-*), product-support (skill product-support), plus the live tool listing.
+Tool names below are observed examples from official integrations. Use the current host catalog, including the namespace and schema it actually exposes.
 
-## Tools by host
-| Host | Tools |
+| Profile | Observed capabilities |
 |---|---|
-| Simcenter 3D (model inspection) | `dc_connection_status`, `part-info-tool`, `body-info-tool`, `material-info-tool`, `mesh-info-tool`, `mesh-quality-tool`, `boundary-condition-tool`, `surface-mesh-generation-tool`, `solid-mesh-generation-tool`, `mesh-selection-visibility-tool`, `body-selection-visibility-tool` |
-| Designcenter Open | `dc_connection_status`, `dcopen-pattern-lookup-tool`, `dcopen-keyword-search-tool`, `dcopen-semantic-search-tool`, `dcopen-list-namespaces`, `dcopen-list-classes`, `dcopen-class-info`, `dcopen-member-info`, `dcopen-run-snippet-tool`, `dcopen-run-journal-tool`, `dcopen-execute-tool`, `explore-model-structure`, `read-model-data`; `documentation-search-tool` only if advertised in the current catalog (unverified) |
-| Siemens Help Server / Product Support | `search` (STS_SIMCENTER3D for Nastran and Pre/Post, STS_DESIGNCENTER for NXOpen) |
-| Simcenter Nastran MCP | `parse_f06_file`, `parse_contact_log`, `diagnose_sol401_failure_context`, `classify_simulation_intent`, `compare_decks`, `search_file`, `read_file_excerpt`, `resolve_elements`, `list_deck_cards`, `read_deck_cards`, `discover_job`, `list_allowed_roots`, `request_file_access` |
-| Batch Post | see host skill `batchpost-actions` (exports, contours, CSV, templates) |
+| Simcenter 3D Model Inspection | `dc_connection_status`, `part-info-tool`, `body-info-tool`, `material-info-tool`, `mesh-info-tool`, `mesh-quality-tool`, `boundary-condition-tool`, `surface-mesh-generation-tool`, `solid-mesh-generation-tool`, `mesh-selection-visibility-tool`, `body-selection-visibility-tool` |
+| Designcenter Open | `dc_connection_status`, `explore-model-structure`, `read-model-data`, `dcopen-pattern-lookup-tool`, `dcopen-keyword-search-tool`, `dcopen-semantic-search-tool`, `dcopen-list-namespaces`, `dcopen-list-classes`, `dcopen-class-info`, `dcopen-member-info`, `dcopen-run-snippet-tool`, `dcopen-run-journal-tool`, `dcopen-execute-tool`. Use `documentation-search-tool` only if advertised |
+| Siemens Help Server / Product Support | `search` in `STS_SIMCENTER3D` for Nastran and CAE or `STS_DESIGNCENTER` for NXOpen |
+| Simcenter Nastran MCP | `discover_job`, `classify_simulation_intent`, `list_deck_cards`, `read_deck_cards`, `compare_decks`, `parse_f06_file`, `parse_contact_log`, `diagnose_sol401_failure_context`, `resolve_elements`, `search_file`, `read_file_excerpt`, `list_allowed_roots`, `request_file_access` |
+| BatchPost | Open and list the exact result before requesting exports through [BatchPost](../../batchpost-actions/SKILL.md) |
 
-## Subagents
-fea-model-inspector (read Simcenter 3D / CAD state), fea-journal-author (NXOpen discovery and sandbox journals only; no live execution), fea-solver-diagnostics (Nastran MCP F06/deck tools, read-only), fea-results-post (Batch Post exports; no Nastran ref), fea-verifier (analytical/independent checks on data passed by parent; no live reads), product-support-agent (documentation).
+A CAD model read provides CAD data. Use the [qualified CAE catalog](../../designcenter-open-journal-authoring/references/cae-2612.md) for matching SIM/AFM links and step membership. The boundary-condition inventory and effective deck answer different questions. For SOL 101/103, use the applicable deck/F06 readers and keep SOL 401-specific tools scoped to their supported diagnostic context.
 
-## 20 fea-* skills to stage
-| Skill | Stages | Subagents |
-|---|---|---|
-| [fea-acceptance-verifier](../../fea-acceptance-verifier/SKILL.md) | verification | fea-verifier |
-| [fea-artifact-forensics](../../fea-artifact-forensics/SKILL.md) | deck, results | fea-solver-diagnostics, fea-results-post |
-| [fea-chief-engineer](../../fea-chief-engineer/SKILL.md) | all (orchestration) | all |
-| [fea-composite-laminates](../../fea-composite-laminates/SKILL.md) | BC/load, deck, results | fea-solver-diagnostics, fea-results-post |
-| [fea-connector-contact](../../fea-connector-contact/SKILL.md) | BC/load, deck, solve diagnostics | fea-model-inspector, fea-solver-diagnostics |
-| [fea-continuum-thermomechanics](../../fea-continuum-thermomechanics/SKILL.md) | deck, results | fea-solver-diagnostics |
-| [fea-durability](../../fea-durability/SKILL.md) | results | fea-results-post |
-| [fea-dynamics](../../fea-dynamics/SKILL.md) | deck, results | fea-solver-diagnostics, fea-results-post |
-| [fea-materials-properties](../../fea-materials-properties/SKILL.md) | inventory | fea-model-inspector |
-| [fea-mesh-quality](../../fea-mesh-quality/SKILL.md) | mesh | fea-model-inspector |
-| [fea-modal-correlation](../../fea-modal-correlation/SKILL.md) | results | fea-results-post |
-| [fea-model-preparation](../../fea-model-preparation/SKILL.md) | inventory, mesh, BC/load | fea-model-inspector, fea-journal-author |
-| [fea-multistep-nonlinear](../../fea-multistep-nonlinear/SKILL.md) | deck, solve diagnostics | fea-solver-diagnostics |
-| [fea-native-runtime-gate](../../fea-native-runtime-gate/SKILL.md) | journals, capability discovery | fea-journal-author |
-| [fea-open-meshing](../../fea-open-meshing/SKILL.md) | geometry-to-mesh transfer and volume checks | fea-model-inspector |
-| [fea-random-response](../../fea-random-response/SKILL.md) | results | fea-results-post |
-| [fea-results-interpretation](../../fea-results-interpretation/SKILL.md) | results | fea-results-post (Batch Post); F06 via fea-solver-diagnostics |
-| [fea-solver-investigation](../../fea-solver-investigation/SKILL.md) | deck, [batch solve](../../fea-solver-investigation/references/solution-sequence.md), results, inventory | main agent (submission), fea-solver-diagnostics, fea-model-inspector |
-| [fea-thermal](../../fea-thermal/SKILL.md) | BC/load, results | fea-model-inspector, fea-results-post |
-| [fea-vvuq-review](../../fea-vvuq-review/SKILL.md) | mesh, verification | fea-verifier |
+Active interactive persistence and isolated batch save with independent reopen use the [native persistence method](../../fea-native-runtime-gate/references/native-persistence.md). [Solution Sequence](../../fea-solver-investigation/references/solution-sequence.md) owns qualified deck export, installed batch submission and solver evidence. Use the [runtime gate](../../fea-native-runtime-gate/SKILL.md) for admitted live effects.
 
-## Capability gaps
-| Gap | Status |
+## Recover the affected operation
+
+| Observation | Response |
 |---|---|
-| Live solution setup and deck export | Qualify the exact live Designcenter Open journal and read back the effect |
-| Batch solve | Use the qualified deck with the installed Siemens executable through [Solution Sequence](../../fea-solver-investigation/references/solution-sequence.md) |
-| SIM/FEM persistence | Manual user save after the analysis |
-| Simcenter 3D not connected / tools missing | run `dc_connection_status`, follow recovery; stages NOT_RUN |
-| Nastran deck/F06 outside allowed roots | `list_allowed_roots`, `request_file_access` (approval per job bundle) |
-| Nastran MCP tools are SOL 401 oriented | state limits when applied to SOL 101; parse_f06_file/list_deck_cards remain usable read-only |
+| Required profile missing from the client catalog | Check the host's profile registration and refresh its catalog through the host |
+| Model Inspection returns `DCMCP-E002` | Follow [Model Inspection connection](../../simcenter-3d-connection-status/SKILL.md) for that profile. Continue independent CAD or file work if its own binding is available |
+| Connected Designcenter session has no active part | Follow [Designcenter connection](../../designcenter-open-connection-status/SKILL.md) to establish the model target |
+| Invalid argument, unsupported member, inner error or empty data | Inspect the response and exact schema. Apply a supported correction or narrower read. Use the qualified release path where it covers the operation and targeted API discovery for gaps |
+| Read times out | Recheck the binding if stale. Retry after demonstrated recovery or a materially smaller request. Use qualified CAE readback or exact solver evidence where it covers the required field |
+| Native effect times out or returns ambiguous evidence | Record `UNKNOWN` and reconcile fresh native/file state before any dependent call or replay |
+| Requested deck lies outside diagnostic roots | Resolve the exact path through the profile's allowed-root/access workflow or read the authorized original text |
+
+AgentsAI may delegate bounded inspection, discovery/sandbox, diagnostics, result export, verification and documentation to their corresponding recipe roles. Use the same skill and profile directly when no delegation is needed. The coordinating agent owns live effects and solver submission.

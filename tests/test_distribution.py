@@ -1,6 +1,7 @@
 """Distribution checks authenticate source structure and AgentAI bundle readiness."""
 import json, tempfile, unittest
 from pathlib import Path
+from xml.etree import ElementTree
 from zipfile import ZipFile
 from ruamel.yaml import YAML
 from scripts.validate_distribution import (CODEX_MARKETPLACE, ROOT, validate, distribution_files,
@@ -54,6 +55,20 @@ class DistributionTests(unittest.TestCase):
                         'Delegate to `fea-solver-diagnostics` using `load_skill`.')
         self.assertEqual(missing_recipe_skills(instructions, {'simcenter-nastran'}),
                          {'nastran-sol401-basic-checks'})
+
+    def test_batchpost_examples_use_their_qualified_reader_wrappers(self):
+        references = ROOT / 'skills/batchpost-actions/references'
+        for reference, version, section in (
+            ('post-template', 'NX8.5', './PostView/DeformationOptions'),
+            ('result-variable', 'NX2612', './PostView/ResultOptions'),
+        ):
+            with self.subTest(reference=reference):
+                text = (references / f'{reference}.md').read_text(encoding='utf-8')
+                xml = text.split('```xml\n', 1)[1].split('```', 1)[0]
+                root = ElementTree.fromstring(xml)
+                self.assertEqual(root.tag, 'NXPostProcessingTemplate')
+                self.assertEqual(root.attrib['Version'], version)
+                self.assertIsNotNone(root.find(section))
 
 
 if __name__ == '__main__':

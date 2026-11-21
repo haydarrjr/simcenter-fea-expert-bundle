@@ -11,7 +11,7 @@ Bind the requested quantity and the input convention, physical state, constraint
 
 - For unloaded, unprestressed SOL 103 use the [free-free workflow](references/sol103-free-free.md) and run the verified deck through [Solution Sequence](../fea-solver-investigation/references/solution-sequence.md).
 - For a known harmonic input or FRF, use [forced response](references/forced-response.md). For mounts, transforms and inertia, use [assembly dynamics](references/engineering-method.md).
-- For actual complete transient histories, use [transient field histories](references/transient-field-history.md), [BatchPost](../batchpost-actions/SKILL.md) and [durability](../fea-durability/SKILL.md). Check signed integration-point tensors, time-grid refinement and peak/reversal resolution.
+- For signed loads or responses over time, use [transient field histories](references/transient-field-history.md). Load [durability](../fea-durability/SKILL.md) for a fatigue decision and [BatchPost](../batchpost-actions/SKILL.md) when field exports are needed.
 - For peak response to base excitation use [response spectra](references/response-spectrum.md). For stationary PSD/CSD and RMS use [random response](../fea-random-response/SKILL.md).
 - For damping identification or a mode-set damping transfer use [modal damping](references/modal-damping.md).
 - For NVH, select [operational load estimation](references/nvh-load-identification.md), [principal components of correlated references](references/nvh-principal-components.md), or [physical path contributions](references/nvh-transfer-paths.md) by requested output.

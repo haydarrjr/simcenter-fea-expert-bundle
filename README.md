@@ -18,7 +18,7 @@ simcenter-fea-expert-bundle/
 │   ├── fea-expert-agent.yaml            # Single top-level orchestrator agent
 │   └── subrecipes/                      # 6 specialist subagents
 │       ├── fea-model-inspector.yaml     # Simcenter 3D Assistant (read-only FE/CAD inventory)
-│       ├── fea-journal-author.yaml      # Designcenter Open Journal Author (8-step API discovery & sandbox)
+│       ├── fea-journal-author.yaml      # Designcenter Open Journal Author (API discovery and sandbox)
 │       ├── fea-solver-diagnostics.yaml  # Simcenter Nastran deck/F06/contact/trim diagnostics
 │       ├── fea-results-post.yaml        # BatchPost result post-processing (.op2, contours, XY graphs)
 │       ├── fea-verifier.yaml            # Independent analytical falsification & VVUQ verifier
@@ -26,7 +26,7 @@ simcenter-fea-expert-bundle/
 ├── skills/                              # All 39 canonical skills in one place (skills/<name>/SKILL.md)
 ├── docs/
 │   ├── skill-catalog.md                 # Complete catalog of all 39 skills
-│   └── qualification/0.1.2.md           # Qualification scope and evidence classes
+│   └── qualification/                   # Release qualification scope and evidence
 ├── scripts/
 │   ├── package_bundle.py                # Builds the Agent Workspace archive
 │   ├── validate_distribution.py         # Validates all 39 skills, 7 recipes, ADR-086 metadata, and links
@@ -37,7 +37,7 @@ simcenter-fea-expert-bundle/
     └── test_distribution.py             # Verifies offline source contract
 ```
 
-See the [skill catalog](docs/skill-catalog.md), [implementation plan](docs/fea-skill-tailoring-implementation-plan.md), and [release notes](RELEASE_NOTES.md).
+See the [skill catalog](docs/skill-catalog.md), [operational workflow](fea-workflow.md), and [release notes](RELEASE_NOTES.md).
 
 ## Referenced MCP Servers (`type: ref`)
 

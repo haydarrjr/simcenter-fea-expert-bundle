@@ -1,4 +1,4 @@
-# Siemens 2606 evidence and local Codex handoff
+# Siemens model-preparation references and native checks
 
 ## Release-bound documentation
 
@@ -18,7 +18,7 @@ availability of any necessary figures or equations.
 Confirm native availability, installed SDK signatures and numerical parity
 independently of documentation retrieval.
 
-## What Codex must qualify locally
+## Checks for native construction
 
 Use the bundled mechanics reference for independent checks. The following
 native observations require the current Siemens MCP profile:
@@ -29,17 +29,9 @@ native observations require the current Siemens MCP profile:
    the installed NXOpen SDK signatures before implementing readers/builders.
 2. **Section/material/support assignment.** Construct appropriate native beam
    properties and orientation; inspect effective offsets, density, E/G/nu and
-   root boundary behavior. Resolve the exact PBEAM/CBEAM shear convention from
+   effective support behavior. Resolve the exact PBEAM/CBEAM shear convention from
    the installed release. Export only through a qualified native operation.
-3. **Native model changes.** Use the shared Runtime for every model/file effect,
-   preserving originals and native ownership. Reconcile semantic selections and
-   protected regions after modification using `reconcile_selection_recipe`
-   (`fea.selection-recipe-intent.v1` -> `fea.selection-reconciliation.v1`),
-   `plan_associative_retrofit_or_rebind`, `evaluate_mesh_and_connection_replay`,
-   and `plan_sim_rebind`, separating `SOURCE_TESTED` / `DOCUMENTED_2606_CANDIDATE`
-   source verification from `NATIVE_READBACK_VERIFIED` `SelectionRecipe.GetEntities()`
-   persistence. See the [parametric SOL 101 workflow](../../simcenter-parametric-sol101/SKILL.md).
-   This PR adds no Runtime handler or MCP contract and changes no NX/Runtime branch.
+3. **Native model changes.** Use the [native runtime gate](../../fea-native-runtime-gate/SKILL.md) for qualified effects on a work copy. Revalidate semantic selections and protected regions after modification. Check actual selection recipe members, meshing/connections, and SIM references before accepting a rebind. Use the [parametric SOL 101 workflow](../../simcenter-parametric-sol101/SKILL.md) for associative updates.
 4. **Solver and discretization validation.** Run controlled SOL101 models on the
    licensed host for the original/proposed sections and both intended theories.
    Refine the beam mesh at load/section discontinuities and along uniform spans;
@@ -49,8 +41,7 @@ native observations require the current Siemens MCP profile:
    model or experiment for beam hypotheses, attachment compliance and local
    feature stresses. Document location, averaging, singularity and material
    assumptions. The source difference budget cannot substitute for this step.
-6. **Return defects with reproducible evidence.** Include source request/report,
-   repository commit, product build and SDK, generated model/deck hashes,
+6. **Record reproducible evidence.** Include the requested operation, product build and applicable SDK, model and deck identities,
    effective property/coordinate mapping, solver logs, result location/unit
    semantics, refinement history and expected-versus-observed quantities.
 

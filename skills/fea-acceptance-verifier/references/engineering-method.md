@@ -19,11 +19,7 @@ artifacts. Record source paths and SHA-256 hashes, then reconcile physical
 identities before comparing numerical values. Use independent tool and job
 evidence for origin and native execution.
 
-For nonlinear evidence, the implemented `fea.nonlinear-diagnosis.v2` request
-binds the effective deck and log hashes plus exact Nastran2606 release SKU
-`PL20251024315120185`. Optional iteration CSV has its own hash, complete case
-identity and declared origin. The CSV is FEA-owned interchange, not invented
-native F06 syntax. Preserve MANUFACTURED_TEST_TRACE versus ADAPTER_EXPORT.
+For nonlinear evidence, bind the effective deck, native log, release, achieved step and result history. Record the source of any extracted iteration table and distinguish a synthetic reference trace from an export of the run.
 
 ## Use independent mechanics, not a solver success label
 
@@ -62,19 +58,7 @@ Select an independent check sensitive to the proposed failure. Compare the predi
 
 ## Separate artifact integrity, authenticated observation and acceptance
 
-The actual Runtime client validates descriptive inventory, exact target state,
-bounded payloads and BEFORE/AFTER receipt chains. `ExpectedPart` binds identity,
-open generation, revision and fingerprint. `HostReceiptVerifier` is an
-embedding-owned independent trust port; caller JSON and a self-consistent
-hash chain cannot install it. Live reads require an explicit durable client
-ledger with pinned trust context; a source-fixture restart cannot clear a host
-operation's unresolved hold. A SOURCE_FIXTURE response stays native NOT_RUN.
-
-Even a valid `VerifiedHostReceipt` establishes only the bounded observation it
-binds. It does not prove that the correct contact law, mesh or nonlinear material
-was chosen, that the solver completed the intended load sequence, or that the
-design satisfies its intended-use margin. Conversely, absence of a desktop
-does not invalidate a mathematically proved source counterexample. Report the
+Artifact hashes establish file integrity. Native identity and execution require evidence from the bound host or exact solver job, with independent readback where applicable. An authenticated observation is evidence for the operation and target it covers. Engineering acceptance also requires a defensible physical model, numerical verification and the applicable decision criteria. An independent source calculation can establish a contradiction under its stated assumptions. Report the
 source result and the absent native evidence separately.
 
 Use these outcome distinctions:

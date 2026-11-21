@@ -4,6 +4,7 @@ import importlib.util
 import io
 import json
 from pathlib import Path
+import re
 import sys
 import tempfile
 import tomllib
@@ -146,6 +147,18 @@ class ProjectChannels(unittest.TestCase):
             workflow = files[f'{root}/fea-workflow.md'].decode('utf-8')
             self.assertIn('globally configured official Siemens MCPs', workflow)
             self.assertIn(f'{root}/skills/fea-dynamics/references/sol103-free-free.md', files)
+
+    def test_project_workflow_targets_resolve_in_both_clients(self):
+        for channel, (_, filename) in PROJECTS.items():
+            with self.subTest(channel=channel):
+                files = read_zip(self.out / filename)
+                workflow_path = next(name for name in files if name.endswith('/fea-workflow.md'))
+                directory = workflow_path.rsplit('/', 1)[0]
+                workflow = files[workflow_path].decode('utf-8')
+                for target in re.findall(r'\]\((skills/[^)]+)\)', workflow):
+                    self.assertIn(f'{directory}/{target}', files)
+                self.assertNotIn(b'Manual user save after the analysis',
+                                 files[f'{directory}/skills/fea-sc3d-tool-routing/references/tool-matrix.md'])
 
     def test_codex_update_and_rollback_preserve_existing_instructions(self):
         project = self.root / 'codex'

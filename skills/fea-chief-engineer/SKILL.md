@@ -1,18 +1,16 @@
 ---
 name: fea-chief-engineer
-description: "Plan a coupled FEA study or resolve a decision spanning several analysis stages."
+description: "Plan an FEA study or resolve an engineering decision spanning several analysis stages."
 metadata:
   copyright: "Unpublished work. Copyright 2026 Siemens"
 ---
 
-# Chief Engineer
+# Chief engineer
 
-Start with the requested physical decision. Select the needed global Siemens MCP through [tool routing](../fea-sc3d-tool-routing/SKILL.md). For CAD or NXOpen in Designcenter, connect directly to Designcenter Open. Check Simcenter 3D Model Inspection only when the task needs FEM/SIM inspection. For a model read, bind available session, work and display part, release, ownership, revision and dirty-state evidence. Open the explicitly identified result file through BatchPost before listing or exporting. Use [artifact forensics](../fea-artifact-forensics/SKILL.md) for deck/F06 lineage and evidence gaps.
+State the intended decision, quantities of interest, physical state, units and acceptance criteria. Identify the evidence needed at each requested stage and the quickest independent check that could invalidate the result. Use the [engineering method](references/engineering-method.md) for study design or review.
 
-- For model idealization, materials, connectors and mesh, use [model preparation](../fea-model-preparation/SKILL.md), [materials](../fea-materials-properties/SKILL.md), [connectors](../fea-connector-contact/SKILL.md) and [mesh quality](../fea-mesh-quality/SKILL.md). Keep material assignment, coordinate frames, BC scope, mesh quality and QoI convergence separate.
-- For static or nonlinear solver evidence, use [solver investigation](../fea-solver-investigation/SKILL.md) and [multistep nonlinear](../fea-multistep-nonlinear/SKILL.md). Check effective constraints, force and moment balance, contact state and energy on the actual subcase.
-- For authorized solver jobs, use [Solution Sequence](../fea-solver-investigation/references/solution-sequence.md) for deck export, Siemens batch submission, SCD5 and BatchPost. For SOL 103, apply the [free-free workflow](../fea-dynamics/references/sol103-free-free.md). Qualify live setup and deck export through the [runtime gate](../fea-native-runtime-gate/SKILL.md). Verify persistence through an admitted save and independent reopen, or record operator save evidence when needed.
-- Use [dynamics](../fea-dynamics/SKILL.md) for modal, FRF, transient, shock or NVH requests and [random response](../fea-random-response/SKILL.md) for stationary PSD/CSD. Use [durability](../fea-durability/SKILL.md) for fatigue with signed histories.
-- Use [continuum thermomechanics](../fea-continuum-thermomechanics/SKILL.md) for heat and mechanical coupling and [composite laminates](../fea-composite-laminates/SKILL.md) for ply evidence. Preserve assumptions, state, tensor conventions, provenance and validation scope.
+- For idealization and ownership start with [model preparation](../fea-model-preparation/SKILL.md). Load material, mesh or contact methods for the risk being assessed.
+- For solver setup, completion or a discrepancy start with [solver investigation](../fea-solver-investigation/SKILL.md). Use [dynamics routing](../fea-sc3d-tool-routing/references/dynamics-routing.md) to select a dynamic method from the excitation and requested result.
+- Use [tool routing](../fea-sc3d-tool-routing/SKILL.md) for native operations. Load [acceptance verifier](../fea-acceptance-verifier/SKILL.md) when judging a specific claim and [report method](../fea-results-interpretation/references/engineering-report.md) when a report is requested.
 
-Use the [engineering method](references/engineering-method.md), [acceptance verifier](../fea-acceptance-verifier/SKILL.md) and [report method](../fea-results-interpretation/references/engineering-report.md). Follow the tool routing even when a task names a tool absent from the installed catalog. Report native, archived, derived and engineering acceptance states independently.
+Return the engineering decision or the specific evidence gap, with scope and provenance appropriate to each completed stage.
