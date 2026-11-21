@@ -13,40 +13,22 @@
 
 A solver result belongs to a particular **submitted model**, boundary/load
 selection and physical state. A CAD name, SIM filename or last-modified date
-does not identify that state. In the executable investigation, the manifest
-binds the bytes of the effective deck, source-exported FEM/SIM hierarchy, job
-sidecar, log and every result file before any calculation occurs. The common
-identity contains model, revision, mesh revision, basic frame and coherent
-units. The selected solution, subcase and static load factor are separate.
+does not identify that state. Bind the effective deck, FEM/SIM ownership, job log and result files. Record model revision, mesh revision, frame, units, solution, subcase and actual state.
 
 The hierarchy links SIM → FEM → idealized part → CAD part, with a component
 parent graph and exclusive structural/mass-element ownership. Shared GRID
 nodes are legitimate interfaces; double-counting an element as owned by both
-an assembly and its child is not. The importer checks missing owners, cycles,
-duplicate IDs and deck membership. Physical support and load regions carry
+an assembly and its child is not. Check missing owners, cycles, duplicate IDs and deck membership. Physical support and load regions carry
 their own mesh revisions. A remesh may reuse numeric tags, so matching old
 GRID numbers does not clear a stale region.
 
-`fea.solver-investigation.v1` artifacts use relative paths and SHA-256. The
-reader rejects traversal, symlinks, changing files, nonfinite JSON, duplicate
-JSON fields and unmatched hashes. These measures protect interpretation of
-the supplied bytes. **They do not authenticate their origin.** A manufactured
-result can be rehashed correctly; the independent physics checks must still
-find it wrong. Job metadata, a log marker or a caller-supplied grant never
-creates native authority.
+Record exact artifact paths and hashes. Use scoped files and keep provenance from the originating job. Hashes establish byte identity. Independently check run lineage and mechanics.
 
 Use the official Nastran and BatchPost reads or scoped original solver text to record these links. The worked examples below illustrate physical checks and are not live evidence.
 
 ## Effective deck and flexible mechanics
 
-The implemented profile interprets complete SOL101/SOL103 decks containing
-GRID, MAT1, CBAR, PBAR, CONM2, FORCE, MOMENT, LOAD, SPC/SPC1/SPCADD and EIGRL
-within its stated field restrictions. It resolves global/local Case Control
-selection and all referenced sets. Solver output commands do not substitute
-for a selected stiffness/load model. Unsupported offsets, releases, coordinate
-systems, contact, prestress, INCLUDEs and arbitrary cards stop the affected
-reference computation with a specific reason. Obtain the flattened effective
-deck and select a justified model rather than silently dropping those cards.
+Resolve global and local Case Control selection and referenced sets from the effective deck. Use [deck and solution checks](../../simcenter-nastran/references/deck-and-solutions.md) for syntax, closures and supported local tooling. The beam reference below applies to linear elastic bending. Assess joint releases, offsets, coordinate transformations, shear, contact and prestress when effective.
 
 Basic coordinates and SI N–m–kg or coherent N–mm–tonne are supported. In the
 latter system, E is N/mm², density tonne/mm³, and rotational inertia
@@ -55,14 +37,7 @@ spectrum of the **pattern multiplier**. Treat a force direction, a geometry
 vector, an axial rotational DOF and a translational DOF differently under
 unit or frame changes.
 
-Siemens 2606 free-field documentation states that overlong real fields can be
-rounded. The parser rejects free fields longer than eight characters instead
-of guessing the solver's rounding algorithm. Use fixed large fields when
-precision matters. Integer CBAR X1 denotes an orientation GRID (G0); this
-profile requires an explicit floating-point orientation vector. PBAR K1/K2
-blank or zero selects the documented Euler–Bernoulli limit; a nonzero shear
-factor requires another formulation. See the source ledger in
-`docs/evidence/siemens-2606-solver-linked.json` for exact release/card evidence.
+Use the documented field width for the installed solver. For a CBAR verify whether its orientation comes from a GRID or an explicit vector. Check PBAR shear factors when comparing to the Euler-Bernoulli limit.
 
 Each node has six DOFs. Each CBAR has axial EA/L, Saint-Venant torsion GJ/L,
 and two cubic-Hermite bending operators. For a local bending pair, the nodal
@@ -85,7 +60,7 @@ distributed translational inertia, Hermite bending mass and polar torsional
 inertia ρ(I1+I2); bending rotary inertia is omitted. CONM2 inertia must be
 positive semidefinite and satisfy principal-inertia triangle inequalities at
 its own physical scale. J is a torsional stiffness constant, not generally
-the polar mass second moment; the circular-tube reference makes them equal.
+the polar mass second moment; they are equal for a circular section.
 
 Solve `K φ = λ M φ` by a mass-Cholesky transformation and a symmetric
 eigensolver, then mass-normalize the basis. A stiffness mechanism, invalid
@@ -140,7 +115,7 @@ coordinates before deleting restraints. On a proposed model copy, remove only
 the unintended constraints, re-export the effective deck, then compare
 compliance and mode subspaces. If a local shell/solid region governs stress,
 perform a work-conserving global/local transfer and a local discretization
-study; this frame's nodal normal stresses are insufficient for that decision.
+study; use a recovery that resolves the local stress state.
 
 If the intended structure is pretensioned and frictional, obtain its current
 equilibrated operating state, contact active set and tangent. Establish whether
@@ -155,18 +130,4 @@ Check that the effective deck defines the claimed model, solution and load scope
 
 ## Siemens and Runtime operation boundary
 
-The verified 2606 source paths are composed from borrowed simulation/part/BC
-objects and observed installation descriptors. Solution creation uses the
-documented factory, explicitly attaches steps and BCs, and checks returned
-membership. Export creates and disposes its owned options container, verifies
-typed option readback, and requires actual exported-deck digest/readback.
-Borrowed result access is bound to the selected solution, subcase, quantity,
-location, components, frame, units and physical state. Source helper generation
-does not prove handle acquisition, installed descriptors or a completed write.
-
-Runtime discovery and job inspection use the observed upstream DTOs. A job
-labelled COMPLETED with unknown outcome remains unresolved. The six-stage FEA
-handoff binds the case, owner graph, effective deck, physical state and optional
-recipe digests; it is **not dispatchable** while qualified CAE handlers are
-absent. A timeout or uncertain commit requires exact-job reconciliation,
-not a fresh request that might repeat the native effect.
+Use the [qualified CAE catalog](../../designcenter-open-journal-authoring/references/cae-2612.md) for matching solution setup and deck export. Use the [runtime gate](../../fea-native-runtime-gate/SKILL.md) to reconcile an uncertain live effect. Use [Solution Sequence](solution-sequence.md) to qualify the effective deck and verify the exact batch job and result files.

@@ -19,12 +19,7 @@ model, revision, owner, mesh revision, frame, load state and source bytes.
 
 Create an evidence record for the question, exact source files, model identity, checks, tolerances and status. Use the current catalog and scoped evidence to trace each quantity.
 
-`route-expert "request text"` is an explainable triage aid. It is not native
-authorization or a replacement for understanding the request. A mixed request
-can activate contact, nonlinear and thermal expertise together. A CAD-only
-request belongs to the NX owner; an exact API declaration belongs to Siemens
-documentation. If the case's data describe a different engineering domain,
-the runner rejects the mismatch instead of silently analyzing a convenient file.
+For a mixed request, select the physical methods that can change the engineering decision. Use [tool routing](../../fea-sc3d-tool-routing/SKILL.md) for the profile and [documentation search](../../designcenter-open-documentation-search/SKILL.md) for source declarations.
 
 ## Coupled decision procedure
 

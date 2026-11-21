@@ -4,7 +4,7 @@
 
 - [Reconstruct the problem](#reconstruct-what-the-solver-actually-attempted)
 - [Levels of conclusion](#separate-three-levels-of-conclusion)
-- [Worked investigation](#worked-apparently-converged-case)
+- [Worked investigation](#diagnose-an-apparently-converged-increment)
 - [Recovery](#recovery-and-outcome)
 
 Use the exact-release Siemens Help API and the current global catalog to
@@ -32,7 +32,7 @@ Choose controls by actual solver family:
 | SOL401 | NLCNTL Case Control → NLCNTL bulk ID | Default contact criteria and EQU/CON/BLT summaries have their own semantics |
 | SOL402 | NLCNTL Case Control → NLCNTL2 bulk ID | Relaxed criteria, time-step controls and RSUB restoration are not SOL401 options copied under another name |
 
-Read the exact 2606 declaration before prescribing a card/value. In particular,
+Read the declaration for the installed solver release before prescribing a card or value. In particular,
 MAXBIS=0 has a different meaning and validity across these families. Increasing
 an iteration limit cannot repair wrong region membership, absent preload,
 incompatible DOFs or a missing physical restraint.
@@ -56,17 +56,11 @@ SOL402, preserve original and relaxed force/energy criteria separately. The
 bounded source pages do not justify inventing a universal logical combination
 of every convergence branch.
 
-Check signed physical resultants in one frame. The trace requires a
-`force_projection` with matching `frame_id`, three finite unit-axis components
-and convention `SIGNED_DOT_PRODUCTS_IN_NEWTONS`. A norm is not a signed
-component; a nonunit axis is rejected rather than normalized. For the implemented projection audit,
-`|F_external+R_support|` must fit the declared absolute-plus-relative budget.
+Check signed physical resultants in one frame. For a component check, project external and reaction forces onto a declared unit axis and compare their signed sum with the dimensional absolute-plus-relative budget.
 For a transient or whole assembly, include inertia and every external interface;
 do not double-count internal contact forces. Compare artificial stabilization
 energy with the declared strain-energy fraction budget. A residual reduced by
-unphysical stiffness/damping may represent a different model. The output records
-the declared axis and explicitly leaves full 3D force and moment equilibrium
-unassessed. A balanced projection cannot establish transverse equilibrium.
+unphysical stiffness/damping may represent a different model. Record the axis and check the other force components and moments when the claim requires full equilibrium.
 
 ## Diagnose an apparently converged increment
 

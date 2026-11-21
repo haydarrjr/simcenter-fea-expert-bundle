@@ -1,6 +1,6 @@
 ---
 name: simcenter-3d-mesh-quality-review
-description: "Read and interpret native Simcenter mesh quality metrics."
+description: "Read native Simcenter mesh quality metrics, failure counts and the checked element population."
 metadata:
   copyright: "Unpublished work. Copyright 2026 Siemens"
 ---

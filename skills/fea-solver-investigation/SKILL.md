@@ -1,13 +1,13 @@
 ---
 name: fea-solver-investigation
-description: "Investigate solver setup or termination and choose a discriminating repair."
+description: "Run the qualified solver sequence or diagnose solver setup, termination and inconsistent run evidence."
 metadata:
   copyright: "Unpublished work. Copyright 2026 Siemens"
 ---
 
 # Solver investigation
 
-Bind the FEM/SIM, solution, subcase, effective deck, F06 and result database to the same run before joining their facts. Use [tool routing](../fea-sc3d-tool-routing/SKILL.md) and [artifact forensics](../fea-artifact-forensics/SKILL.md).
+Bind the FEM/SIM, solution, subcase, effective deck, F06 and result database to the same run before joining their facts. Use [tool routing](../fea-sc3d-tool-routing/SKILL.md) when a host operation is needed and [artifact forensics](../fea-artifact-forensics/SKILL.md) when the run identity is unresolved.
 
 For setup, batch submission, SCD5 and BatchPost, follow [Solution Sequence](references/solution-sequence.md).
 

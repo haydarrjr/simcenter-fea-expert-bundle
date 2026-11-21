@@ -1,6 +1,6 @@
 ---
 name: fea-mesh-quality
-description: "Assess discretization, connectivity, element validity or quantity-of-interest convergence."
+description: "Judge element validity, connectivity and whether mesh refinement resolves the requested engineering quantity."
 metadata:
   copyright: "Unpublished work. Copyright 2026 Siemens"
 ---

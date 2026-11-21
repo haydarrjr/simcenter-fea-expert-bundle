@@ -1,6 +1,6 @@
 # Imported CAD to Simcenter model
 
-Inspect the imported assembly via Designcenter Open and Model Inspection. Establish import units and provenance per body, assembly occurrence transforms, physical interfaces, geometry defects and the extent of healing or idealization. Retain the map from native body/face to property, mesh, load, result and support. Name/position matches alone are insufficient for face mapping after geometry changes.
+Inspect the CAD occurrences via Designcenter Open. Use Model Inspection when FEM bodies, properties or mesh state are needed. Establish import units and provenance per body, assembly occurrence transforms, physical interfaces, geometry defects and the extent of healing or idealization. Retain the map from native body/face to property, mesh, load, result and support. Name/position matches alone are insufficient for face mapping after geometry changes.
 
 Select the expected element family, regionwise target size and mesh convergence quantities. Check for thin-region, fillet, notch, bolt/contact and load application sensitivities. Retain intended connection separations. Audit actual element type and order, midside geometry and physical region ownership. Any change to mesh, interface or boundary state needs an owned copy, qualified tool and readback.
 

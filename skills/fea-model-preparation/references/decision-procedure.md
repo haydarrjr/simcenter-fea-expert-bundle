@@ -51,7 +51,7 @@ Select the representation against the load path and requested engineering quanti
 7. Return a model-preparation decision record: source identities and assumptions,
    computed alternatives with their budgets, whole-span regime findings,
    protected features/local tasks, exclusions, source verification and the
-   native verification checks in [Siemens handoff](siemens-2606.md).
+   native verification checks in [Siemens references and native checks](siemens-2606.md).
 
 ## Ambiguity and revision policy
 

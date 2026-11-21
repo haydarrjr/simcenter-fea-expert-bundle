@@ -26,15 +26,9 @@ recovery location or altering the contact state.
 ## Numerical verification
 
 Use independent analytical, high-precision or metamorphic checks that would fail
-if the implementation were wrong. The joint workflow compares its active-set
-Newton solution with 50-digit Decimal enumeration of all 256 contact states.
-The assembly workflow independently checks a hand-summed six-mode system,
-origin/frame invariance and virtual-work transfer. The tensor workflow uses
-rotation and hydrostatic-offset invariance. Tests that merely reproduce the
-same internal algorithm are weaker evidence.
+if the implementation were wrong. For a small contact reference, enumerate feasible active sets independently of the iteration scheme. For a rigid assembly, check frame and origin invariance and virtual-work transfer. For tensor recovery, check rotation and hydrostatic-offset invariance. Prefer comparisons with a different formulation or an independent invariant.
 
-For mesh refinement, the constant-ratio Richardson/GCI implementation estimates
-order only in its supported trend and identity regime. Read
+For mesh refinement, constant-ratio Richardson extrapolation and GCI require compatible meshes and an appropriate convergence trend. Read
 [constant-r refinement](constant-r-refinement.md) for its assumptions and
 failure codes. A converged global force can coexist with an unconverged opening
 boundary, bolt force or singular peak stress. Study the actual decision QoI

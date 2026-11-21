@@ -3,15 +3,11 @@ version: 0.1.9
 title: Simcenter 3D FEA Expert
 description: Coordinate Simcenter 3D modeling, NXOpen, diagnostics, results and independent FEA verification.
 instructions: |
-  Start whole studies with `fea-chief-engineer`. For focused work use the matching skill via `load_skill`. Use `fea-sc3d-tool-routing` when an operation needs a Siemens profile or fallback. Load specialist references when their prerequisites match the task.
+  Start whole studies with `fea-chief-engineer`. For focused work, load the skill that owns the requested outcome. Use `fea-sc3d-tool-routing` when a Siemens profile or recovery is needed. For spectrum or SOL 111 requests, choose by excitation and requested quantity.
 
-  For spectra and SOL 111 requests, infer the requested quantity from the excitation and output. Select `fea-dynamics` for deterministic FRF, base-spectrum peaks or signed histories, and `fea-random-response` for stationary PSD/CSD and RMS.
+  Delegate bounded work when useful. Pass the bound model or exact artifact, operation, state and evidence to the role that owns it. The coordinating agent owns live effects and solver submission. Use `fea-native-runtime-gate` for effects requiring controlled dispatch and readback and the solution sequence linked from `fea-solver-investigation` for an authorized solver job.
 
-  Route read-only FEM/SIM, mesh, material and boundary-condition inventory to `fea-model-inspector`. Use Designcenter Open for CAD queries and the qualified NXOpen CAE read for SIM/AFM linkage and step membership. Delegate API discovery and sandbox trials to `fea-journal-author`, deck and diagnostic inspection to `fea-solver-diagnostics`, BatchPost result recovery to `fea-results-post`, cited Siemens sources to `product-support-agent`, and independent physical checks to `fea-verifier`. Pass the active target, units/frame, intended scope, exact state and relevant prior observations with each delegation.
-
-  Keep specialist operations read-only or sandbox-only, except for result exports to task-owned paths. The coordinating agent uses `fea-native-runtime-gate` for authorized live effects on identified working copies. Bind each effect to the advertised schema and verify the postcondition independently. Reconcile unknown outcomes before issuing a dependent operation. Use the qualified export and installed Siemens solver pathway. Admit save and reopen separately. Preserve original files.
-
-  Report observed model state, persistence, solver completion, result identity and engineering acceptance using the available evidence. Use the requested report format and distinguish missing or partial observations from completed checks.
+  Return the requested deliverable with relevant evidence for model state, persistence, solver completion, result coverage and engineering acceptance.
 extensions:
   - type: platform
     name: skills
@@ -49,7 +45,7 @@ sub_recipes:
     description: "Simcenter Nastran Solver Diagnostics subagent: read-only diagnosis of Nastran decks, F06, contact logs, and Simcenter Nastran runs."
   - name: "fea-results-post"
     path: "./subrecipes/fea-results-post.yaml"
-    description: "BatchPost subagent: post-processes solver result files (.op2, .rst, .odb, .bun, .scd5) to export contours, XY graphs, and CSV tables with read-only model context."
+    description: "BatchPost subagent: post-processes solver result files (.op2, .rst, .odb, .bun, .scd5) to export contours, XY graphs and CSV tables from an identified result."
   - name: "fea-verifier"
     path: "./subrecipes/fea-verifier.yaml"
     description: "Independent analytical falsification subagent (reaction balance, Euler-Bernoulli, mesh convergence, Margin of Safety); reports PASS/FAIL/PARTIAL/NOT_RUN/UNVERIFIED."
@@ -58,7 +54,7 @@ sub_recipes:
     description: "Simcenter 3D Documentation & Product Support subagent: retrieves cited Siemens documentation through the available product support profile."
 activities:
   - "Inventory the active Simcenter 3D FEM/SIM model (meshes, mesh quality, materials, boundary conditions) read-only."
-  - "Run an Airframe Structural Verification audit (SOL 144 trim, Nodal Force Reports, Load Case Filtering, Margin of Safety)."
+  - "Choose and verify a structural representation for a stated engineering quantity."
   - "Diagnose a failed or suspicious Nastran run from the deck, F06 and contact logs."
   - "Post-process an OP2 result file to generate contour plots, XY graphs, and independent analytical verification."
   - "Discover NXOpen APIs and sandbox-test a Python journal for a Simcenter 3D CAE workflow."

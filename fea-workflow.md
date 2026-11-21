@@ -1,33 +1,31 @@
 # Simcenter 3D FEA workflow
 
-Use the globally configured official Siemens MCPs. Avoid duplicate workspace registrations. Use the installed Siemens batch solver and SCD5 converter for authorized jobs. Scope local file work to the job inputs, outputs and reports. Mark unexecuted operations as NOT_RUN.
+Use the globally configured official Siemens MCPs. Start a whole study with [FEA Chief Engineer](skills/fea-chief-engineer/SKILL.md). For a focused request, start with its outcome below and open supporting references as needed.
 
-For whole studies start with [FEA Chief Engineer](skills/fea-chief-engineer/SKILL.md). For focused tasks start with the matching row. Consult [SC3D Tool Routing](skills/fea-sc3d-tool-routing/SKILL.md) when selecting a native profile or changing route. Do not reload skills already in context.
-
-| Request | Starting skill |
+| Requested outcome | Start here |
 |---|---|
-| Inspect the open CAD part | [Designcenter model data](skills/designcenter-open-model-data-read/SKILL.md) |
-| Inspect FEM/SIM, mesh or BC | [Mesh inspection](skills/simcenter-3d-mesh-inspection/SKILL.md), [Boundary conditions](skills/simcenter-3d-simulation-boundary-conditions/SKILL.md) |
-| Read solution/subcase or export from a 2612 SIM | [Qualified CAE operations](skills/designcenter-open-journal-authoring/references/cae-2612.md) |
-| Discover an unmatched API or prepare a journal | [Journal authoring](skills/designcenter-open-journal-authoring/SKILL.md) |
-| Investigate deck, F06 or contact logs | [Solver investigation](skills/fea-solver-investigation/SKILL.md), [Artifact forensics](skills/fea-artifact-forensics/SKILL.md) |
-| Qualify or run a SOL 101/103 batch | [Simcenter Nastran](skills/simcenter-nastran/SKILL.md) |
-| Export or interpret results | [BatchPost](skills/batchpost-actions/SKILL.md), [Results interpretation](skills/fea-results-interpretation/SKILL.md) |
-| Evaluate engineering acceptance | [Acceptance verifier](skills/fea-acceptance-verifier/SKILL.md), [VVUQ](skills/fea-vvuq-review/SKILL.md) |
-| Create or verify SOL 103 free-free normal modes | [SOL 103](skills/fea-dynamics/references/sol103-free-free.md) |
-| Choose between FRF, transient, SRS, random response, mode sets or NVH | [Dynamics routing](skills/fea-sc3d-tool-routing/references/dynamics-routing.md) |
-| Produce an engineering report with genuine results | [Report method](skills/fea-results-interpretation/references/engineering-report.md) |
-| Retrieve Siemens documentation | [Documentation search](skills/designcenter-open-documentation-search/SKILL.md) |
-| Associative SOL101 or airframe workflows | [SOL101](skills/simcenter-parametric-sol101/SKILL.md), [Airframe](skills/simcenter-airframe-structural-verification/SKILL.md) |
+| Read CAD features, dimensions, expressions or assembly structure | [Live CAD model data](skills/designcenter-open-model-data-read/SKILL.md) |
+| Identify CAD, FEM, AFM or SIM ownership, or choose an idealization | [Model preparation](skills/fea-model-preparation/SKILL.md) |
+| Read active CAE bodies or assigned materials | [Body and material inspection](skills/simcenter-3d-material-and-body-inspection/SKILL.md) |
+| Inventory mesh collectors, types, counts and properties | [Mesh inspection](skills/simcenter-3d-mesh-inspection/SKILL.md) |
+| Retrieve native mesh quality metrics | [Native mesh quality](skills/simcenter-3d-mesh-quality-review/SKILL.md) |
+| Decide whether the mesh resolves an engineering quantity | [Mesh quality](skills/fea-mesh-quality/SKILL.md) |
+| Show, hide or select active CAE entities | [Visibility and selection](skills/simcenter-3d-visibility-and-selection/SKILL.md) |
+| Generate or edit a native mesh | [Mesh generation](skills/simcenter-3d-mesh-generation/SKILL.md) |
+| Check mapped loads, flux or geometry-to-mesh conservation | [Boundary transfer](skills/fea-open-meshing/SKILL.md) |
+| Inspect loads, constraints, effective solution or step scope | [Boundary condition inspection](skills/simcenter-3d-simulation-boundary-conditions/SKILL.md) |
+| Read SIM/AFM links, solution setup or saved result references | [Qualified CAE operations](skills/designcenter-open-journal-authoring/references/cae-2612.md) for the matching build |
+| Resolve an unfamiliar API, write a journal or retrieve vendor documentation | [API discovery](skills/designcenter-open-api-discovery/SKILL.md) for a member, [journal authoring](skills/designcenter-open-journal-authoring/SKILL.md) for code, [documentation search](skills/designcenter-open-documentation-search/SKILL.md) for a source |
+| Run a solver job or explain a solver setup or termination | [Solver investigation](skills/fea-solver-investigation/SKILL.md), including its Solution Sequence for submission |
+| Inspect exact deck syntax, effective selectors or deck closure | [Simcenter Nastran](skills/simcenter-nastran/SKILL.md) |
+| Trace a deck, log or result file to its producing run | [Artifact forensics](skills/fea-artifact-forensics/SKILL.md) |
+| Extract data, create plots or author a BatchPost configuration | [BatchPost](skills/batchpost-actions/SKILL.md) |
+| Interpret an FEA quantity or report its physical meaning | [Results interpretation](skills/fea-results-interpretation/SKILL.md) |
+| Evaluate a specific engineering acceptance claim | [Acceptance verifier](skills/fea-acceptance-verifier/SKILL.md) |
+| Design or assess a verification, validation or uncertainty study | [VVUQ](skills/fea-vvuq-review/SKILL.md) |
+| Choose a modal, frequency response, transient, shock, random or NVH method | [Dynamics by requested output](skills/fea-sc3d-tool-routing/references/dynamics-routing.md) |
+| Build an associative static study or an integrated airframe verification | [Parametric SOL 101](skills/simcenter-parametric-sol101/SKILL.md) or [airframe verification](skills/simcenter-airframe-structural-verification/SKILL.md), respectively |
 
-Do not bind profiles that the task does not need. Keep connection status distinct from active part identity and BatchPost file state. Qualify live edits, deck export and batch submission individually. Reconcile uncertain effects by independent readback before dependent work. Verify persistence through an admitted save and independent reopen, or record operator save evidence when needed.
+Use [tool routing](skills/fea-sc3d-tool-routing/SKILL.md) when a task needs a Siemens profile or recovery. Use the [runtime gate](skills/fea-native-runtime-gate/SKILL.md) for qualified native operations requiring controlled dispatch and independent readback. The [persistence method](skills/fea-native-runtime-gate/references/native-persistence.md) defines save and reopen for an isolated 2612 batch chain and what an active interactive model requires.
 
-For a prepared authorized operation, use the [runtime gate](skills/fea-native-runtime-gate/SKILL.md) and its controller alongside the existing host connection. Treat local attestation, host discovery, native effects and FEA acceptance as separate observations.
-
-## When access or input is missing
-
-- If a needed global profile is missing from the client's tool list, check the host's profile registration and refresh its catalog through the host. Keep that profile distinct from a declared MCP connection failure.
-- For Model Inspection `DCMCP-E002`, record the profile, exact error and affected FEM/SIM stages. For an affected FEM/SIM task, ask the operator to enable Model Inspection and reconnect. Requested CAD reads can still proceed via Designcenter Open.
-- If Designcenter Open connects but reports no active part, report the missing model target. Run CAD model reads once an active part is available.
-- For BatchPost, use an explicitly supplied result file or an exact saved result path returned by an authorized MCP read. Validate that path and call `open` before `list`. A file name, model part path, or previous chat is insufficient to select a result. Ask for the absolute result path if it is missing. Continue an independent results stage if its file is known even when Model Inspection is unavailable.
-- Use only the task workspace and explicitly authorized input roots for file lookups. Avoid recursive drive searches and unrelated session history. If the requested report can be written, include completed observations and concrete missing inputs or connection evidence for the remaining stages.
+Keep file lookups inside the task workspace and authorized roots. Continue independent stages when a profile or artifact is unavailable. Report what the available evidence establishes and the specific dependency for any unfinished stage.

@@ -7,7 +7,7 @@ metadata:
 
 # Results Interpretation
 
-Read [artifact forensics](../fea-artifact-forensics/SKILL.md) and identify the exact solved state. For contours, values or trusted UI-independent images, open the exact result file via [BatchPost](../batchpost-actions/SKILL.md), list its state, and select actual types, components, positions and units. Use installed Nastran MCP tools or scoped original F06 text for scalar solver evidence. Record named cases, node/element/ply IDs, coordinate frame and averaging before interpretation.
+Identify the exact solved state. Use [artifact forensics](../fea-artifact-forensics/SKILL.md) if run or result lineage is uncertain. For contours, values or trusted UI-independent images, open the exact result file via [BatchPost](../batchpost-actions/SKILL.md), list its state, and select actual types, components, positions and units. Use installed Nastran MCP tools or scoped original F06 text for scalar solver evidence. Record named cases, node/element/ply IDs, coordinate frame and averaging before interpretation.
 
 - [Engineering method](references/engineering-method.md) for displacement, support reactions, wrench transfer, contact and stress extraction.
 - [Real tensor quantities](references/real-tensor-qoi.md) for physical Voigt order, shear convention, rotation and invariant checks. Preserve integration-point, elemental, element-nodal and averaged results separately.

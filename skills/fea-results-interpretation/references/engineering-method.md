@@ -73,12 +73,11 @@ a failing comparison remains FAIL. See the
 ## Worked diagnostic examples
 
 For `diag(1e16+2,1e16,1e16)` Pa, J2 is 4/3 Pa² and von Mises is **2 Pa**.
-The previous normalization order produced approximately 2.22045 Pa. For
+For
 `1e16 I` plus 1 Pa XY shear, Tresca is **2 Pa**, even though separately rounded
 absolute principal values can appear identical. For pure hydrostatic stress,
 a 45-degree rotation must leave von Mises zero; creating a 2.22 Pa deviatoric
-stress is a numerical artifact. These are executable holdouts, not display
-rounding conventions.
+stress is a numerical artifact. Report the numerical sensitivity when deviatoric terms are small compared with the hydrostatic part.
 
 For `K=diag(1e20,1)`, `M=I`, `phi=(0,1)` and claimed lambda=2, the soft mode is
 wrong. The action residual is **1/3**, despite a tiny matrix-norm residual.
@@ -86,10 +85,7 @@ Two bases spanning the same repeated two-dimensional eigenspace can have
 individual MAC=0.5 and squared subspace correlations `(1,1)`. A one-direction
 match must not hide another direction with squared correlation 0.25.
 
-For an actual nonlinear interpretation, use the manufactured flange case's
-source diagnosis. Its final equilibrium column alone does not pass the contact
-column, and its 18 kN force defect independently contradicts acceptance. A scalar
-maximum stress extracted from that unaccepted state cannot repair its provenance.
+A nonlinear increment needs the applicable contact, preload and equilibrium evidence. For example, a passing equilibrium status does not settle a failed contact criterion. Interpret stresses within the achieved solution state and report any constraint on their use.
 
 ## Readback and debugging
 

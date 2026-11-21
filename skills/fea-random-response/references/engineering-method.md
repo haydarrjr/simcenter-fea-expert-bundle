@@ -11,11 +11,7 @@
 
 ## Select the physical and stochastic model
 
-Start with the requested quantity and operating state. The implemented
-calculation assumes linear isotropic elastic frame members, fixed bilateral
-constraints, small displacement, time-invariant mass/stiffness and stationary
-force-pattern multipliers. It solves the full flexible model read from the
-effective deck; it is not a six-DOF rigid assembly approximation.
+Start with the requested quantity and operating state. The flexible linear reference here assumes elastic behavior, fixed bilateral constraints, small motion, time-invariant mass/stiffness and stationary force-pattern multipliers.
 
 A static equilibrium alone does not supply a valid dynamic tangent for a
 pretensioned contact assembly. Establish preload inheritance, temperature,
@@ -26,12 +22,7 @@ speed-dependent terms before using symmetric real modes. For deterministic
 shock, use the time history or an appropriately defined response spectrum;
 a stationary PSD/RMS calculation does not answer the peak transient question.
 
-The source computation derives rotation-vector RMS and relative member chord
-RMS across the **whole model**, including locations absent from the requested
-output list. It requests model-form review above the stated small-motion
-screen. An RMS screen can disqualify a linear model; passing it cannot prove
-peak-motion bounds, constant contact state or elastic material capacity.
-There is no yield stress inferred from E or from a generic steel label.
+Check rotation and relative member chord RMS where relevant to the small-motion assumption, including regions outside the requested output. Peak motion, contact state and material limits need their own evidence.
 
 ## Input and response spectral matrices
 
@@ -93,13 +84,7 @@ the correct operating tangent. Effective mass alone does not guarantee local
 stress convergence, and missing high-frequency modes can affect response
 below the highest extracted natural frequency.
 
-The integrator inserts neighborhoods around every in-band natural frequency,
-using damping-dependent widths, then compares 8- and 16-point Gauss–Legendre
-quadratures and adaptively refines the largest normalized covariance error.
-The error scale is based on uncoupled output variances so cancellation does
-not produce a misleading relative error. Input PSD knots also partition the
-integration intervals. An evaluation/iteration budget failure remains an
-unresolved integral; it is not returned as a converged RMS.
+Partition frequency integration at PSD knots and resolve in-band resonances with a damping-sensitive grid or adaptive quadrature. Check that the covariance and RMS converge even under cancellation.
 
 The reported error is an embedded numerical estimate, not a rigorous interval
 bound or a model-form error bound. Independently verify a high-Q mode, narrow
@@ -146,17 +131,4 @@ Compare independent, fully correlated and phase-shifted inputs using the same au
 
 ## Solver/API operations and unsupported families
 
-Use the solver-investigation skill to join actual effective-deck bytes and
-state-specific results. The verified Siemens helpers can prepare an explicitly
-selected linear solution/step, attach borrowed BCs, export the effective deck
-with observed typed options and read borrowed nodal displacement results.
-These source helpers do not configure a native random solution by guessing
-descriptor strings. Actual installation metadata, qualified result-owner
-acquisition and registered Runtime FEA operations remain external dependencies.
-
-The portable `fea-random-response` entrypoint is now a real separate SKILL.md.
-Legacy rotor, cyclic, aeroelastic, DDAM and acoustic aliases still route to
-advanced dynamics guidance; they are not separate installed skills or
-implemented specialist solvers. When one of those families is physically
-required, explain its equations, sources and concrete next verification rather
-than presenting this elastic random solver as a universal substitute.
+Use [Nastran random response](nastran-random-response.md) for effective random controls and [solver investigation](../../fea-solver-investigation/SKILL.md) to bind the deck and results to one job. Use [BatchPost random displacement](../../batchpost-actions/references/random-displacement-csv.md) when its scope matches the requested export. Use [specialized dynamics](../../fea-dynamics/references/advanced-dynamics.md) for rotor, cyclic, aeroelastic, DDAM or acoustic decisions.

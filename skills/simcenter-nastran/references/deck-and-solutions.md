@@ -10,10 +10,11 @@
 
 Run the [read-only helper](../scripts/deck.py) on the exact exported or staged deck:
 
-```powershell
-python skills\simcenter-nastran\scripts\deck.py .work\job\main.dat --root .work\job
-python skills\simcenter-nastran\scripts\deck.py .work\job\main.dat --root .work\job --expect-closure .work\closure.json --free-free --nd 26
+```text
+python skills/simcenter-nastran/scripts/deck.py path/to/job/main.dat --root path/to/job
 ```
+
+For the narrow SOL 103 profile add `--free-free`. Supply `--nd` only when the study specifies an exact requested root count.
 
 - Without `--root`, only the named deck is authorized; any INCLUDE is unresolved. With `--root`, use literal, single-line quoted relative paths. INCLUDEs are fragments within a section, resolved from the containing file; section delimiters and card continuations cannot cross file boundaries. Absolute paths, aliases through symlinks/junctions, missing files, cycles, variables and escapes are unresolved. Read from a stable, task-owned directory; the report describes the bytes read, not later changes on disk.
 - JSON `files` records the size and SHA-256 of every file read; `includes` records source file/line and target. `--expect-closure` takes an exact `{ "relative/path.dat": "<sha256>" }` map using paths relative to `--root` (or the deck's directory). Use it to compare a staged closure with a previously recorded closure; extra, missing or different files are unresolved. Keep reports and any `--cards` output with the authorized evidence.

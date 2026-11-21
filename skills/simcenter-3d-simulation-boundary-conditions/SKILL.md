@@ -1,6 +1,6 @@
 ---
 name: simcenter-3d-simulation-boundary-conditions
-description: "Read Simcenter loads, constraints, simulation objects and their solution or subcase assignments."
+description: "Inventory active SIM loads, constraints and simulation objects, and trace their effective solution or step membership."
 metadata:
   copyright: "Unpublished work. Copyright 2026 Siemens"
 ---

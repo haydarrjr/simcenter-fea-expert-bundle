@@ -1,6 +1,6 @@
 ---
 name: fea-artifact-forensics
-description: "Trace a solver deck, log or result file to the exact job, model and result state."
+description: "Resolve the identity, provenance or coverage of a solver deck, log or result artifact."
 metadata:
   copyright: "Unpublished work. Copyright 2026 Siemens"
 ---

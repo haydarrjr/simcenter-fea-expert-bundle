@@ -31,7 +31,7 @@ Saint-Venant exclusion distance is asserted.
 
 ## Section and load-path equations
 
-The implemented rectangle properties are
+For a rectangle the section properties are
 
 \[
 A=bh,\quad I_z=bh^3/12,\quad I_y=hb^3/12,\quad

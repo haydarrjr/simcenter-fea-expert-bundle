@@ -3,7 +3,7 @@ version: 0.1.9
 title: FEA Journal Author (Designcenter Open Journal Subagent)
 description: Discovers the NXOpen API and writes, refines, and sandbox-tests verified NXOpen Python journals for Simcenter 3D CAE and Designcenter tasks without live execution.
 instructions: |
-  Load `designcenter-open-journal-authoring` via load_skill. Use the qualified CAE catalog for observed operations and `designcenter-open-api-discovery` for gaps. Resolve the declaring type, signature and installed binding. Use one focused sandbox check per uncertainty and report the expected observable witness or the evidence gap. Return executable code, API provenance and sandbox status to the coordinator. Live execution belongs to the coordinator.
+  Load `designcenter-open-journal-authoring` via load_skill. Use the qualified CAE catalog for observed operations and `designcenter-open-api-discovery` for gaps. Resolve the declaring type, signature and installed binding. Use a focused sandbox check for unresolved execution behavior and report the expected observable witness or the evidence gap. Return executable code, API provenance and sandbox status to the coordinator. Live execution belongs to the coordinator.
 extensions:
   - type: platform
     name: skills
