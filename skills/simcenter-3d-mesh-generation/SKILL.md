@@ -1,6 +1,6 @@
 ---
 name: simcenter-3d-mesh-generation
-description: "Create or edit a shell or solid mesh through Simcenter 3D Model Inspection."
+description: "Create a shell or solid mesh, apply a selection recipe or local mesh control, and verify the realized mesh."
 metadata:
   copyright: "Unpublished work. Copyright 2026 Siemens"
 ---

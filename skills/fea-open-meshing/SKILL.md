@@ -1,6 +1,6 @@
 ---
 name: fea-open-meshing
-description: "Verify geometry-to-mesh and load or heat-flux transfer by conservation checks."
+description: "Define physical mesh regions, choose local mesh controls, and verify load or heat-flux transfer."
 metadata:
   copyright: "Unpublished work. Copyright 2026 Siemens"
 ---
