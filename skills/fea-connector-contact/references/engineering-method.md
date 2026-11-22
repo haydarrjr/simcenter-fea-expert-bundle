@@ -64,6 +64,8 @@ Compare bolt axial forces and interface contact reactions before and after prelo
 
 For unilateral contact, check that separated regions carry negligible normal traction and that closed regions meet the declared gap or penetration tolerance. For Coulomb friction, compare tangential traction with the local friction bound and verify that sliding traction opposes relative slip. Check local normals and stick/slip state beside that comparison. Separation or sliding changes the compatibility estimate and can shift the relevant recovery location.
 
+Keep the preload result at installation, the locked state and each service state aligned by load step or time. Verify the selected contact pair and property at each step, then compare the contact status, deformed gap, compressive pressure and pair resultants at matching positions. In an element-resolved bolt table, several rows can repeat the same physical bolt axial force. Determine the recovery semantics before summing rows. Use the contact and bolt report from the exact run when the binary reader exposes a narrower set of fields.
+
 ## Construct, debug and falsify
 
 Bind each native construction step to a fetched owner/factory/member and an

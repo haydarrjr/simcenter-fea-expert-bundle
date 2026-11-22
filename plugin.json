@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "simcenter-fea-expert",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "Inspect, automate and verify finite element analysis in Simcenter 3D and Simcenter Nastran.",
   "author": {
     "name": "FEA Expert Bundle Maintainers",

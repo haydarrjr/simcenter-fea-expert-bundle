@@ -18,6 +18,10 @@ Resolve the selected control IDs for each step. Check the actual meaning of the 
 
 Read the requested result support and measure independently of the output name. For SOL 401/402, check actual step visibility of displacement, reactions, stress and `PLSTRN` during export. Preserve the total or intrinsic measurement convention and the actual time or increment of comparison.
 
+For a SOL 401 bolt installation step, check the active `BOLTLD` and the bolt definition it selects. Check sequential dependence into service and request `BOLTRESULTS` and `BCRESULTS` for the intended entities. The F06 and the binary result reader can expose different fields. [Bolt preload](https://docs.sw.siemens.com/en-US/doc/PL20251024315120185.multi_step_nonlinear/html/xid924582?audience=external)
+
+For a SOL 402 internal restart, resolve `SEQDEP=NO`, the selected `NLCNTL2` and the `RSUB` source, then compare the solver's restart positioning and target time grid. Check the supported combination of `LGDISP`, `LGSTRN` and `MATNL` when modeling large rotations. Use the stress measure reported by the applicable result table. [SOL 402 restart](https://docs.sw.siemens.com/en-US/doc/PL20251024315120185.multi_step_nonlinear/html/xid1602274?audience=external)
+
 ## Release-specific diagnostics
 
 - For SOL 106, an older maintenance issue could omit `LIMIT1` from the exported plastic material definition. Inspect the active card in the current export before applying a release-specific remedy. [KB000153430](https://support.sw.siemens.com/en-US/knowledge-base/KB000153430_EN_US)

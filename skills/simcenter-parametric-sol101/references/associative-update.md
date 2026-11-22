@@ -1,0 +1,10 @@
+# Verify an associative CAD-to-analysis change
+
+1. Record the master CAD, any idealized intermediary, the FEM and the owning SIM. Identify the driving dimension or expression and the expected geometric change. Record the physical identities of loaded and supported regions, their normals, and loaded area or intended resultant.
+2. Update the parameter and regenerate the CAD. Confirm the master geometry before updating the idealization and FEM. Read the FEM update state and prove that the current polygon entities and nodes match the regenerated geometry. Check mesh coverage and quality at the updated regions.
+3. Resolve boundary conditions through the owning SIM occurrence. Compare active region membership, direction, values and load resultants with the baseline. For constant pressure, the resultant changes with affected area and orientation. For a prescribed total force, preserve the specified resultant and check its new distribution. When geometry splits or merges a face, reconcile the physical scope before accepting its remapped selection.
+4. Export a separate deck for each geometry revision. Verify resolved GRID coordinates, element coverage, materials, and selected load and constraint sets. Compare balance in a common frame and compare the response sensitivity with an independent model appropriate to the revised geometry.
+
+On Designcenter 2612, the associated FEM exposes `FullPathForAssociatedCadPart` and `BaseFEModel.AskUpdatePending()`. After regenerating the master, reacquire the SIM work/display context and use `BaseFEModel.UpdateFemodel()`. Resolve face-based targets from the FEM prototype to the owning SIM occurrence with `SimSimulation.Femodel.GetComponent().FindOccurrence()`. Read the associated CAD face and its physical coordinates again after remesh. [New FEM and Edit FEM dialog](https://docs.sw.siemens.com/en-US/doc/PL20251024315444291.advanced/html/id624531?audience=external)
+
+In the single-constraint SOL 101 variant, apply the active constraint at solution scope and check the effective `SPC` in each solved subcase. Use [SOL 101 setup](../../fea-linear-static/references/sol101.md) for output and equilibrium checks.
