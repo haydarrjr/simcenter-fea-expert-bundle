@@ -1,6 +1,6 @@
 # Simcenter 3D FEA Expert skill catalog
 
-The 39 canonical skills live under `skills/`.
+The 40 canonical skills live under `skills/`.
 
 | Skill | Use |
 |---|---|
@@ -18,11 +18,12 @@ The 39 canonical skills live under `skills/`.
 | [`fea-continuum-thermomechanics`](../skills/fea-continuum-thermomechanics/SKILL.md) | Check solid or thermoelastic formulation, heat balance, and continuum assumptions. |
 | [`fea-durability`](../skills/fea-durability/SKILL.md) | Assess fatigue from signed load or stress histories and material life data. |
 | [`fea-dynamics`](../skills/fea-dynamics/SKILL.md) | Analyze modes, FRFs, transient histories, shock spectra, modal damping or NVH source and path contributions. |
+| [`fea-linear-static`](../skills/fea-linear-static/SKILL.md) | Set up or verify a linearly elastic static structural load case and its recovered responses. |
 | [`fea-materials-properties`](../skills/fea-materials-properties/SKILL.md) | Verify constitutive data, material assignment and effective FEA properties. |
 | [`fea-mesh-quality`](../skills/fea-mesh-quality/SKILL.md) | Assess discretization, connectivity, element validity or quantity-of-interest convergence. |
 | [`fea-modal-correlation`](../skills/fea-modal-correlation/SKILL.md) | Compare mode shapes or modal subspaces across simulations or test data. |
 | [`fea-model-preparation`](../skills/fea-model-preparation/SKILL.md) | Select idealization or dynamic component representations and verify CAD, FEM, AFM or SIM ownership. |
-| [`fea-multistep-nonlinear`](../skills/fea-multistep-nonlinear/SKILL.md) | Diagnose nonlinear subcase sequencing, convergence, plasticity or load history. |
+| [`fea-multistep-nonlinear`](../skills/fea-multistep-nonlinear/SKILL.md) | Plan or diagnose nonlinear step controls, state transfer, convergence and material history. |
 | [`fea-native-runtime-gate`](../skills/fea-native-runtime-gate/SKILL.md) | Prepare and verify an authorized native Simcenter operation with independent readback. |
 | [`fea-open-meshing`](../skills/fea-open-meshing/SKILL.md) | Verify geometry-to-mesh and load or heat-flux transfer by conservation checks. |
 | [`fea-random-response`](../skills/fea-random-response/SKILL.md) | Assess stationary vibration PSDs, correlated inputs, modal coverage and RMS response. |

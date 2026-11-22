@@ -3,13 +3,13 @@
 Layout (must match the host loader):
   recipes/fea-expert-agent.yaml                main agent (YAML, has sub_recipes)
   recipes/subrecipes/<name>.yaml               every sub_recipes target, nothing else at recipes/ root
-  skills/<skill>/...                           canonical 39 skills
+  skills/<skill>/...                           canonical 40 skills
   readme/README.md
 Never copies an installed/extracted bundle. Usage:
   python scripts/package_bundle.py [--out dist/simcenter-fea-expert/<ver>]
 """
 from pathlib import Path
-import argparse, json, tomllib
+import argparse, json, re, tomllib
 
 try:
     from .package_identity import (BUNDLE_MANIFEST, PACKAGE_ID, add_manifest,
@@ -47,7 +47,13 @@ def collect(root=ROOT):
         if p.is_file() and '__pycache__' not in p.parts and p.suffix != '.pyc':
             files[p.relative_to(root).as_posix()] = p.read_bytes()
     readme = root / 'README.md'
-    files['readme/README.md'] = readme.read_bytes()
+    repository = json.loads((root / 'plugin.json').read_bytes())['repository'].rstrip('/')
+    # Agent Workspace includes the README by itself. Route its repository links to GitHub.
+    files['readme/README.md'] = re.sub(
+        rb'(\]\()((?![a-zA-Z][a-zA-Z0-9+.-]*:|[/#])[^)\s]+)(\))',
+        lambda match: match[1] + f'{repository}/blob/main/'.encode() + match[2] + match[3],
+        readme.read_bytes(),
+    )
     return main, files
 
 

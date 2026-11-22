@@ -13,7 +13,7 @@ class DistributionTests(unittest.TestCase):
     def test_meaningful_source_contract(self):
         result = validate()
         self.assertGreater(result['checked_criterion_count'], 0)
-        self.assertEqual(result['skills'], 39)
+        self.assertEqual(result['skills'], 40)
         self.assertEqual(result['subrecipes'], 6)
         self.assertEqual(result['runtime'], 'NOT_RUN')
 
@@ -47,7 +47,7 @@ class DistributionTests(unittest.TestCase):
 
     def test_missing_skills_rejected(self):
         with tempfile.TemporaryDirectory() as d:
-            with self.assertRaisesRegex(ValueError, '39 canonical skills'):
+            with self.assertRaisesRegex(ValueError, '40 canonical skills'):
                 validate(Path(d))
 
     def test_recipe_missing_canonical_skill_reference(self):

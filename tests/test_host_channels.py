@@ -169,7 +169,7 @@ class ProjectChannels(unittest.TestCase):
         install(project, archive, self.root / 'backup-one', 'codex')
         before = path.read_bytes()
         install(project, archive, self.root / 'backup-two', 'codex')
-        self.assertEqual(attest(project, 'codex')['skill_count'], 39)
+        self.assertEqual(attest(project, 'codex')['skill_count'], 40)
         self.assertEqual(path.read_bytes(), before)
         self.assertEqual(before.count(b'simcenter-fea-expert:start'), 1)
         rollback(project, self.root / 'backup-two', 'codex')

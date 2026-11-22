@@ -20,4 +20,4 @@ Choose by operation and needed evidence. Use the selected host's current catalog
 | Export field or graph data from a result file | [BatchPost](../batchpost-actions/SKILL.md) after binding the exact result |
 | Retrieve vendor documentation | Product Support via [documentation search](../designcenter-open-documentation-search/SKILL.md) |
 
-Use [dynamics routing](references/dynamics-routing.md) when terms such as “spectrum” or “SOL 111” are ambiguous. See the [tool matrix](references/tool-matrix.md) for observed tool names and host recovery. If an effect is uncertain, reconcile the target state before issuing a dependent call.
+Use [static structural routing](references/static-routing.md) when the request concerns static response, load history, contact or buckling. Use [dynamics routing](references/dynamics-routing.md) for dynamic quantities. See the [tool matrix](references/tool-matrix.md) for observed tool names and host recovery. If an effect is uncertain, reconcile the target state before issuing a dependent call.

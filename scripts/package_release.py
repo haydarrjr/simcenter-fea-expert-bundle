@@ -102,6 +102,7 @@ def build(out=None, root=ROOT):
         stage = Path(temp) / 'candidate'
         bundle = package_bundle.package(stage, root, candidate_digest=candidate)
         archive = Path(bundle['archive'])
+        check_links(read_zip(archive))
         bundle['archive'] = archive.name
         channels = {'agentsai': bundle}
         for channel in PROJECTS:

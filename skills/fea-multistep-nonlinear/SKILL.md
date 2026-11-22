@@ -1,12 +1,12 @@
 ---
 name: fea-multistep-nonlinear
-description: "Diagnose nonlinear subcase sequencing, convergence, plasticity or load history."
+description: "Plan or diagnose nonlinear structural load paths, plasticity, large deformation, convergence and postbuckling."
 metadata:
   copyright: "Unpublished work. Copyright 2026 Siemens"
 ---
 
-# Multistep Nonlinear
+# Multistep nonlinear analysis
 
-Bind the effective SOL 106, 401 or 402 deck, solution/subcase and original solver log. Inspect step ordering, solver control, nonlinear material, contact and preload history. Use [Solver investigation](../fea-solver-investigation/SKILL.md) for custody and solver messages and [BatchPost](../batchpost-actions/SKILL.md) for the actual converged states.
+Identify the mechanism that changes the response, its load history and the required acceptance quantity. Use [load-path verification](references/open-solver-workflows.md) for inherited state, material behavior and accepted increments. Use [diagnostics and controls](references/engineering-method.md) for effective solver controls, convergence and recovery.
 
-Read [diagnostics and checks](references/engineering-method.md) and [multistep load-path verification](references/open-solver-workflows.md). Check the lock-up or transfer of preload, separation, pressure/contact area, stick/slip, incremental plastic strain and absolute temperature as applicable. Compare local and global balances with independent evidence. A converged flag alone cannot validate load transfer. Keep unexecuted sequences or missing fields NOT_RUN. Use exact-release Siemens Help for solution-specific cards and continuation rules.
+For changing contact or preload follow [connector and contact mechanics](../fea-connector-contact/SKILL.md). For loss of stability or postbuckling use [instability and path following](references/instability-and-path-following.md). For Simcenter Nastran output requests and release-specific solver behavior consult [nonlinear static input and output](../simcenter-nastran/references/nonlinear-static-io.md).

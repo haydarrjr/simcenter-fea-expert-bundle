@@ -16,9 +16,9 @@ class BundleLayoutTests(unittest.TestCase):
     def test_only_main_agent_at_recipes_root(self):
         self.assertEqual(sorted(p.name for p in (ROOT / 'recipes').glob('*.yaml')), ['fea-expert-agent.yaml'])
 
-    def test_all_39_skills_under_top_level_skills_dir(self):
+    def test_all_40_skills_under_top_level_skills_dir(self):
         skills = sorted(p.parent.name for p in (ROOT / 'skills').glob('*/SKILL.md'))
-        self.assertEqual(len(skills), 39)
+        self.assertEqual(len(skills), 40)
         self.assertFalse((ROOT / '.agents/skills').exists())
         self.assertFalse((ROOT / 'overlay').exists())
 

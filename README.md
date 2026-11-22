@@ -1,6 +1,6 @@
 # Simcenter 3D FEA Expert
 
-Canonical top-level orchestrator, six specialist roles and **39 FEA and Simcenter 3D skills**. One source candidate produces Simcenter Agent Workspace, Codex and VS Code GitHub Copilot distributions.
+Canonical top-level orchestrator, six specialist roles and **40 FEA and Simcenter 3D skills**. One source candidate produces Simcenter Agent Workspace, Codex and VS Code GitHub Copilot distributions.
 
 Repository: <https://github.com/haydarrjr/simcenter-fea-expert-bundle>
 
@@ -23,13 +23,13 @@ simcenter-fea-expert-bundle/
 │       ├── fea-results-post.yaml        # BatchPost result post-processing (.op2, contours, XY graphs)
 │       ├── fea-verifier.yaml            # Independent analytical falsification & VVUQ verifier
 │       └── product-support-agent.yaml   # Cited Siemens documentation retrieval
-├── skills/                              # All 39 canonical skills in one place (skills/<name>/SKILL.md)
+├── skills/                              # All 40 canonical skills in one place (skills/<name>/SKILL.md)
 ├── docs/
-│   ├── skill-catalog.md                 # Complete catalog of all 39 skills
+│   ├── skill-catalog.md                 # Complete catalog of all 40 skills
 │   └── qualification/                   # Release qualification scope and evidence
 ├── scripts/
 │   ├── package_bundle.py                # Builds the Agent Workspace archive
-│   ├── validate_distribution.py         # Validates all 39 skills, 7 recipes, ADR-086 metadata, and links
+│   ├── validate_distribution.py         # Validates all 40 skills, 7 recipes, ADR-086 metadata, and links
 │   ├── build_distribution.py            # Builds portable source archive
 │   └── install_release_local.py         # Packages, installs, enables, and hydrates the bundle in Agent Workspace
 └── tests/
@@ -37,7 +37,7 @@ simcenter-fea-expert-bundle/
     └── test_distribution.py             # Verifies offline source contract
 ```
 
-See the [skill catalog](docs/skill-catalog.md), [operational workflow](fea-workflow.md), and [release notes](RELEASE_NOTES.md).
+See the [skill catalog](docs/skill-catalog.md), [operational workflow](fea-workflow.md), and [release notes](RELEASE_NOTES.md). The [static implementation plan](docs/linear-nonlinear-implementation-plan.md) gives the SOL 101/106/401/402 evidence and remaining validation scope.
 
 ## Referenced MCP Servers (`type: ref`)
 

@@ -1,6 +1,6 @@
 ---
 name: simcenter-nastran
-description: "Read Nastran deck syntax, effective selectors and INCLUDE closure, or qualify the input for a SOL 101/103 job."
+description: "Resolve Nastran deck syntax, effective selectors and INCLUDE closure, and check solver-specific controls or recovery requests."
 metadata:
   copyright: "Unpublished work. Copyright 2026 Siemens"
 ---
@@ -10,6 +10,7 @@ metadata:
 1. Establish the exact model, solution and subcase or the exact archive triplet. For native setup use the [2612 CAE operation catalog](../designcenter-open-journal-authoring/references/cae-2612.md), not generic API discovery.
 2. Read [deck and solution checks](references/deck-and-solutions.md). Use the official diagnostic MCP if advertised; otherwise the local text-only [deck helper](scripts/deck.py) covers a deliberately limited SOL 101/103 profile. Unknown coverage is not a pass.
    For SOL 108/111, response-spectrum controls or external superelements, use the helper's `--observe` mode for source locations and dependency review. Resolve effective controls against the solver documentation and actual job.
-3. Use [Solution Sequence](../fea-solver-investigation/references/solution-sequence.md) for executable/translator selection, batch admission, exit reconciliation, conversion and BatchPost. Use [static verification](../fea-solver-investigation/references/engineering-method.md) or [free-free verification](../fea-dynamics/references/sol103-free-free.md) for acceptance.
+3. Check [nonlinear static input and output](references/nonlinear-static-io.md) for SOL 106/401/402 controls, output requests and known release-specific diagnostics.
+4. Use [Solution Sequence](../fea-solver-investigation/references/solution-sequence.md) for executable/translator selection, batch admission, exit reconciliation, conversion and BatchPost. Use [static verification](../fea-solver-investigation/references/engineering-method.md) or [free-free verification](../fea-dynamics/references/sol103-free-free.md) for acceptance.
 
 Use Siemens Help `STS_SIMCENTER3D` with the installed release requested first. If unavailable, select a relevant supported release and check for differences. Record the **resolved** documentation version; it is not runtime evidence. Prefer the [Quick Reference Guide](https://docs.sw.siemens.com/en-US/doc/PL20251024315120185.QRG?audience=external) for the exact entry and the [User's Guide](https://docs.sw.siemens.com/en-US/doc/PL20251024315120185.User?audience=external) for the solver workflow. For diagnostics include the exact message number/module. Do not query docs for already qualified operations unless the release or assumption changes.

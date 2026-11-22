@@ -30,11 +30,15 @@ batch. Qualify solver submission and SIM/FEM persistence independently.
    ```
 
    Confirm applicable runtime and license options for other installations.
+   For multistep nonlinear jobs check the [monitor requirements and runtime diagnostics](../../simcenter-nastran/references/nonlinear-static-io.md#release-specific-diagnostics)
+   before reusing batch options from another sequence.
    Resolve the authorized product root first, then test only the known
    `NXNASTRAN\bin\nastranw.exe` and `NXBIN\scd5_convert.exe` paths. If absent,
    request that installation's exact path; do not search vendor trees.
    The Windows launcher can return before Nastran finishes. Use new job files
    and the solver's log, exit status and F06 completion to qualify the result.
+   Check for fatal diagnostics and the required solved states in F06. A terminal
+   process and end-of-job marker can both be present after an input fatal.
    Reconcile a pending launch before retry. Preserve the input, invocation and
    output hashes in the evidence record.
 5. **Prefer SCD5 for compatible results.** Use documented solver-native SCD5
