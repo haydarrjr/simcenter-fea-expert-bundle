@@ -2,7 +2,7 @@
 
 ## Establish the interface and load history
 
-Resolve the source and target faces through their physical roles. Check orientation, occurrence transform, separation or interference, search distance, friction, glue and duplicate constraints. Establish how each body is restrained while the pair is open. Predict starting contact and the effects of any gap correction from the effective deck. Preserve the intended load or displacement history through preload, service and unloading.
+Resolve the source and target faces through their physical roles. Check orientation, occurrence transform, separation or interference, search distance, friction, glue and duplicate constraints. Establish how each body is restrained while the pair is open. Predict starting contact and the effects of any gap correction from the effective deck. Preserve the intended load or displacement history through preload, service and unloading. For enforced displacement, check that each component has a defined value on both sides of a sequential subcase transition and that the solver uses the intended interpolation.
 
 At each needed state read the last accepted increment and its actual load or displacement. Cross-check solver diagnostics with contact pressure, normal gap, status and force in the paired result file. Compare forces on one side of the interface with the reaction and applied load under a stated sign convention. Treat a missing contact row as missing until the field's sparse-output convention and independent gap, displacement or reaction establish the open state.
 
