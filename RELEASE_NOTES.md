@@ -1,3 +1,9 @@
+# 0.1.12 candidate
+
+- Route repeatable physical selection, local mesh control, scoped Element Quality and response convergence through the common skill tree.
+- Document the observed Designcenter 2612 face-recipe binding and independent FEM readback. Add contact setup, diagnosis and recovery guidance for SOL 401 and 402.
+- Add independently specified elastic contact cycles and report the measured [qualification of mesh and contact](docs/qualification/0.1.12.md).
+
 # 0.1.11 candidate
 
 - Verify an associative SOL 101 geometry change and check remesh, boundary transfer, equilibrium and response sensitivity.
