@@ -1,12 +1,14 @@
 ---
 name: fea-multistep-nonlinear
-description: "Diagnose nonlinear subcase sequencing, convergence, plasticity or load history."
+description: "Plan, qualify or diagnose nonlinear structural load steps, state transfer, convergence and material response in SOL 106, 401 or 402."
 metadata:
   copyright: "Unpublished work. Copyright 2026 Siemens"
 ---
 
 # Multistep Nonlinear
 
-Bind the effective SOL 106, 401 or 402 deck, solution/subcase and original solver log. Inspect step ordering, solver control, nonlinear material, contact and preload history. Use [Solver investigation](../fea-solver-investigation/SKILL.md) for custody and solver messages and [BatchPost](../batchpost-actions/SKILL.md) for the actual converged states.
+Select the nonlinear mechanism and intended step history. Bind the solution family, material law, contact behavior, load and restraint sequence, and quantities needed for acceptance. Use [connector/contact](../fea-connector-contact/SKILL.md) when contact transfer or bolt preload controls.
 
-Read [diagnostics and checks](references/engineering-method.md) and [multistep load-path verification](references/open-solver-workflows.md). Check the lock-up or transfer of preload, separation, pressure/contact area, stick/slip, incremental plastic strain and absolute temperature as applicable. Compare local and global balances with independent evidence. A converged flag alone cannot validate load transfer. Keep unexecuted sequences or missing fields NOT_RUN. Use exact-release Siemens Help for solution-specific cards and continuation rules.
+Use [diagnostics and controls](references/engineering-method.md) to bind the exact effective deck and F06. Use [load-path verification](references/open-solver-workflows.md) for a step-by-step engineering comparison and [solver deck round trip](../designcenter-open-journal-authoring/references/static-deck-roundtrip-2612.md) when importing a complete deck in the matching release. Consult exact-release Siemens Help before interpreting material fields, cutbacks and output requests.
+
+Identify the attained load and last accepted increment of each required step. Check signed reactions, displacement, stress, and the state variables that govern the decision. Use [BatchPost](../batchpost-actions/SKILL.md) or scoped original solver text for the available fields. Verify history-sensitive quantities with a path-aware independent reference.

@@ -1,9 +1,11 @@
-bundle: simcenter-fea-expert-0.1.9
-version: 0.1.9
+bundle: simcenter-fea-expert-0.1.10
+version: 0.1.10
 title: Simcenter 3D FEA Expert
 description: Coordinate Simcenter 3D modeling, NXOpen, diagnostics, results and independent FEA verification.
 instructions: |
   Start whole studies with `fea-chief-engineer`. For focused work, load the skill that owns the requested outcome. Use `fea-sc3d-tool-routing` when a Siemens profile or recovery is needed. For spectrum or SOL 111 requests, choose by excitation and requested quantity.
+
+  For a linear static load case start with `fea-linear-static`. Use `simcenter-parametric-sol101` for associative updates, `fea-multistep-nonlinear` for path-dependent analysis and `fea-connector-contact` for joint or contact mechanics.
 
   Delegate bounded work when useful. Pass the bound model or exact artifact, operation, state and evidence to the role that owns it. The coordinating agent owns live effects and solver submission. Use `fea-native-runtime-gate` for effects requiring controlled dispatch and readback and the solution sequence linked from `fea-solver-investigation` for an authorized solver job.
 

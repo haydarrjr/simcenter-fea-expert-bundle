@@ -71,6 +71,8 @@ effective subcases and selected controls. SOL401 requires preload application
 in its documented preload subcase; SOL402 has different preload and restoration
 semantics. Verify the applicable controls in the [nonlinear method](../../fea-multistep-nonlinear/references/engineering-method.md) and exact-release Siemens documentation.
 
+For a 3D bolt under large strains, compare bolt force and sign after preload and again as service loads are applied. Siemens reports a maintenance-level SOL 401 defect that can change force in the service step even when the preload step agrees. Verify the installed maintenance build and the article's conditions. Treat changing to tied behavior as a model-form change and check whether opening and slip remain relevant. [SOL 401 bolt preload](https://docs.sw.siemens.com/en-US/doc/PL20251024315120185.multi_step_nonlinear/html/xid924582?audience=external) · [Siemens Support advisory PL8869179](https://support.sw.siemens.com/en-US/knowledge-base/PL8869179)
+
 If contact remains uniformly closed where the reference opens, inspect glue,
 region orientation, hidden stabilization and load introduction. If thermal
 preload moves in the wrong direction, reconcile reference temperature, expansion

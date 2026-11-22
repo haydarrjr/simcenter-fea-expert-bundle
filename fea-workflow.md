@@ -23,8 +23,9 @@ Use the globally configured official Siemens MCPs. Start a whole study with [FEA
 | Interpret an FEA quantity or report its physical meaning | [Results interpretation](skills/fea-results-interpretation/SKILL.md) |
 | Evaluate a specific engineering acceptance claim | [Acceptance verifier](skills/fea-acceptance-verifier/SKILL.md) |
 | Design or assess a verification, validation or uncertainty study | [VVUQ](skills/fea-vvuq-review/SKILL.md) |
+| Choose or verify a linear static, nonlinear static, contact or buckling workflow | [Static structural routing](skills/fea-sc3d-tool-routing/references/static-routing.md) |
 | Choose a modal, frequency response, transient, shock, random or NVH method | [Dynamics by requested output](skills/fea-sc3d-tool-routing/references/dynamics-routing.md) |
-| Build an associative static study or an integrated airframe verification | [Parametric SOL 101](skills/simcenter-parametric-sol101/SKILL.md) or [airframe verification](skills/simcenter-airframe-structural-verification/SKILL.md), respectively |
+| Build an integrated airframe verification | [Airframe verification](skills/simcenter-airframe-structural-verification/SKILL.md) |
 
 Use [tool routing](skills/fea-sc3d-tool-routing/SKILL.md) when a task needs a Siemens profile or recovery. Use the [runtime gate](skills/fea-native-runtime-gate/SKILL.md) for qualified native operations requiring controlled dispatch and independent readback. The [persistence method](skills/fea-native-runtime-gate/references/native-persistence.md) defines save and reopen for an isolated 2612 batch chain and what an active interactive model requires.
 

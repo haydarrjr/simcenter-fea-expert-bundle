@@ -7,7 +7,7 @@ from ruamel.yaml import YAML
 
 ROOT = Path(__file__).resolve().parents[1]
 ALLOWED_SUFFIXES = {'.md', '.py', '.mjs', '.json', '.yaml', '.yml', '.txt', '.toml', '.xsd'}
-EXPECTED_SKILLS = 39
+EXPECTED_SKILLS = 40
 PORTABLE_MANIFEST = 'plugin.json'
 CODEX_MARKETPLACE = '.agents/plugins/marketplace.json'
 COPILOT_MARKETPLACE = '.github/plugin/marketplace.json'

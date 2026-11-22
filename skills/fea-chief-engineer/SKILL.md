@@ -11,6 +11,7 @@ State the intended decision, quantities of interest, physical state, units and a
 
 - For idealization and ownership start with [model preparation](../fea-model-preparation/SKILL.md). Load material, mesh or contact methods for the risk being assessed.
 - For solver setup, completion or a discrepancy start with [solver investigation](../fea-solver-investigation/SKILL.md). Use [dynamics routing](../fea-sc3d-tool-routing/references/dynamics-routing.md) to select a dynamic method from the excitation and requested result.
+- Use [static structural routing](../fea-sc3d-tool-routing/references/static-routing.md) when the decision concerns static response, load history, contacts or stability.
 - Use [tool routing](../fea-sc3d-tool-routing/SKILL.md) for native operations. Load [acceptance verifier](../fea-acceptance-verifier/SKILL.md) when judging a specific claim and [report method](../fea-results-interpretation/references/engineering-report.md) when a report is requested.
 
 Return the engineering decision or the specific evidence gap, with scope and provenance appropriate to each completed stage.

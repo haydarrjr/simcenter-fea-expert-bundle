@@ -1,3 +1,9 @@
+# 0.1.10 candidate
+
+- Route linear static, associative SOL 101, staged nonlinear, contact/preload and buckling requests by engineering outcome.
+- Document verified 2612 solver-deck import, independent native save/reopen and solver/result checks for synthetic SOL 101, 106, 401 and 402. Record the live evidence for each model separately.
+- Document the standalone SOL 401 monitor and small-displacement controls and the SOL 402 OP2 output setting. See [qualification](docs/qualification/0.1.10.md) and the [linear and nonlinear implementation plan](docs/linear-nonlinear-implementation-plan.md).
+
 # 0.1.9 candidate
 
 - Qualify synthetic Hermes 2612 PCA, inverse Load Identification and complex TPA with separate source and result identities. Record the Testlab project workflow as `TBD`.
