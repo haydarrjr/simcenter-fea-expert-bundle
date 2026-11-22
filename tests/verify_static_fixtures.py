@@ -100,12 +100,31 @@ def verify_402_f06(text):
     return report
 
 
+def verify_live_402(live, case_root, job_result, f06_steps):
+    path, name = live["native_result"]["ref"]
+    attached = Path(path) / name
+    require(attached.resolve() == (case_root / job_result.name).resolve()
+            and digest(attached) == digest(job_result), "Live result differs from solved OP2")
+    require(live["model_inspection"]["matching_work_and_display"],
+            "Live Model Inspection did not confirm the reopened SIM")
+    states = live["native_result"]["values"]
+    require(len(states) == len(f06_steps), "Wrong live loadcase count")
+    for state, expected_name, f06 in zip(states, ("LOAD PAST YIELD", "UNLOAD"), f06_steps):
+        case, labels, displacement, unit = state
+        times = [float(re.search(r"Time\s*=\s*(\S+)\s+s$", label)[1]) for label in labels]
+        require(case == expected_name and times == [x["time"] for x in f06["increments"]],
+                f"Wrong live result states: {state}")
+        require(unit in ("Meter", "MilliMeter"), f"Unexpected live displacement unit: {unit}")
+        compare([displacement * (1000 if unit == "Meter" else 1)],
+                f06["increments"][-1]["ux_mm"], f"{case} live terminal displacement")
+
+
 def verify(job, case_root, sequence, batch_only=False):
     native = json.loads((case_root / "reopen-and-export.json").read_text(encoding="utf-8"))
     require(str(sequence) in native["type"], "Wrong reopened solution")
     if not batch_only:
         live = json.loads((case_root / "live/receipt.json").read_text(encoding="utf-8"))
-        require(live["original_roles_restored"] and
+        require(live["original_roles_restored"] and live["backend_pids"]["designcenter"] and
                 live["backend_pids"]["designcenter"] == live["backend_pids"]["simcenter3d"] and
                 live["readback"]["sim"] == native["sim"] and live["readback"]["fem"] == native["fem"],
                 "Missing exact live source binding or role restoration")
@@ -125,6 +144,8 @@ def verify(job, case_root, sequence, batch_only=False):
               "live_reopen": "NOT_CHECKED" if batch_only else "VERIFIED"}
     if sequence == 402:
         result["f06_steps"] = verify_402_f06(f06_text)
+        if not batch_only:
+            verify_live_402(live, case_root, op2, result["f06_steps"])
 
     if sequence == 101:
         checks = (("ux-", "mm", {(2,)}, "X", .05), ("rx-", "N", {(1,)}, "X", -1000.),

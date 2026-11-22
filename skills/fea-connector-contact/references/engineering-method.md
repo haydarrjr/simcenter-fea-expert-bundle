@@ -60,7 +60,9 @@ branch, force/moment balance and reported tangent independently.
 
 ## Check preload redistribution
 
-Compare bolt axial forces and interface contact reactions before and after preload locking, then after each service increment. Close force and moment balance in one frame. Check whether separation or sliding invalidates the linear compatibility estimate and identify the locations that require local assessment.
+Compare bolt axial forces and interface contact reactions before and after preload locking, then after each service increment. In a common frame, integrate the opposite interface tractions and their moments. Include only external forces in the whole-assembly balance.
+
+For unilateral contact, check that separated regions carry negligible normal traction and that closed regions meet the declared gap or penetration tolerance. For Coulomb friction, compare tangential traction with the local friction bound and verify that sliding traction opposes relative slip. Check local normals and stick/slip state beside that comparison. Separation or sliding changes the compatibility estimate and can shift the relevant recovery location.
 
 ## Construct, debug and falsify
 

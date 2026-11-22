@@ -1,13 +1,16 @@
-# Static structural routing by requested outcome
+# Static structural routing by engineering decision
 
-| Request | Start with | Evidence to bind |
+Identify the quantity to be accepted, the physical mechanism that controls it and the model state at which it is evaluated. For a request spanning several rows, verify the controlling physical state before interpreting a downstream result.
+
+| Engineering decision | Start with | Evidence to bind |
 |---|---|---|
-| Linear static setup or result acceptance | [Linear static](../../fea-linear-static/SKILL.md) | Effective load case and restrictions, applied and reaction resultants, displacement and stress scope |
-| Parameter or geometry change in an associative SOL 101 | [Parametric SOL 101](../../simcenter-parametric-sol101/SKILL.md) | CAD/FEM/SIM chain, unchanged physical intent, re-resolved regions and new effective deck |
-| Nonlinear material, large displacement or sequential loads | [Multistep nonlinear](../../fea-multistep-nonlinear/SKILL.md) | Actual solution family, step controls, constitutive model and inherited state |
-| Contact opening, friction, connector transfer or bolt preload | [Connector/contact](../../fea-connector-contact/SKILL.md) | Paired regions, frame, preload/lock sequence, load path, contact and bolt witnesses |
-| Failed or apparently converged nonlinear job | [Multistep nonlinear](../../fea-multistep-nonlinear/SKILL.md) | Final accepted increment, active control and related residual/diagnostic summaries |
-| Eigenvalue buckling or preload buckling factor | [SOL 105 interpretation](../../fea-results-interpretation/references/sol103-sol105-quant.md) | The actual static reference and buckling subcase, eigenpairs and validity of the linearized interpretation |
-| Read or export a native SIM, inspect an effective deck, or recover results | [Siemens tool routing](../SKILL.md) | Exact operation, native binding or immutable run artifact |
+| Elastic stiffness, support reaction or stress under fixed supports and interfaces | [Linear statics](../../fea-linear-static/SKILL.md) | Applicability of constant stiffness, effective loads and restraints, signed equilibrium, field recovery and mesh sensitivity |
+| Update associated geometry or dimensions while retaining load and support intent | [Parametric SOL 101](../../simcenter-parametric-sol101/SKILL.md) | CAD/FEM/SIM relationship, remeshed regions, equivalent selections and new effective input |
+| Thermal expansion, restraint or temperature-dependent structural response | [Thermal analysis](../../fea-thermal/SKILL.md) | Temperature transfer, reference state, thermal expansion convention and mechanical restraints |
+| Response governed by yielding, large rotations, load history or restored state | [Nonlinear load path](../../fea-multistep-nonlinear/SKILL.md) | Constitutive law, load and control history, state inheritance and accepted increments |
+| Joint compliance, interface opening/slip, bolt preload or load transfer | [Connector/contact](../../fea-connector-contact/SKILL.md) | Resolved interface, gap, traction, preload/lock state and signed force and moment transfer |
+| Buckling factor and mode about a specified reference state | [Eigenvalue buckling](../../fea-results-interpretation/references/sol103-sol105-quant.md) | Actual reference subcase and loading pattern, tangent and eigenpair interpretation |
+| Critical point, loss of equilibrium or postbuckling along a nonlinear path | [Instability and path following](../../fea-multistep-nonlinear/references/instability-and-path-following.md) | Initial state, imperfections, governing equilibrium branch and attained load and displacement |
+| Failed or apparently complete job with a suspect result | [Solver investigation](../../fea-solver-investigation/SKILL.md) and, where applicable, [nonlinear diagnostics](../../fea-multistep-nonlinear/references/engineering-method.md) | Exact run, effective controls, terminal diagnostics and achieved result state |
 
-Classify by the physical behavior and requested decision. Preserve the distinction between preload loading, locked preload and service history. Resolve any ambiguous use of “static” from the actual model, load sequence and decision.
+Use [Siemens tool routing](../SKILL.md) once the native operation or file action is known. Use the [acceptance verifier](../../fea-acceptance-verifier/SKILL.md) when the requested deliverable is an engineering verdict.

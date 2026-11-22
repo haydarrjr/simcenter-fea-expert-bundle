@@ -1,7 +1,7 @@
 # 0.1.10 candidate
 
-- Route linear static, associative SOL 101, staged nonlinear, contact/preload and buckling requests by engineering outcome.
-- Document verified 2612 solver-deck import, independent native save/reopen and solver/result checks for synthetic SOL 101, 106, 401 and 402. Record the live evidence for each model separately.
+- Route elastic statics, associative updates, thermally driven response, joint behavior, staged nonlinear analysis and stability by engineering outcome. Add independent verification methods for load transfer, material history and equilibrium paths.
+- Document verified 2612 solver-deck import, independent native save/reopen and solver/result checks for synthetic SOL 101, 106, 401 and 402. Confirm live reopening and attached OP2 results for the final SOL 402 POST −2 files.
 - Document the standalone SOL 401 monitor and small-displacement controls and the SOL 402 OP2 output setting. See [qualification](docs/qualification/0.1.10.md) and the [linear and nonlinear implementation plan](docs/linear-nonlinear-implementation-plan.md).
 
 # 0.1.9 candidate

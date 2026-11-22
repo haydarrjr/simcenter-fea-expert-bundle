@@ -4,6 +4,17 @@
 
 Genel lineer statik, parametrik SOL 101, nonlineer malzeme/adım geçmişi, temas ve önyük, solver teşhisi ve sonuç kabulü ayrı girişler alır. Skill metinleri yöntemi ve karar sınırlarını taşır. Sentetik model girdileri ve sayısal doğrulama ayrı fixture ve kalifikasyon belgelerinde tutulur. AgentsAI, Codex ve VS Code aynı kanonik skill ağacını kullanır.
 
+## Skill denetimi ve kararlar
+
+| Karar | Uygulama |
+|---|---|
+| Koru | Tek kanonik skill ağacını, mevcut sahiplik sınırlarını ve bağımsız native, solver, sonuç ve mühendislik kontrollerini kullan. |
+| Daralt | Statik rotayı istenen karar ve belirleyici fizik üzerinden seç. Lineer statikte yük kombinasyonu, iş ve denge, sonuç konumu ve tekillik değerlendirmesini derinleştir. Nonlineer statikte durum aktarımı, temas, kontrol seçimi ve kararlılık yolunu ayrı yöntemlere bağla. |
+| Taşı | Simcenter Nastran kartları, çıktı biçimleri ve sürüme bağlı sorunları solver referansında tut. Ortak yöntemi kısa skill girişlerinden ilgili referansa bağla. |
+| Kaldır | Tekrarlanan yönlendirme tablosunu ve solver istisnalarını birleştir. Fixture etiketlerini, dizinlerini ve sonuç değerlerini kalifikasyon ve testlerle sınırla. |
+
+[Statik yönlendirme](../skills/fea-sc3d-tool-routing/references/static-routing.md) · [Lineer statik doğrulama](../skills/fea-linear-static/references/structural-verification.md) · [Nonlineer kararlılık](../skills/fea-multistep-nonlinear/references/instability-and-path-following.md) · [Nastran nonlinear giriş ve sonuçları](../skills/simcenter-nastran/references/nonlinear-static-io.md)
+
 ## İş paketleri
 
 | İş paketi | Değişiklik | Tamamlama ölçütü |
@@ -32,6 +43,7 @@ Genel lineer statik, parametrik SOL 101, nonlineer malzeme/adım geçmişi, tema
 | SOL 106 plastisite | `NLPARM`, `NLSTRESS` ve bilineer `MATS1` akma alanını etkin export’ta kontrol et. Eski maintenance düzeyindeki bir eksik alan düzeltmesini mevcut build’e otomatik uygulama. [KB000153430](https://support.sw.siemens.com/en-US/knowledge-base/KB000153430_EN_US) · [Siemens Community örneği](https://community.sw.siemens.com/s/question/0D54O00008ACs36SAD) |
 | SOL 401 adım geçmişi ve önyük | Ayarlanan ve gerçekten ulaşılan yükleri ayır. Preload sırasında ve servis yükü boyunca bolt işareti ve kuvvetini karşılaştır. [SOL 401 adım sırası](https://docs.sw.siemens.com/en-US/doc/PL20251024315120185.multi_step_nonlinear/html/xid638709?audience=external) · [Önyük sonrası servis adımı, PL8869179](https://support.sw.siemens.com/en-US/knowledge-base/PL8869179) · [Siemens Community plastik sonuç tartışması](https://community.sw.siemens.com/s/question/0D54O00008DRgxWSAT) |
 | SOL 402 adım geçmişi | `SEQDEP` ve `RSUB` için aktarılan durum ile zaman koordinatını ayrı doğrula. Negatif pivot görüldüğünde mekanizmayı, teması ve denge yolunu araştır. [NLCNTL2](https://docs.sw.siemens.com/en-US/doc/PL20251024315444291.QRG/html/xid1270968?audience=external) · [Adım bağımlılığı](https://docs.sw.siemens.com/en-US/doc/PL20251024315444291.advanced/html/xid2190520?audience=external) · [Negatif pivot, KB000179582](https://support.sw.siemens.com/en-US/knowledge-base/KB000179582_EN_US) · [Siemens Community adım tartışması](https://community.sw.siemens.com/s/question/0D5KZ000000ZqBN0A0) |
+| Kararlılık ve MPC sonuçları | Limit noktasında çözümün izlediği yük ve deplasman yolunu kontrol et. MPC kuvvetleri için uygulanan rigid-element formülasyonunu ve ilgili sürüm kapsamını doğrula. [SOL 401 nonlineer burkulma](https://docs.sw.siemens.com/en-US/doc/PL20251024315444291.multi_step_nonlinear/html/xid1396931?audience=external) · [RBE3 kuvvet recovery, PL8809297](https://support.sw.siemens.com/en-US/knowledge-base/PL8809297) |
 
 Help Server’da 2612 istendi. İlgili kılavuzlar çoğunlukla 2606 olarak döndü. 2612.1700’deki çalışma sırasında gözlenen davranışlar kalifikasyon kaydında belirtilir. [Siemens Structures & Dynamics KB dizini](https://support.sw.siemens.com/en-US/knowledge-base/KB000073922_EN_US)
 

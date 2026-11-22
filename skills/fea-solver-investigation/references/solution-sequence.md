@@ -30,10 +30,8 @@ batch. Qualify solver submission and SIM/FEM persistence independently.
    ```
 
    Confirm applicable runtime and license options for other installations.
-   For standalone 2612 SOL 401/402, omit the Solution Monitor setting `sys442=2`
-   unless a monitor is intentionally configured and connected. An unmonitored
-   run requested with that setting can stop with F06 system fatal 4551
-   even when the launcher log reports exit zero.
+   For multistep nonlinear jobs check the [monitor requirements and runtime diagnostics](../../simcenter-nastran/references/nonlinear-static-io.md#release-specific-diagnostics)
+   before reusing batch options from another sequence.
    Resolve the authorized product root first, then test only the known
    `NXNASTRAN\bin\nastranw.exe` and `NXBIN\scd5_convert.exe` paths. If absent,
    request that installation's exact path; do not search vendor trees.

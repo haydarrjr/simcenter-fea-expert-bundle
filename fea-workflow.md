@@ -23,7 +23,7 @@ Use the globally configured official Siemens MCPs. Start a whole study with [FEA
 | Interpret an FEA quantity or report its physical meaning | [Results interpretation](skills/fea-results-interpretation/SKILL.md) |
 | Evaluate a specific engineering acceptance claim | [Acceptance verifier](skills/fea-acceptance-verifier/SKILL.md) |
 | Design or assess a verification, validation or uncertainty study | [VVUQ](skills/fea-vvuq-review/SKILL.md) |
-| Choose or verify a linear static, nonlinear static, contact or buckling workflow | [Static structural routing](skills/fea-sc3d-tool-routing/references/static-routing.md) |
+| Assess static stiffness, load history, joints, or stability | [Static structural routing](skills/fea-sc3d-tool-routing/references/static-routing.md) |
 | Choose a modal, frequency response, transient, shock, random or NVH method | [Dynamics by requested output](skills/fea-sc3d-tool-routing/references/dynamics-routing.md) |
 | Build an integrated airframe verification | [Airframe verification](skills/simcenter-airframe-structural-verification/SKILL.md) |
 
