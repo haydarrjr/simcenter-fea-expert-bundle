@@ -1,3 +1,9 @@
+# 0.1.11 candidate
+
+- Verify an associative SOL 101 geometry change and check remesh, boundary transfer, equilibrium and response sensitivity.
+- Qualify SOL 401 contact and bolt preload on a reference joint. Verify SOL 402 internal state restoration and large-rotation objectivity with independent comparisons.
+- Extend the reusable methods for associative studies, joint history and finite kinematics. See [0.1.11 qualification](docs/qualification/0.1.11.md).
+
 # 0.1.10 candidate
 
 - Route elastic statics, associative updates, thermally driven response, joint behavior, staged nonlinear analysis and stability by engineering outcome. Add independent verification methods for load transfer, material history and equilibrium paths.

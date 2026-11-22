@@ -1,5 +1,5 @@
-bundle: simcenter-fea-expert-0.1.10
-version: 0.1.10
+bundle: simcenter-fea-expert-0.1.11
+version: 0.1.11
 title: Product Support & Simcenter 3D Documentation Subagent
 description: Answers questions from Siemens Simcenter 3D and Simcenter Nastran technical documentation with grounded explanations and exact source citations via Product Support and Designcenter Open.
 instructions: |

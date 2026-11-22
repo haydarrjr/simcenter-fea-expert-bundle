@@ -47,7 +47,9 @@ Genel lineer statik, parametrik SOL 101, nonlineer malzeme/adım geçmişi, tema
 
 Help Server’da 2612 istendi. İlgili kılavuzlar çoğunlukla 2606 olarak döndü. 2612.1700’deki çalışma sırasında gözlenen davranışlar kalifikasyon kaydında belirtilir. [Siemens Structures & Dynamics KB dizini](https://support.sw.siemens.com/en-US/knowledge-base/KB000073922_EN_US)
 
-## Daha geniş model kapsamı için sonraki doğrulamalar
+## Daha geniş model kapsamı için doğrulamalar
+
+0.1.11, ilişkisel SOL 101 güncellemesini, SOL 401 temas ve önyükünü, SOL 402 iç restart ve büyük dönme senaryolarını kapsar. Çalıştırılan modeller, karşılaştırmalar ve kapsam sınırları [0.1.11 kalifikasyon kaydında](qualification/0.1.11.md) yer alır.
 
 | Kapsam | Kanıtlanacak durum |
 |---|---|
@@ -56,4 +58,4 @@ Help Server’da 2612 istendi. İlgili kılavuzlar çoğunlukla 2606 olarak dön
 | SOL 402 nonsequential restart ve büyük deformasyon | Hedef predecessor ile başlayan state, zaman ekseni, stress ölçüsü ve istenen reject/accept davranışını farklı kontrollü fixture’larla sınayarak belgeye bağla. |
 | Lineer ve nonlineer yerel sonuçlar | Eleman türü, mesh/time-step refinement, shell yüzü/ply veya stress ortalaması hedefteyse kabul toleransını ilgili QoI için bağımsız kur. |
 
-[Aktif kalifikasyon kaydı](qualification/0.1.10.md)
+[0.1.10 temel kalifikasyonu](qualification/0.1.10.md) · [0.1.11 ileri statik kalifikasyonu](qualification/0.1.11.md)

@@ -3,7 +3,7 @@ schema_version = "1"
 [bundle]
 id = "simcenter-fea-expert"
 name = "Simcenter 3D FEA Expert"
-version = "0.1.10"
+version = "0.1.11"
 description = "Inspect, automate and verify finite element analysis in Simcenter 3D and Simcenter Nastran."
 os = ["windows"]
 homepage = "https://github.com/haydarrjr/simcenter-fea-expert-bundle"
