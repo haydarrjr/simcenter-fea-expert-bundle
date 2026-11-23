@@ -2,15 +2,15 @@
 
 Use the dedicated `result` argument to supply result and computation settings. The post template or snapshot supplies the base view when required by the connected schema.
 
-The root is `NXPostProcessingTemplate` with `PostView/ResultOptions`. Bind `Result` to the exact bracketed `unique_name` and `Component` to the actual name returned by the catalog. Keep the wrapper attributes from a compatible exported file when deriving a copy. This synthetic structure illustrates one possible catalog entry.
+The root is `NXPostProcessingTemplate` with `PostView/ResultOptions`. Preserve the wrapper attributes from a compatible exported file. Replace the tokens in the structure below with the catalog's exact bracketed `unique_name` and component name.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <NXPostProcessingTemplate TemplateType="User" Version="NX2612">
   <PostView>
     <ResultOptions>
-      <Result>[Displacement][Nodal]</Result>
-      <Component>Magnitude</Component>
+      <Result>${result_unique_name}</Result>
+      <Component>${component_name}</Component>
     </ResultOptions>
   </PostView>
 </NXPostProcessingTemplate>

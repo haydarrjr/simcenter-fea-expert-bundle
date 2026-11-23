@@ -35,8 +35,8 @@ def missing_recipe_skills(instructions, names):
 
 def distribution_files(root=ROOT):
     selected = []
-    for name in [*PLUGIN_METADATA, '.sim-ai-agents.toml', 'README.md', 'RELEASE_NOTES.md',
-                 'LICENSE', 'requirements-test.txt', 'recipes', 'skills', 'docs', 'fea-workflow.md',
+    for name in [*PLUGIN_METADATA, '.sim-ai-agents.toml', 'README.md',
+                 'LICENSE', 'requirements-test.txt', 'recipes', 'skills', 'fea-workflow.md',
                  'com.github.copilot', 'integrations',
                  'scripts', 'tests']:
         path = root / name

@@ -11,10 +11,10 @@ are supplied. Use actual labeled values from a qualified result read.
 - Principal values are symmetric-matrix eigenvalues; mean stress is
   trace/3; J2=1/2 dev:dev; von Mises=sqrt(3J2); Tresca difference is
   principal_max - principal_min. Do not assign stress units to strain.
-- Positive physical example: sigma_xx=100 MPa, other components zero:
-  principal [100,0,0] MPa and von Mises 100 MPa; 45-degree rotation
-  preserves both. Pure shear XY=60 MPa produces von Mises
-  60 sqrt(3) MPa and principal [60,0,-60] MPa.
+- Use uniaxial stress to check that von Mises equals the axial stress magnitude.
+  Pure shear of magnitude `τ` has principal values `τ, 0, -τ` and von Mises
+  `sqrt(3) τ`. Proper rotations preserve principal stresses and von Mises.
+
 - For MAX_VON_MISES retain the **entire same source tensor** with its
   owner/material/position/shell side/case/step, not elementwise component
   extrema. Do not mix shell top/bottom or dissimilar material/region.

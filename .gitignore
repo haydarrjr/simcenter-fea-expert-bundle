@@ -7,3 +7,14 @@ dist/
 *.bundle
 *.zip
 .env
+
+# Native models and generated solver results
+*.prt
+*.fem
+*.afm
+*.sim
+*.op2
+*.scd5
+*.afu
+*.f04
+*.f06

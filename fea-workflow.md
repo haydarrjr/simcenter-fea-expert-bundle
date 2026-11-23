@@ -11,7 +11,7 @@ Use the globally configured official Siemens MCPs. Start a whole study with [FEA
 | Retrieve native mesh quality metrics | [Native mesh quality](skills/simcenter-3d-mesh-quality-review/SKILL.md) |
 | Decide whether the mesh resolves an engineering quantity | [Mesh quality](skills/fea-mesh-quality/SKILL.md) |
 | Show, hide or select active CAE entities | [Visibility and selection](skills/simcenter-3d-visibility-and-selection/SKILL.md) |
-| Generate or edit a native mesh | [Mesh generation](skills/simcenter-3d-mesh-generation/SKILL.md) |
+| Resolve a physical region, apply a local mesh control and regenerate | [Regional mesh workflow](skills/fea-open-meshing/references/regional-mesh-verification.md), then [native mesh generation](skills/simcenter-3d-mesh-generation/SKILL.md) |
 | Check mapped loads, flux or geometry-to-mesh conservation | [Boundary transfer](skills/fea-open-meshing/SKILL.md) |
 | Inspect loads, constraints, effective solution or step scope | [Boundary condition inspection](skills/simcenter-3d-simulation-boundary-conditions/SKILL.md) |
 | Read SIM/AFM links, solution setup or saved result references | [Qualified CAE operations](skills/designcenter-open-journal-authoring/references/cae-2612.md) for the matching build |
@@ -24,6 +24,7 @@ Use the globally configured official Siemens MCPs. Start a whole study with [FEA
 | Evaluate a specific engineering acceptance claim | [Acceptance verifier](skills/fea-acceptance-verifier/SKILL.md) |
 | Design or assess a verification, validation or uncertainty study | [VVUQ](skills/fea-vvuq-review/SKILL.md) |
 | Assess static stiffness, load history, joints, or stability | [Static structural routing](skills/fea-sc3d-tool-routing/references/static-routing.md) |
+| Diagnose contact switching, cutbacks or mesh-sensitive interface response | [Contact convergence](skills/fea-connector-contact/references/contact-convergence.md) |
 | Choose a modal, frequency response, transient, shock, random or NVH method | [Dynamics by requested output](skills/fea-sc3d-tool-routing/references/dynamics-routing.md) |
 | Build an integrated airframe verification | [Airframe verification](skills/simcenter-airframe-structural-verification/SKILL.md) |
 

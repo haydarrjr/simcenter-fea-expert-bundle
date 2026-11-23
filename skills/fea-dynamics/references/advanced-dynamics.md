@@ -1,10 +1,6 @@
 # Specialized dynamics: decision equations and discriminating checks
 
-These are engineering methods for the legacy cyclic, random, rotor,
-aeroelastic, DDAM and vibroacoustic routes. They do not advertise native handlers
-or a new numerical solver. Use the checked API catalog for actual operations;
-an absent result type, solver descriptor or Runtime capability is an explicit
-implementation/qualification gap.
+Use these methods to select and verify specialized dynamics analyses. Check the solver formulation, output definitions and relevant tool profile for the installed release.
 
 ## Cyclic symmetry
 
@@ -17,14 +13,10 @@ For real structures, the h and N-h harmonics have conjugate relationships;
 matching a frequency does not establish that the phase/mode reconstruction is
 correct. Retain both real and imaginary parts where required.
 
-A simple independent reference is a periodic ring of N equal masses m joined
-by identical scalar springs k. Its eigenvalues are
-`lambda_h=4 k/m sin²(pi h/N)`. For N=8, m=2 kg and k=200000 N/m, h=0 is a
-rigid mode and h=1 and h=7 have the same frequency, about 38.52 Hz. Swapping a
-phase boundary while preserving that frequency can still give the wrong
-forced-response shape. Compare reconstructed displacement and interface work,
-not only the eigenvalue. This scalar ring is an analytical check, not a bladed
-disk stress model.
+For a periodic chain of equal masses `m` and scalar springs `k`, the cyclic
+eigenvalues are `lambda_h = 4 k/m sin²(pi h/N)`. Check the rigid mode and
+conjugate harmonic pairs. Compare reconstructed displacement and interface
+work to verify phase and orientation.
 
 ## Random response and shock
 
@@ -34,13 +26,11 @@ Keep PSD units, frequency convention, bandwidth and damping explicit. A peak
 harmonic amplitude is not an RMS random response, and a scalar PSD cannot
 represent multiple correlated excitations.
 
-Two equal unit-variance contributions with coherence/correlation 0.9 have
-combined RMS `sqrt(1+1+2*0.9)=1.94936`, whereas an independent-input assumption
-gives `sqrt(2)=1.41421`. The covariance/cross-spectrum must be Hermitian positive
-semidefinite; negative variance is a data/transform error, not a quantity to
-clip without explanation. Use this comparison to falsify an unjustified SRSS
-combination. When phase varies with frequency, integrate the full complex cross
-spectrum rather than a single broadband correlation coefficient.
+For two contributions with variances `v1` and `v2` and covariance `c12`,
+the combined RMS is `sqrt(v1 + v2 + 2 c12)`. Check that the covariance or
+cross-spectrum is Hermitian positive semidefinite. Investigate negative
+variances in the data or transform. When phase varies with frequency, integrate
+the full cross-spectrum over the selected band.
 
 DDAM and response-spectrum methods use their specified shock spectra, modal
 participation and combination procedures. They are not interchangeable with a

@@ -5,7 +5,7 @@
 1. Result identity and recovery semantics
 2. Tensor invariants and representability
 3. Modal and buckling interpretation
-4. Worked diagnostic examples
+4. Numerical sensitivity and convergence
 5. Readback and debugging
 
 ## Result identity and recovery semantics
@@ -19,7 +19,7 @@ centroid and corner are different locations. Never average across a material
 interface, contact discontinuity or incompatible result state without a justified
 physical operation.
 
-The v2 vendor decoder preserves raw components, labels, parent elements and
+The vendor result decoder preserves raw components, labels, parent elements and
 units before feeding the tensor calculation. Its result access objects are
 borrowed handles, not generic builders to destroy. Verify the current result
 type, loadcase/iteration, component mapping and actual array size. Unsupported
@@ -58,7 +58,7 @@ need subspace comparison: minimum squared principal correlation and full rank,
 not the average of individual-vector MAC values. An incomplete supplied basis
 does not establish that an unseen repeated mode was excluded.
 
-The legacy SOL103 reference checker is bounded to 1–12 pure translational DOFs.
+The translational SOL 103 reference checker is bounded to 1–12 pure translational DOFs.
 The mounted-assembly workflow separately handles mixed translations/rotations
 with explicit length scaling. Do not pass rotation coordinates to the
 translational contract while labeling them metres.
@@ -70,22 +70,19 @@ Contact-dependent stiffness requires review even if the Euler comparison passes;
 a failing comparison remains FAIL. See the
 [modal/buckling method](sol103-sol105-quant.md) for equations and exact scope.
 
-## Worked diagnostic examples
+## Numerical sensitivity and convergence
 
-For `diag(1e16+2,1e16,1e16)` Pa, J2 is 4/3 Pa² and von Mises is **2 Pa**.
-For
-`1e16 I` plus 1 Pa XY shear, Tresca is **2 Pa**, even though separately rounded
-absolute principal values can appear identical. For pure hydrostatic stress,
-a 45-degree rotation must leave von Mises zero; creating a 2.22 Pa deviatoric
-stress is a numerical artifact. Report the numerical sensitivity when deviatoric terms are small compared with the hydrostatic part.
+When hydrostatic stress dominates, compute invariants from the deviator before
+rotation or subtraction of rounded absolute principal values. Verify that a
+hydrostatic tensor remains hydrostatic under proper rotation. Report the
+resolution limit when the stored components cannot resolve a small deviator.
 
-For `K=diag(1e20,1)`, `M=I`, `phi=(0,1)` and claimed lambda=2, the soft mode is
-wrong. The action residual is **1/3**, despite a tiny matrix-norm residual.
-Two bases spanning the same repeated two-dimensional eigenspace can have
-individual MAC=0.5 and squared subspace correlations `(1,1)`. A one-direction
-match must not hide another direction with squared correlation 0.25.
+For soft modes, scale the eigen-equation residual by the applied modal stiffness
+and inertia terms. For repeated modes, check all principal correlations and the
+rank of the mass-weighted subspace.
 
-A nonlinear increment needs the applicable contact, preload and equilibrium evidence. For example, a passing equilibrium status does not settle a failed contact criterion. Interpret stresses within the achieved solution state and report any constraint on their use.
+Bind nonlinear stresses to the achieved increment. Check equilibrium, contact
+and retained preload at that increment before using recovered quantities.
 
 ## Readback and debugging
 

@@ -13,7 +13,7 @@ except ImportError:
 def build(root=ROOT, out=None):
     result = validate(root)
     recipe = YAML(typ='safe').load((root / 'recipes/fea-expert-agent.yaml').read_text(encoding='utf-8'))
-    ver = str(recipe.get('version', '0.1.2'))
+    ver = str(recipe['version'])
     out = Path(out) if out is not None else root / 'dist'
     out.mkdir(parents=True, exist_ok=True)
     archive = out / f'simcenter-fea-expert-source-{ver}.zip'

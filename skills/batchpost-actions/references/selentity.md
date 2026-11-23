@@ -2,13 +2,13 @@
 
 Bind nodes or elements by their FEM labels in the exact model/result scope. Resolve a named region through available mesh or result evidence. Ask for the mapping if that evidence cannot identify the labels.
 
-Use `SelectionEntities` with `ElementIds`, `NodeIds`, or both as needed. Each child takes a comma-separated list of integer labels or inclusive ranges. Reject malformed or reversed ranges. These synthetic labels illustrate both forms.
+Use `SelectionEntities` with `ElementIds`, `NodeIds`, or both as needed. Replace the tokens below with comma-separated integer labels, inclusive ranges, or a combination. Reject malformed or reversed ranges.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <SelectionEntities>
-  <ElementIds>1-3</ElementIds>
-  <NodeIds>10, 20</NodeIds>
+  <ElementIds>${element_labels}</ElementIds>
+  <NodeIds>${node_labels}</NodeIds>
 </SelectionEntities>
 ```
 

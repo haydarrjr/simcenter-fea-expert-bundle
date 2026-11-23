@@ -5,7 +5,7 @@
 3. Compare the submitted deck, F06 and OP2 by exact job, subcase and content identity. Record solver termination and warnings. Keep strength claims scoped to the stress recovery location and model assumptions.
 4. Report separately the observed associative update, saved-and-reopened model, licensed solve, result recovery and engineering comparison. Use [acceptance verification](../../fea-acceptance-verifier/SKILL.md) for scoped status.
 
-## Synthetic benchmarks
+## Analytical checks
 
 For a uniform axial bar, compare tip displacement to `FL/(EA)`, axial stress to `F/A` and the axial support reaction to `-F`. Use an explicit consistent unit system. Choose tolerances based on formulation and expected numerical error.
 

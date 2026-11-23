@@ -20,11 +20,10 @@ need for another model but does not invent prestressed flexible modes.
 
 Check inertia beyond positive diagonal values. In its principal axes a physical
 three-dimensional mass distribution satisfies each inertia triangle inequality,
-such as `I3 <= I1 + I2`, as well as nonnegative inertia. The example `(1,1,3)`
-kg m² is positive definite but physically unrealizable and is rejected. Distinguish
-the tensor's signed off-diagonal entries from a solver card's products of inertia.
-The fetched Nastran 2606 CONM2 page states that its off-diagonal negative signs
-are supplied by the solver; it also documents solution-dependent restrictions.
+as well as nonnegative inertia. For each principal axis, compare its inertia
+with the sum about the other two axes. Distinguish the signed tensor entries
+from the products of inertia on `CONM2`. Use the card documentation for the
+installed solver release to check sign conventions and solution restrictions.
 
 ## Coupled assembly equations
 
@@ -114,13 +113,12 @@ half-power half-width, zeta times natural frequency. Refine locally and track
 phase and peak displacement/rotation as the frequency spacing decreases. The
 criterion is a sampling warning, not a guarantee that every mode is excited or
 that a sampled peak is exact. Closely spaced modes, cancellation and damping
-sensitivity require the full complex response. In the mounted example, a local
-46.878 Hz response is more than seven times the maximum at the original sparse
-points. Do not size a mount or judge clearance from that sparse maximum.
+sensitivity require the full complex response. Verify that the peak response is
+stable under local grid refinement before using it for sizing or clearance.
 
 ## State-bound support loads versus an independent transfer pattern
 
-Each computed static state now emits `support_submodel_transfer`: source
+Bind a support transfer to its computed static state. Record the source
 request digest, model/owner/revision/frame, step, mount IDs, application points
 and forces **on the support**. These are the negatives of mount reactions on
 the assembly. Their generalized resultant agrees with the assembly's applied
