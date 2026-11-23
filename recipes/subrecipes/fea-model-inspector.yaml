@@ -1,5 +1,5 @@
-bundle: simcenter-fea-expert-0.1.11
-version: 0.1.11
+bundle: simcenter-fea-expert-0.1.12
+version: 0.1.12
 title: FEA Model Inspector (Simcenter 3D Assistant Subagent)
 description: Read-only Simcenter 3D Assistant subagent for inspecting active parts, solid bodies, materials, mesh collectors, meshes, mesh quality, boundary conditions, and live CAD model data.
 instructions: |

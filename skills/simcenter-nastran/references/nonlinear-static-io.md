@@ -22,6 +22,14 @@ For a SOL 401 bolt installation step, check the active `BOLTLD` and the bolt def
 
 For a SOL 402 internal restart, resolve `SEQDEP=NO`, the selected `NLCNTL2` and the `RSUB` source, then compare the solver's restart positioning and target time grid. Check the supported combination of `LGDISP`, `LGSTRN` and `MATNL` when modeling large rotations. Use the stress measure reported by the applicable result table. [SOL 402 restart](https://docs.sw.siemens.com/en-US/doc/PL20251024315120185.multi_step_nonlinear/html/xid1602274?audience=external)
 
+## Contact diagnostics and recovery
+
+Resolve `BCSET` through the active contact pairs and their actual face regions. Check the initial gap convention, search distance and enabled pairs per subcase. `BCTPARM` in SOL 401 and `BCTPAR2` in SOL 402 each define `INIPENE`; check the installed solver's table before selecting gap correction. Even a converged job can produce a different first contact and force when the setting resets clearance.
+
+For SOL 401, read the equilibrium and contact convergence columns separately. Use `NLCNTL` `MSGLVLC` for contact diagnostics. Include the effective augmentation criterion, `PTOL` or `CTOL` as applicable, and any `BCTPARM` penalty factor or automatic scaling. For SOL 402, read the actual time step, contact diagnostic output from `NLCNTL2` `MSGLVLC`, active constraints and any reported redundancy. `BCTPAR2` `NCMOD` can define a finite normal stiffness between pressure and separation. Record its units and distinguish finite stiffness from fully rigid contact or automatic sizing.
+
+Request and verify the relevant `BCRESULTS` fields and the result reference. Inspect several accepted increments when contact opens or closes. Compare gap, normal force and reaction at matched physical loading. Check field availability at each state and document the sparse output behavior. For a standalone OP2, independently establish the source length, mass and time units. If embedded units are missing or unreliable, set verified input units in BatchPost before opening the result and check an independent displacement or force against F06. Use [contact convergence](../../fea-connector-contact/references/contact-convergence.md) for physical acceptance and sensitivity experiments. [BCTPARM](https://docs.sw.siemens.com/en-US/doc/PL20251024315444291.QRG/html/id507341?audience=external) · [BCTPAR2](https://docs.sw.siemens.com/en-US/doc/PL20251024315444291.QRG/html/xid1270662?audience=external) · [DTI,UNITS](https://docs.sw.siemens.com/en-US/doc/PL20251024315120185.QRG/html/id507861?audience=external)
+
 ## Release-specific diagnostics
 
 - For SOL 106, an older maintenance issue could omit `LIMIT1` from the exported plastic material definition. Inspect the active card in the current export before applying a release-specific remedy. [KB000153430](https://support.sw.siemens.com/en-US/knowledge-base/KB000153430_EN_US)

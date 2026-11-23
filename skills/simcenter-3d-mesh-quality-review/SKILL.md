@@ -10,3 +10,5 @@ metadata:
 Use `mesh-quality-tool` for the bound part and requested mesh or collector. Report element type and order, total elements and the checked population with each available statistic. `qualityCheckedElements=0` gives no evidence of acceptable quality even when min, max, average and failed count are zero. Missing or inapplicable metrics stay unverified.
 
 Apply thresholds only for the actual formulation and engineering quantity. Use [mesh quality](../fea-mesh-quality/SKILL.md) for geometry checks or convergence independent of the tool summary.
+
+For a specific face, use [regional mesh operations](../designcenter-open-journal-authoring/references/cae-2612.md#regional-mesh-operations) to map the resolved face onto neighboring elements and run the native Element Quality selected scope. Read the count and each applicable test's worst value, warning count, error count and flagged labels. Record the enabled checks and thresholds. A metric without a value remains unverified for that element family. After a repair, compare the same physical region and settings on the new mesh revision.
