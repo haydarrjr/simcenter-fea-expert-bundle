@@ -13,14 +13,14 @@ Use a standard camera from the current schema when that meets the request. For a
 | `FrontClipStatus`, `BackClipStatus`, `FrontClip`, `BackClip` | Optional plane flags and signed distances in model units. Derive from intended depth limits when enabled |
 | `PartUnits` | Match the target. NX enum values include `0` mm, `1` inch, `3` m, `4` µm. `2` is unset/unknown |
 
-Use `0` or `1` for Boolean attributes. This synthetic orthographic file exercises the identity rotation (view from +Z). Its scale and disabled extents allow an orientation test with `fitview=true`.
+Use `0` or `1` for Boolean attributes. Populate the orthographic wrapper with the target view and model units. With `fitview=true`, let the worker fit the extents.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
-<Camera Rotation="1 0 0 0 1 0 0 0 1" Translation="0 0 0" Perspective="0 0 0"
-        LookTo="0 0 0" IsPerspectiveOn="0" IsLookToAbs="0" UseXyClip="0" PartUnits="0">
+<Camera Rotation="${rotation}" Translation="${translation}" Perspective="0 0 0"
+        LookTo="${relative_target}" IsPerspectiveOn="0" IsLookToAbs="0" UseXyClip="0" PartUnits="${part_units}">
   <CameraXyClip XyClip="0 0 0 0"/>
-  <CameraScale Scale="1"/>
+  <CameraScale Scale="${positive_scale}"/>
 </Camera>
 ```
 

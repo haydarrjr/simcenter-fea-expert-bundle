@@ -37,7 +37,9 @@ class DistributionTests(unittest.TestCase):
         with ZipFile(ROOT / 'dist' / a['archive']) as archive:
             self.assertTrue(all(info.create_system == 3 for info in archive.infolist()))
             self.assertEqual(set(archive.namelist()), {p.relative_to(ROOT).as_posix() for p in distribution_files()})
+            self.assertNotIn('RELEASE_NOTES.md', archive.namelist())
             for name in archive.namelist():
+                self.assertFalse(name.startswith('docs/'))
                 self.assertNotIn('.work/', name)
                 self.assertNotIn('__pycache__', name)
                 if name.startswith('.agents/'):
@@ -56,7 +58,7 @@ class DistributionTests(unittest.TestCase):
         self.assertEqual(missing_recipe_skills(instructions, {'simcenter-nastran'}),
                          {'nastran-sol401-basic-checks'})
 
-    def test_batchpost_examples_use_their_qualified_reader_wrappers(self):
+    def test_batchpost_templates_use_their_qualified_reader_wrappers(self):
         references = ROOT / 'skills/batchpost-actions/references'
         for reference, version, section in (
             ('post-template', 'NX8.5', './PostView/DeformationOptions'),

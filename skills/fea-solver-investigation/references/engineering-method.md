@@ -24,7 +24,7 @@ GRID numbers does not clear a stale region.
 
 Record exact artifact paths and hashes. Use scoped files and keep provenance from the originating job. Hashes establish byte identity. Independently check run lineage and mechanics.
 
-Use the official Nastran and BatchPost reads or scoped original solver text to record these links. The worked examples below illustrate physical checks and are not live evidence.
+Use the official Nastran and BatchPost readers or the relevant original solver tables to establish these links.
 
 ## Effective deck and flexible mechanics
 

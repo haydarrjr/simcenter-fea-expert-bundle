@@ -4,7 +4,7 @@ For a display change, derive a copy of a compatible exported template when avail
 
 ## Minimal display template
 
-This partial template sets mesh display and disables deformation. Select the result with the connected tool's supported selectors. The 2612 worker accepted the installed partial-template format with the `NX8.5` serialization tag. Substituting the product build tag `NX2612` in the post template returned invalid document structure. Preserve the exported wrapper and its version for the intended reader.
+This partial template sets mesh display and disables deformation. Select the result with the connected tool's selectors. For the 2612 post-template reader, preserve the `NX8.5` serialization tag. The dedicated result-options reader has a separate wrapper contract.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>

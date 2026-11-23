@@ -1,6 +1,6 @@
 # Siemens profile catalog and recovery
 
-Tool names below are observed examples from official integrations. Use the current host catalog, including the namespace and schema it actually exposes.
+Resolve these operations against the current official tool catalog, including its namespaces and schemas.
 
 | Profile | Observed capabilities |
 |---|---|
@@ -15,6 +15,8 @@ A CAD model read provides CAD data. Use the [qualified CAE catalog](../../design
 Active interactive persistence and isolated batch save with independent reopen use the [native persistence method](../../fea-native-runtime-gate/references/native-persistence.md). [Solution Sequence](../../fea-solver-investigation/references/solution-sequence.md) owns qualified deck export, installed batch submission and solver evidence. Use the [runtime gate](../../fea-native-runtime-gate/SKILL.md) for admitted live effects.
 
 ## Recover the affected operation
+
+With 2612 project clients, the generated profile enables `--legacy-discovery` where the native connector needs standard MCP `initialize` and `tools/list` in place of `server/discover`. Refresh the catalog before assessing attachment. BatchPost starts a separate worker before its connector is ready. If worker initialization fails, inspect its diagnostics and verify that the host inherited the Siemens licensing environment.
 
 | Observation | Response |
 |---|---|

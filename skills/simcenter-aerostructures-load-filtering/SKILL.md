@@ -11,4 +11,4 @@ Bind the free-body definition, selected side, station origin, coordinate system,
 
 Choose 1D extremes for a single governing quantity or a 2D hull for coupled quantities. Retain original case identity and coincident components. Check tie handling, sign, scaling and tolerance in the active method schema. Verify the resulting case-set membership and underlying calculations before using the set downstream.
 
-Read [custom method contracts](references/custom-lcf-templates.md) for NXOpen/ABB and module descriptors. Qualify the installed library and use the [native runtime gate](../fea-native-runtime-gate/SKILL.md) for effects.
+Read the [custom filtering contract](references/custom-method-contract.md) for module descriptors and the ABB binding. Use the [native runtime gate](../fea-native-runtime-gate/SKILL.md) for live changes.

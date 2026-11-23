@@ -48,11 +48,9 @@ Euler–Bernoulli beam reference only for modes 1 and 2:
 with `beta_1 ≈ 1.87510407`, `beta_2 ≈ 4.69409113`. Require the declared
 uniformity and boundary basis; agreement does not establish 3D mesh adequacy.
 
-As a simple independent check, K=4 N/m, M=1 kg, lambda=4 s^-2 and phi=1
-give f=1/pi Hz, mass norm 1, both residuals zero and MAC 1. Test adverse
-claims with a nonsymmetric soft block beside stiff DOFs, scaled but
-unnormalized modes, swapped reference DOFs, frequency disagreement, and an
-incomplete repeated eigenspace.
+For an independent scalar mode check, verify `lambda = K/M`,
+`f = sqrt(lambda)/(2*pi)` and `M phi² = 1` under mass normalization.
+Check mapping, symmetry and basis completeness before evaluating modal claims.
 
 ## SOL105 inputs and checks
 
@@ -78,10 +76,7 @@ collapse interpretations. No linear eigenfactor establishes collapse capacity.
 Attribute the contact caution `0.9 <= lambda <= 1.1` specifically to
 Simcenter Nastran **2606**, SKU `PL20251024315120185`, document
 `en-US.PL20251024315120185.User.id1369897`. The SOL103 documentary reference
-is `en-US.PL20251024315120185.basic_dynamics.id472236`. Their fetched
-source/content status is **DRAFT/COMPLETE**; these are documentary constraints,
-not solver execution. Preserve `applicability_to_declared_solver=UNVERIFIED`;
-do not generalize the band to another declared solver or release.
+is `en-US.PL20251024315120185.basic_dynamics.id472236`. Verify the release's applicability before using the caution band.
 
 Return computed metrics, declared tolerances, retained identities and
 assumptions, and all rejection/review findings. Keep native, solver, client

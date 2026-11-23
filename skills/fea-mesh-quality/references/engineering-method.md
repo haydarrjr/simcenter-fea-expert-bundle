@@ -5,7 +5,7 @@
 1. Separate geometry validity from solution accuracy
 2. Mesh design and constitutive regime
 3. Computable verification
-4. Worked falsifiers
+4. Mesh acceptance checks
 5. Documented builder lifecycle
 
 ## Separate geometry validity from solution accuracy
@@ -58,21 +58,18 @@ Do not use the asymptotic estimate as a general error bound outside its regime.
 
 Search for coincident nodes using a geometric tolerance in model units. Report search completeness and inspect connectivity before inferring a merge or interface defect.
 
-## Worked falsifiers
+## Mesh acceptance checks
 
-The three-level manufactured law `q(h)=5+2 h^3`, at h = 1, 1/2, 1/4,
-has values 7, 5.25, 5.03125. The evaluator recovers p = 3 and q-infinity = 5.
-Fine-level error is 1/32; a 1.25 factor yields an absolute estimate 5/128.
-Changing every level to a different model identity must stop this otherwise
-perfect numerical fit.
+Track mesh sizes across the transition from refined features into the surrounding
+mesh. Inspect neighboring size changes, aspect ratios and Jacobians by region.
+Check whether shape deterioration occurs along a load path, across thickness or
+near the quantity being recovered. Adjust local size and growth controls, then
+compare quality distributions and the target response on the regenerated mesh.
 
-Use a reproducible mesh and report distance tolerance in model units, the candidate pair count and the reviewed connectivity effects.
-
-For a bolted joint, converged total reaction is a weak mesh acceptance
-metric: equilibrium can hold while the opening sector and maximum bolt force
-change materially. Compare contact extent, force distribution and relevant
-pressure averages across meshes with the same geometry, contact law, load step
-and physical selection. Keep nonconvergent edge peaks separate from those QoIs.
+For contact and joint studies, compare active contact extent, force distribution and
+relevant pressure averages across meshes with the same geometry, contact law,
+load step and physical selection. Check global force balance independently and
+report nonconvergent edge peaks separately from the selected quantities.
 
 ## Documented builder lifecycle
 

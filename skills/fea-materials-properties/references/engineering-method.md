@@ -48,10 +48,8 @@ credible while corrupting modal frequencies and inertia loads.
 
 Separate tensor shear strain `epsilon_xy` from engineering shear
 `gamma_xy=2*epsilon_xy`. Constitutive matrices using engineering Voigt strain
-must not be multiplied by tensor-shear components without conversion. For
-G=5 GPa and gamma_xy=0.002, shear stress is 10 MPa. Treating 0.002 as tensor
-epsilon_xy instead doubles the predicted stress to 20 MPa: a clean-looking
-contour can be wrong by two.
+must use the corresponding engineering shear components. For linear isotropic
+elasticity, verify the conversion with `tau_xy = G gamma_xy = 2 G epsilon_xy`.
 
 Keep stress/strain type, frame, recovery location and shell side/ply identity
 with every tensor. The existing tensor kernel handles supported real tensor
@@ -78,17 +76,13 @@ midplane has B=0; a balanced layup does not automatically remove every
 bending/twisting coupling. Include thermal membrane forces and moments when
 the expansion coefficients or temperature vary through thickness.
 
-A two-ply `[0/90]` laminate, each ply 0.125 mm, with E1=135 GPa, E2=10 GPa,
-nu12=0.3 and G12=5 GPa has A11=A22≈18.2466 MN/m. Yet B11≈-983.117 N and
-B22≈+983.117 N for bottom0/top90 ordering. Reversing the stack leaves A
-unchanged but reverses B. Thus equal thickness, ply counts and membrane
-stiffness do not establish the same curvature or thermal response. This is
-a hand-checkable laminate reference, not a claim that the package implements
-a general laminate solver or ply-failure engine.
+Reversing a laminate about the same midplane preserves A and D and reverses B.
+Compare stack order, reference-plane offset and ply orientations when predicting
+curvature or thermal response.
 
 ## Verified solver declarations and native assignment
 
-Fetched Simcenter Nastran 2606 QRG pages, SKU `PL20251024315120185`, provide:
+Use the Quick Reference Guide for the installed solver release. These card references are from Simcenter Nastran 2606 (`PL20251024315120185`):
 
 - `QRG.id508391` — MAT1: E/G/nu, mass density and expansion/reference
   temperature; SOL401 derives G from E/nu when all three are supplied.

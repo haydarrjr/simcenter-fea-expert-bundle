@@ -2,17 +2,15 @@
 
 Contents: [claim and identity](#match-the-claim-to-a-falsifiable-quantity-and-physical-state),
 [independent mechanics](#use-independent-mechanics-not-a-solver-success-label),
-[false-convergence case](#worked-false-convergence-case),
+[convergence checks](#test-an-apparently-converged-solution),
 [authentication and acceptance](#separate-artifact-integrity-authenticated-observation-and-acceptance).
 
 ## Match the claim to a falsifiable quantity and physical state
 
-Start with the intended decision: for example, whether a pretensioned flange
-retains its load path under temperature, pressure and eccentric service loading.
-Separate bolt-force increase, interface opening/slip, local stress, fatigue and
-thread capacity. A reduced joint equilibrium calculation can falsify an incorrect
-load split; it cannot establish continuum hotspot stress or thread stripping
-capacity. State which quantity each independent reference actually predicts.
+Define the decision, load history and governing quantities before selecting a check.
+For joint assessments, evaluate fastener load redistribution, interface opening and
+slip, local stress, fatigue and thread capacity independently where they govern.
+State the assumptions and response predicted by each reference calculation.
 
 Bind model/revision/owner, mesh, case, frame, units and step to the actual
 artifacts. Record source paths and SHA-256 hashes, then reconcile physical
