@@ -11,6 +11,7 @@ import re
 SEPARATION = 'D E F O R M E D  C O N T A C T  S E P A R A T I O N  D I S T A N C E'
 HEADINGS = {
     'D I S P L A C E M E N T   V E C T O R': ('displacement', 2),
+    'C O N T A C T  P R E S S U R E  A N D  T R A C T I O N S': ('pressure', 0),
     'C O N T A C T  F O R C E S': ('contact_force', 2),
     'F O R C E S   O F   S I N G L E - P O I N T   C O N S T R A I N T': ('reaction', 2),
     SEPARATION: ('separation', 0),
@@ -19,8 +20,8 @@ TIME = re.compile(r'^\s+TIME\s*=\s*([\d.+E-]+)\s*$')
 ROW = re.compile(r'^\s+(\d+)\s+G\s+(.+)$')
 
 
-def accepted_tables(path):
-    """Read the fixture's four terminal states by the actual F06 time coordinate."""
+def accepted_tables(path, times=(1., 2., 3., 4.)):
+    """Read the requested states by the actual F06 time coordinate."""
     states = defaultdict(lambda: defaultdict(dict))
     time = field = None
     complete = fatal = False
@@ -36,7 +37,7 @@ def accepted_tables(path):
             if match:
                 time = float(match[1])
                 field = None
-            if time not in (1., 2., 3., 4.):
+            if time not in times:
                 continue
             title = line.strip()
             if title in HEADINGS:

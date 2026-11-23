@@ -67,8 +67,13 @@ def hertz(sol, div, far, folder, gentle=False):
         for k,depth in enumerate(d):
             for y in x:
                 for u in x:
-                    depth0=(u*u+y*y)/(R+math.sqrt(R*R-u*u-y*y)) if top else -far
-                    coords.append((u,y,depth+(depth0*(1-depth/far) if top else depth0)))
+                    if top:
+                        surface = (u*u+y*y)/(R+math.sqrt(R*R-u*u-y*y))
+                        z = depth + surface*(1-depth/far)
+                    else:
+                        # Preserve element orientation and start the fine layers at the interface.
+                        z = -d[nb-k]
+                    coords.append((u,y,z))
         assert len(coords)==g(n,n,nb)
         for k in range(nb):
             for j in range(n):
