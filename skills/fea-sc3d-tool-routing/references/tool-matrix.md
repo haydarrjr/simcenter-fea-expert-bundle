@@ -2,6 +2,8 @@
 
 Resolve these operations against the current official tool catalog, including its namespaces and schemas.
 
+On 2026-11-25, Designcenter Open 2612.1700 exposed 12 application tools, including `explore-model-structure` and `read-model-data`. VS Code Copilot discovered 13 entries with `dc_connection_status` included.
+
 | Profile | Observed capabilities |
 |---|---|
 | Simcenter 3D Model Inspection | `dc_connection_status`, `part-info-tool`, `body-info-tool`, `material-info-tool`, `mesh-info-tool`, `mesh-quality-tool`, `boundary-condition-tool`, `surface-mesh-generation-tool`, `solid-mesh-generation-tool`, `mesh-selection-visibility-tool`, `body-selection-visibility-tool` |
