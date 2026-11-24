@@ -2,7 +2,7 @@
 
 Resolve these operations against the current official tool catalog, including its namespaces and schemas.
 
-On 2026-11-25, Designcenter Open 2612.1700 exposed 12 application tools, including `explore-model-structure` and `read-model-data`. VS Code Copilot discovered 13 entries with `dc_connection_status` included.
+On 2026-11-25, Designcenter Open 2612.1700 exposed 12 application tools, including `explore-model-structure` and `read-model-data`. The local VS Code profile with `DC_CONNECTION_STATUS_RESOURCE=1` lists those 12 tools and exposes `dc_connection_status` at the MCP resource `designcenter://connection-status`.
 
 | Profile | Observed capabilities |
 |---|---|

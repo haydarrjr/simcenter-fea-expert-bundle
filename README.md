@@ -45,7 +45,7 @@ The project installers support `--verify` and `--rollback`. On hosts that suppor
 
 Agent Workspace binds to host-managed Siemens MCP profiles by reference. In Codex and VS Code, configure the official profiles through the client. The workflow uses Model Inspection for CAE reads, Designcenter Open for CAD reads and journals, Product Support for Siemens documentation, Simcenter Nastran for job diagnostics, and BatchPost for result recovery. The [tool matrix](skills/fea-sc3d-tool-routing/references/tool-matrix.md) identifies the profile for each operation.
 
-The verified Designcenter Open 2612.1700 catalog has 12 application tools. VS Code Copilot displays 13 entries, including `dc_connection_status`.
+The verified Designcenter Open 2612.1700 catalog has 12 application tools. The local VS Code profile exposes `dc_connection_status` separately at `designcenter://connection-status`.
 
 Use `python scripts/render_mcp_config.py --help` to render or audit a configuration for an installed Siemens product. Define each profile once in the client and verify the tool catalog in a fresh chat. For a Codex read-only smoke check against a connected session, see `python scripts/qualify_codex_readonly.py --help`.
 
