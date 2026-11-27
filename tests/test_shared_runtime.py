@@ -162,6 +162,112 @@ class RuntimeTests(unittest.TestCase):
         self.assertEqual(report["subcases"][2]["effective"]["TSTEP"]["value"], "13")
         self.assertEqual(report["global_control"]["BCRESULTS"]["value"], "17")
 
+    def test_scoped_sc3d_mutations_require_exact_shape_and_distinct_guards(self):
+        from fea_runtime.sc3d import validate_batch
+
+        spec = {"native_state": exact("VERIFIED")}
+        operation = {"capability": "sc3d.bc.scale_nodal_force",
+                     "target": {"path": "owned.sim", "schema": "sc3d.sim"},
+                     "baseline": {"native_state": exact("UNLAUNCHED")}, "expected": spec,
+                     "args": {"sim": "owned.sim", "fem": "owned_fem.fem", "fem_sha256": "a"*64,
+                              "launcher_sha256": "b"*64,
+                              "load": {"solution": "case", "step": "step", "name": "force",
+                                       "grid_labels": [21,42], "scale_before": 1, "scale_after": 1.25}}}
+        validate_batch(operation)
+        for labels in ([21, 21], [True], [42, 21]):
+            bad = deepcopy(operation)
+            bad["args"]["load"]["grid_labels"] = labels
+            with self.assertRaisesRegex(ValueError, "grid labels"):
+                validate_batch(bad)
+        bad = deepcopy(operation)
+        bad["target"]["schema"] = "sc3d.fem"
+        with self.assertRaisesRegex(ValueError, "editable part"):
+            validate_batch(bad)
+
+        mesh = {**operation, "capability": "sc3d.mesh.refine_region",
+                "target": {"path": "owned_fem.fem", "schema": "sc3d.fem"},
+                "args": {"fem": "owned_fem.fem", "cad": "owned.prt", "cad_sha256": "c"*64,
+                         "launcher_sha256": "b"*64,
+                         "region": {"cad_body": "owner", "cad_face": "face", "guard_body": "guard",
+                                    "face_vertices_mm": [[0,0,0],[0,1,0],[1,0,0]], "size_mm": 2}}}
+        validate_batch(mesh)
+        mesh["args"]["region"]["guard_body"] = "owner"
+        with self.assertRaisesRegex(ValueError, "guard body"):
+            validate_batch(mesh)
+
+    def test_owned_file_fences_cover_shared_dependencies_and_allow_independent_edit(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            for name in ("a.sim", "b.sim", "c.sim", "one.fem", "two.fem"):
+                (root / name).write_text(name, encoding="utf-8")
+            controller = Controller(root)
+
+            def prepare(name, fem):
+                target = {"kind": "file", "path": name + ".sim", "schema": "sc3d.sim",
+                          "sha256": file_identity(root / (name + ".sim"))["sha256"]}
+                op = {"version": 1, "run_id": name, "operation_id": "scale",
+                      "capability": "sc3d.bc.scale_nodal_force", "target": target,
+                      "args": {"sim": name + ".sim", "fem": fem,
+                               "fem_sha256": file_identity(root / fem)["sha256"],
+                               "launcher_sha256": "c" * 64,
+                               "load": {"solution": "SOL101", "step": "test", "name": "native force",
+                                        "grid_labels": [12], "scale_before": 1, "scale_after": 1.5}},
+                      "dependencies": [], "output_scope": ".",
+                      "expected": {"native_state": exact("VERIFIED")},
+                      "baseline": {"native_state": exact("UNLAUNCHED")},
+                      "deadline": (datetime.now(timezone.utc) + timedelta(minutes=5)).isoformat(),
+                      "authorization_ref": "caller"}
+                binding = {"target": target, "evidence_ref": name, "observed_at": now()}
+                verified = validate(op, binding)
+                grant = {"ref": "caller", **{key: verified[key] for key in
+                         ("request_digest", "binding_digest", "effect")}}
+                return controller.transition("prepare", operation=op, binding=binding, authority=grant)
+
+            chosen = prepare("a", "one.fem")
+            request = chosen["request"]
+            controller.transition("reserve", run_id="a", operation_id="scale",
+                                  request_digest=chosen["request_digest"], binding=chosen["binding"],
+                                  authority=chosen["authority"], preflight={
+                                      "target": request["target"], "observed_at": now(),
+                                      "evidence_ref": "verified a",
+                                      "witnesses": {"native_state": "UNLAUNCHED"}})
+            with self.assertRaisesRegex(Blocked, "unreconciled effect"):
+                prepare("b", "one.fem")
+            self.assertEqual(prepare("c", "two.fem")["status"], "PREPARED")
+
+    def test_local_file_read_commits_once_and_retains_a_read_failure(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            (root / "owned.dat").write_bytes(b"owned content")
+            target = {"kind": "file", "path": "owned.dat", "schema": "nastran.deck",
+                      "sha256": file_identity(root / "owned.dat")["sha256"]}
+            operation = {"version": 1, "run_id": "local", "operation_id": "deck",
+                         "capability": "nastran.deck.inspect", "target": target,
+                         "args": {"deck": "owned.dat", "input_scope": "."}, "dependencies": [],
+                         "output_scope": ".", "expected": {"sol": exact(101)}}
+            binding = {"target": target, "evidence_ref": "owned input", "observed_at": now()}
+            controller = Controller(root)
+
+            def inspect_while_unreserved(_operation):
+                self.assertFalse(records(controller.snapshot())["operations"])
+                return {"sol": 101}, {"sol": 101}, "original-deck", "UNVERIFIED", {}
+
+            report, _ = controller.transition("local-file-read", operation=operation, binding=binding,
+                                              reader=inspect_while_unreserved)
+            self.assertEqual(report["status"], "ACCEPTED")
+            self.assertEqual(report["observations"][0]["witnesses"], {"sol": 101})
+            self.assertNotIn("reserved_at", report)
+
+            def read_failed(_operation):
+                raise ValueError("native file structure is malformed")
+
+            with self.assertRaisesRegex(ValueError, "file structure"):
+                controller.transition("local-file-read", operation={**operation, "operation_id": "bad"},
+                                      binding=binding, reader=read_failed)
+            failure = records(controller.snapshot())["operations"]["local/bad"]
+            self.assertEqual(failure["status"], "READ_FAILED")
+            self.assertNotIn("reserved_at", failure)
+
     def test_spectral_comparison_rejects_wrong_state_and_input_units(self):
         ident = {"sha256": "a" * 64, "unit": "m", "frame": "basic", "entity": "node 2 X",
                  "quantity": "displacement"}

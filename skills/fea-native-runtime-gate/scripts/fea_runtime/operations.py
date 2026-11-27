@@ -6,7 +6,7 @@ import os
 
 from fea_controller import PENDING, canonical, digest, now, response_failed
 from .artifacts import artifact, file_identity, read_artifact
-from .contracts import (Blocked, Denied, MAX_JSON, authorize, fields, identifier, match,
+from .contracts import (CAPABILITIES, Blocked, Denied, MAX_JSON, authorize, fields, identifier, match,
                         satisfies, scoped_path, stamp, target_identity, text, validate, load_json)
 
 
@@ -39,20 +39,26 @@ def _dependencies(controller, table, request):
         if item["producer"][0] == request["run_id"] and item["producer"][1] not in request["dependencies"]:
             raise ValueError("same-run artifact use requires its explicit dependency")
         args = request["args"]
-        inputs = {args.get("deck"), args.get("sim"), args.get("fem"), args.get("path")}
+        inputs = {args.get("deck"), args.get("sim"), args.get("fem"), args.get("cad"), args.get("path")}
         if item["path"] not in inputs and item["sha256"] != request["target"].get("result_sha256"):
             raise ValueError("artifact is unrelated to the actual bound input")
 
 
-def _fence(state, table, effect, resources):
+def _fence(state, table, request, effect, resources):
     if effect == "PURE_READ":
         return
     if state.get("license_stop") or any(r["status"] in PENDING for r in state["operations"].values()):
         raise Blocked("unreconciled legacy reservation or license stop is fenced")
-    if set(resources) & set(table["stops"]):
+    previous_workspace_fence = digest(["owned-file-effects"])
+    file_target = request["target"]["kind"] == "file"
+    keys = set(resources)
+    # Earlier v1 receipts used one conservative fence for all owned file effects.
+    if file_target:
+        keys.add(previous_workspace_fence)
+    if keys & set(table["stops"]):
         raise Blocked("native resource has an unresolved license stop")
     for record in table["operations"].values():
-        if set(resources) & set(record["resources"]):
+        if keys & set(record["resources"]):
             if record["status"] in PENDING and record["effect"] != "PURE_READ":
                 raise Blocked("native resource has an unreconciled effect")
             if (effect == "SOLVER_SUBMIT" and record["effect"] == effect
@@ -71,7 +77,7 @@ def ready(controller, state, table, record):
     try:
         _deadline(record["request"])
         _dependencies(controller, table, record["request"])
-        _fence(state, table, record["effect"], record["resources"])
+        _fence(state, table, record["request"], record["effect"], record["resources"])
     except (Blocked, Denied, OSError, ValueError):
         return False
     return True
@@ -123,7 +129,7 @@ def prepare(controller, operation, binding, authority=None):
     with controller.edit() as state:
         table = records(state)
         _dependencies(controller, table, operation)
-        _fence(state, table, verified["effect"], verified["resources"])
+        _fence(state, table, operation, verified["effect"], verified["resources"])
         if name in table["operations"]:
             raise ValueError("duplicate operation identifier in run")
         record = {**verified, "request": operation, "binding": binding, "authority": authority,
@@ -140,14 +146,17 @@ def reserve(controller, run_id, operation_id, request_digest, binding, authority
         record = table["operations"][name]
         request = record["request"]
         verified = validate(request, binding)
+        legacy_file_fence = (request["target"]["kind"] == "file" and record["effect"] != "PURE_READ"
+                             and record["resources"] == [digest(["owned-file-effects"])])
         if (record["status"] != "PREPARED" or request_digest != record["request_digest"]
-                or any(not match(record[key], value) for key, value in verified.items())):
+                or any(not match(record[key], value) for key, value in verified.items()
+                       if key != "resources" or not legacy_file_fence)):
             raise ValueError("prepared request, binding or state changed")
         authorize(request, verified, authority)
         _deadline(request)
         _context(controller, request, binding)
         _dependencies(controller, table, request)
-        _fence(state, table, record["effect"], record["resources"])
+        _fence(state, table, request, record["effect"], verified["resources"])
         if record["effect"] != "PURE_READ":
             fields(preflight, ("target", "observed_at", "evidence_ref", "witnesses"))
             if (not match(preflight["target"], request["target"])
@@ -156,7 +165,8 @@ def reserve(controller, run_id, operation_id, request_digest, binding, authority
                     or not isinstance(preflight["witnesses"], dict)
                     or not satisfies(request["baseline"], preflight["witnesses"])):
                 raise Blocked("effect precondition requires a fresh matching independent witness")
-        record.update(status="DISPATCH_RESERVED", reserved_at=now(), dispatch_preflight=preflight)
+        record.update(status="DISPATCH_RESERVED", reserved_at=now(), dispatch_preflight=preflight,
+                      resources=verified["resources"])
     return record
 
 
@@ -175,6 +185,58 @@ def _save_raw(controller, raw):
     if path.read_bytes() != payload + b"\n":
         raise ValueError("recorded raw evidence differs from its content address")
     return raw_digest
+
+
+def local_file_read(controller, operation, binding, reader):
+    """Evaluate a known local read outside the lock and commit one terminal receipt."""
+    verified = validate(operation, binding)
+    if (verified["effect"] != "PURE_READ" or operation["target"]["kind"] != "file"
+            or CAPABILITIES[operation["capability"]]["backend"] != "local"):
+        raise ValueError("single-commit execution applies only to pure local file reads")
+    _deadline(operation)
+    _context(controller, operation, binding)
+    name = _key(operation["run_id"], operation["operation_id"])
+    prior = records(controller.snapshot())
+    _dependencies(controller, prior, operation)
+    if name in prior["operations"]:
+        raise ValueError("duplicate operation identifier in run")
+    started_at = now()
+    error = None
+    projection = {}
+    try:
+        raw, witnesses, evidence_ref, disposition, projection = reader(operation)
+        _context(controller, operation, binding)
+        if evidence_ref in {binding["evidence_ref"], digest(raw)}:
+            raise ValueError("local read needs a distinct scoped evidence reference")
+        if disposition not in {"UNVERIFIED", "REJECTED"} or not isinstance(witnesses, dict):
+            raise ValueError("invalid local check observation")
+    except (OSError, TypeError, ValueError) as exc:
+        error = exc
+        raw, witnesses, evidence_ref, disposition = None, {}, None, "UNVERIFIED"
+    with controller.edit() as state:
+        table = records(state)
+        _dependencies(controller, table, operation)
+        if name in table["operations"]:
+            raise ValueError("duplicate operation identifier in run")
+        raw_digest = _save_raw(controller, raw)
+        observed_at = now()
+        record = {**verified, "request": operation, "binding": binding, "authority": None,
+                  "prepared_at": started_at, "response_at": observed_at, "observed_at": observed_at,
+                  "raw_digest": raw_digest, "artifact_refs": [],
+                  "engineering_disposition": disposition}
+        if error is None:
+            observation = {"target": operation["target"], "observed_at": observed_at,
+                           "evidence_ref": evidence_ref, "witnesses": witnesses, "coverage": "COMPLETE",
+                           "settled": True, "engineering_disposition": disposition}
+            record.update(status=_verification(operation, observation, "PURE_READ"),
+                          outcome="RESPONSE_RECORDED", observations=[observation])
+        else:
+            record.update(status="READ_FAILED", outcome="FAILED_RESPONSE", transport_error=str(error)[:4096])
+        table["operations"][name] = record
+        state["runtime_v1"] = table
+    if error is not None:
+        raise error
+    return record, projection
 
 
 def record_response(controller, run_id, operation_id, raw=None, transport_error=None):
@@ -201,6 +263,19 @@ def record_response(controller, run_id, operation_id, raw=None, transport_error=
         if license_stop and record["effect"] != "PURE_READ":
             table["stops"] = sorted(set(table["stops"]) | set(record["resources"]))
     return record
+
+
+def _verification(request, observation, effect):
+    if observation["coverage"] != "COMPLETE" or not observation["settled"]:
+        return "UNKNOWN"
+    witnesses = observation["witnesses"]
+    after = satisfies(request["expected"], witnesses)
+    before = bool(request.get("baseline")) and satisfies(request["baseline"], witnesses)
+    if after and not before:
+        return "ENGINEERING_REJECTED" if observation.get("engineering_disposition") == "REJECTED" else "ACCEPTED"
+    if before and not after:
+        return "NOT_APPLIED"
+    return "READ_FAILED" if effect == "PURE_READ" else "UNKNOWN"
 
 
 def observe(controller, run_id, operation_id, observation, *, reconcile=False):
@@ -245,16 +320,7 @@ def observe(controller, run_id, operation_id, observation, *, reconcile=False):
             if (not match(values, witnesses.get("field_values")) or len(reported) != 1
                     or reported[0].get("path") != path.relative_to(controller.root).as_posix()):
                 raise ValueError("verified native CSV does not match the requested witness or artifact")
-        verification = "UNKNOWN"
-        if observation["coverage"] == "COMPLETE" and observation["settled"]:
-            after = satisfies(request["expected"], witnesses)
-            before = bool(request.get("baseline")) and satisfies(request["baseline"], witnesses)
-            if after and not before:
-                verification = "ENGINEERING_REJECTED" if disposition == "REJECTED" else "ACCEPTED"
-            elif before and not after:
-                verification = "NOT_APPLIED"
-            elif record["effect"] == "PURE_READ":
-                verification = "READ_FAILED"
+        verification = _verification(request, observation, record["effect"])
         specifications = observation.get("artifacts", [])
         if type(specifications) is not list or len(specifications) > 256:
             raise ValueError("invalid or excessive artifact evidence")

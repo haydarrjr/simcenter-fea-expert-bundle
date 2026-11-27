@@ -10,11 +10,22 @@ Use the scripts directory from the verified checkout or attested project. Run `p
 | `sc3d prepare`, `nastran prepare`, `batchpost prepare` | Admit an operation into the common ledger using `--root`, `--request` and the applicable `--authority`. |
 | `operation reserve`, `operation record`, `operation observe`, `operation reconcile` | Reserve the checked payload, preserve the response or failure, and apply fresh independent observations. |
 | `sc3d batch`, `nastran submit` | Explicit Windows isolated execution with `--product`, a fresh owned output scope and a caller grant for effects. |
-| `nastran inspect`, `nastran verify` | Read an exact deck closure or run a supported independent engineering check over bound local bytes. |
+| `nastran inspect`, `nastran verify` | Read an exact deck closure or run a supported independent engineering check over bound local bytes. Pure local reads write one terminal receipt. |
 | `operation reconcile-job` | Recheck the retained original job, its staged input hashes and terminal files after a client interruption. |
 | `run status`, `run next`, `artifact inspect --id ID` | Return compact operation projections and verify artifact bytes before returning metadata or a bounded contour CSV row slice. |
 
 The transport emits JSON with contract version, command status, execution status, engineering disposition and available identities. Exit 0 indicates the requested command completed, including a successful prepare. Other exit codes are 2 for invalid input, 3 for authority rejection, 4 for unavailable or uncertain execution, 5 for runtime or read failure and 6 for completed engineering rejection. `ACCEPTED` execution confirms the declared operation predicates. Physical acceptance requires engineering evidence and its own disposition.
+
+## Isolated native mutations
+
+Run the following capabilities with the existing sc3d batch command. Bind the exact writable file in the file target with its SHA-256. Place the related files in the declared owned scope and supply the read-only dependency digest. Use an unregistered disposable copy for a writable target. Previously retained artifacts keep their original bytes.
+
+| Capability | Explicit scoped input | Native evidence |
+|---|---|---|
+| sc3d.bc.scale_nodal_force | SIM and FEM paths, FEM SHA-256, and load object with exact solution, step, name, sorted grid_labels, scale_before and scale_after | Exact NodeIDTableForce membership and basic-frame FORCE rows, target magnitude change, other BC fingerprint, unchanged FEM and fresh clean SIM reopen. The scale values are the native ScalingForce property values on this profile. |
+| sc3d.mesh.refine_region | FEM and CAD paths, CAD SHA-256, and region object with cad_body, cad_face, guard_body, sorted unique face_vertices_mm and size_mm | Native CAD-to-polygon binding, persisted face control, reduced median edge length, increased local edge count, unchanged guard connectivity and coordinates, unchanged CAD and fresh reopen. Current scope is standalone millimeter CAD and a meshed linear tetrahedral region. |
+
+Both operations carry the installed run_journal executable hash, a deadline, the caller grant and native_state predicates UNLAUNCHED and VERIFIED. Acceptances include the before and after scoped measurements. Mesh-control inspection may mark a reopened FEM dirty in memory. The receipt records dirtiness before and after inspection and requires saved bytes and the CAD dependency to remain unchanged during readback.
 
 ## Request and authority
 

@@ -8,7 +8,7 @@ import sys
 from fea_controller import Controller, canonical, digest
 from fea_runtime import VERSION
 from fea_runtime.artifacts import csv_rows, read_artifact
-from fea_runtime.contracts import CAPABILITIES, Blocked, Denied, fields, fresh_at, identifier, load_json, validate
+from fea_runtime.contracts import CAPABILITIES, Blocked, Denied, fields, identifier, load_json, validate
 from fea_runtime.operations import ready, records
 
 
@@ -75,13 +75,43 @@ def project(record):
     }
 
 
+def local_read(controller, payload, action):
+    expected = "nastran.deck.inspect" if action == "inspect" else "nastran.artifact.verify"
+    if payload["operation"]["capability"] != expected:
+        raise ValueError("operation capability differs from the local read command")
+
+    def read(operation):
+        if action == "inspect":
+            from fea_runtime.native import inspect_deck
+
+            deck, _ = inspect_deck(controller.root, operation["args"])
+            if deck.files[deck.entry]["sha256"] != operation["target"]["sha256"]:
+                raise ValueError("deck bytes changed during inspection")
+            closure = digest(deck.files)
+            detail = {"entry": deck.entry, "sequence": deck.solution,
+                      "subcases": list(deck.subcases), "closure_digest": closure}
+            witnesses = {"sol": deck.solution, "subcases": list(deck.subcases), "deck_digest": closure}
+            return deck.summary(), witnesses, "deck:" + closure, "UNVERIFIED", {"deck": detail}
+        from fea_runtime.engineering.service import execute as engineering_check
+
+        report = engineering_check(controller.root, operation["args"])
+        disposition = "REJECTED" if report.get("status") in {"DIFFERS", "REJECTED"} else "UNVERIFIED"
+        checksum = digest(report)
+        witnesses = {"method": operation["args"]["method"], "report_status": report.get("status"),
+                     "report_digest": checksum}
+        return {"report": report}, witnesses, "check:" + checksum, disposition, {}
+
+    record, extra = controller.transition("local-file-read", **payload, reader=read)
+    return {**project(record), **extra}
+
+
 def execute(args):
     domain, action = args.domain, args.action
     if domain == "capabilities":
         if action == "describe":
             return {"capability": args.id, "descriptor": CAPABILITIES[args.id]}
         query = args.query.casefold()
-        return {"capabilities": [{"id": name, "backend": descriptor["backend"],
+        return {"capabilities": [{"id": name, "backend": descriptor["backend"], "availability": descriptor["availability"],
                                    "qualification": descriptor["qualification"]}
                                   for name, descriptor in CAPABILITIES.items()
                                   if (not args.scope or name.startswith(args.scope + "."))
@@ -117,60 +147,8 @@ def execute(args):
             raise ValueError("operation capability differs from the CLI domain")
     if action == "prepare":
         return project(controller.transition("prepare", **payload, authority=authority))
-    if action == "inspect" and domain == "nastran":
-        from fea_runtime.native import inspect_deck
-
-        operation = payload["operation"]
-        if operation["capability"] != "nastran.deck.inspect":
-            raise ValueError("expected a deck inspect operation")
-        verified = controller.transition("prepare", **payload)
-        names = {key: operation[key] for key in ("run_id", "operation_id")}
-        controller.transition("reserve", **names, binding=payload["binding"],
-                              request_digest=verified["request_digest"])
-        try:
-            deck, _ = inspect_deck(controller.root, operation["args"])
-            if deck.files[deck.entry]["sha256"] != operation["target"]["sha256"]:
-                raise ValueError("deck bytes changed during inspection")
-            report = deck.summary()
-        except (OSError, ValueError) as exc:
-            controller.transition("record", **names, transport_error=str(exc)[:4096])
-            raise
-        recorded = controller.transition("record", **names, raw=report)
-        observed = controller.transition("observe", **names, observation={
-            "target": operation["target"], "observed_at": fresh_at(recorded["response_at"]), "evidence_ref": "deck:" + digest(deck.files),
-            "witnesses": {"sol": deck.solution, "subcases": list(deck.subcases), "deck_digest": digest(deck.files)},
-            "coverage": "COMPLETE", "settled": True,
-        })
-        return {**project(observed), "deck": {"entry": deck.entry, "sequence": deck.solution,
-                                              "subcases": list(deck.subcases), "closure_digest": digest(deck.files)}}
-    if action == "verify":
-        from fea_runtime.artifacts import file_identity
-        from fea_runtime.contracts import scoped_path
-        from fea_runtime.engineering.service import execute as engineering_check
-
-        operation = payload["operation"]
-        if operation["capability"] != "nastran.artifact.verify":
-            raise ValueError("expected an artifact verification operation")
-        verified = controller.transition("prepare", **payload)
-        names = {key: operation[key] for key in ("run_id", "operation_id")}
-        controller.transition("reserve", **names, binding=payload["binding"],
-                              request_digest=verified["request_digest"])
-        try:
-            report = engineering_check(controller.root, operation["args"])
-            if file_identity(scoped_path(controller.root, operation["target"]["path"]))["sha256"] != operation["target"]["sha256"]:
-                raise ValueError("engineering artifact changed while it was read")
-        except (OSError, ValueError, TypeError) as exc:
-            controller.transition("record", **names, transport_error=str(exc)[:4096])
-            raise
-        recorded = controller.transition("record", **names, raw={"report": report})
-        disposition = "REJECTED" if report.get("status") == "DIFFERS" else "UNVERIFIED"
-        result = controller.transition("observe", **names, observation={
-            "target": operation["target"], "observed_at": fresh_at(recorded["response_at"]), "evidence_ref": "check:" + digest(report),
-            "witnesses": {"method": operation["args"]["method"], "report_status": report.get("status"),
-                          "report_digest": digest(report)},
-            "coverage": "COMPLETE", "settled": True, "engineering_disposition": disposition,
-        })
-        return project(result)
+    if action in {"inspect", "verify"}:
+        return local_read(controller, payload, action)
     if action == "submit":
         from fea_runtime.native import submit
 
@@ -178,10 +156,9 @@ def execute(args):
             raise ValueError("expected a native job submission")
         return project(submit(controller, payload["operation"], payload["binding"], authority, args.product))
     if action == "batch":
-        from fea_runtime.sc3d import execute_batch
+        from fea_runtime.sc3d import ACTIONS, execute_batch
 
-        if payload["operation"]["capability"] not in {
-                "sc3d.model.import", "sc3d.model.read_saved", "sc3d.model.persist"}:
+        if payload["operation"]["capability"] not in ACTIONS:
             raise ValueError("expected a supported isolated model operation")
         return project(execute_batch(controller, **payload, authority=authority, product=args.product))
     if action == "reconcile-job":

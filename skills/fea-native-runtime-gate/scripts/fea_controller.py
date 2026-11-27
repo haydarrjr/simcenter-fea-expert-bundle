@@ -157,7 +157,15 @@ def save(path, value):
             temporary.flush()
             os.fsync(temporary.fileno())
             temporary.close()
-            os.replace(temp, path)
+            for attempt in range(6):
+                try:
+                    os.replace(temp, path)
+                    break
+                except PermissionError as exc:
+                    # A Windows reader or scanner can temporarily deny atomic replacement.
+                    if os.name != "nt" or getattr(exc, "winerror", None) not in {5, 32, 33} or attempt == 5:
+                        raise
+                    time.sleep(0.015 * (attempt + 1))
         finally:
             temporary.close()
             temp.unlink(missing_ok=True)
@@ -215,7 +223,8 @@ class Controller:
 
         handlers = {'prepare': operations.prepare, 'reserve': operations.reserve,
                     'record': operations.record_response, 'observe': operations.observe,
-                    'reconcile': operations.observe}
+                    'reconcile': operations.observe,
+                    'local-file-read': operations.local_file_read}
         if action == 'reconcile':
             payload['reconcile'] = True
         return handlers[action](self, **payload)

@@ -96,18 +96,21 @@ def scoped_path(root, name, *, exists=True):
     return resolved
 
 
-def _cap(owner, backend, target, effect, args, outputs, profile=None, tools=()):
+def _cap(owner, backend, target, effect, args, outputs, profile=None, tools=(), *, native_scope=None):
     return dict(owner=owner, backend=backend, target=target, effect=effect, inputs=args,
                 outputs=outputs, profile=profile, tools=tools,
-                applicability="Current advertised profile/build and matching evidence",
+                known=True, availability="CHECK_CURRENT_BINDING" if backend == "host" else "CHECK_LOCAL_INPUTS",
+                applicability=native_scope or "Current advertised profile/build and matching evidence",
                 resource=target, verification="Independent scoped witness",
-                qualification="UNVERIFIED", qualification_refs=[])
+                qualification="PASS_SCOPED_NATIVE" if native_scope else "UNVERIFIED",
+                qualification_refs=["references/issue-22-qualification.md"] if native_scope else [])
 
 
 CAPABILITIES = {
     "sc3d.model.inspect": _cap("fea-sc3d-tool-routing", "host", "sc3d", "PURE_READ",
-                               "Current tool schema", "Observed part or mesh data", "simcenter3d",
-                               ("part-info-tool", "mesh-info-tool")),
+                               "Current tool schema", "Observed part, mesh, material or boundary-condition data",
+                               "simcenter3d", ("part-info-tool", "mesh-info-tool", "body-info-tool",
+                                               "material-info-tool", "mesh-quality-tool", "boundary-condition-tool")),
     "sc3d.cad.inspect": _cap("designcenter-open-model-data-read", "host", "sc3d", "PURE_READ",
                              "Current tool schema", "Observed CAD model data", "designcenter",
                              ("read-model-data",)),
@@ -120,6 +123,14 @@ CAPABILITIES = {
     "sc3d.journal.qualified": _cap("designcenter-open-journal-authoring", "host", "sc3d", "CAE_MUTATION",
                                    "Individually reviewed exact NXOpen journal", "Native readback",
                                    "designcenter", ("dcopen-execute-tool",)),
+    "sc3d.bc.scale_nodal_force": _cap("simcenter-3d-simulation-boundary-conditions", "local", "file", "FILE_MUTATION",
+                                      "Exact owned solver-backed SIM, FEM hash, solution, step and nodal force labels",
+                                      "Changed native FORCE magnitude with unchanged other boundary conditions",
+                                      native_scope="Windows 2612.1700 standalone unshared NodeIDTableForce"),
+    "sc3d.mesh.refine_region": _cap("simcenter-3d-mesh-generation", "local", "file", "FILE_MUTATION",
+                                   "Exact owned CAD-associated FEM, face vertices, size in mm and separate guard body",
+                                   "Persisted face control and native regenerated edge population",
+                                   native_scope="Windows 2612.1700 standalone millimeter CAD-associated TET4"),
     "sc3d.model.import": _cap("designcenter-open-journal-authoring", "local", "file", "FILE_MUTATION",
                               "Owned supported deck, FEM/SIM paths, optional exact solution rename",
                               "Translator receipt, saved FEM/SIM and fresh-process inventory"),
@@ -315,7 +326,9 @@ def validate(operation, binding):
         validate_local(operation)
     resources = resource_keys(target)
     if target["kind"] == "file" and desc["effect"] != "PURE_READ":
-        resources = [digest(["owned-file-effects"])]
+        native_paths = {target["path"], *(operation["args"][part] for part in
+                         ("sim", "fem", "cad", "export") if part in operation["args"])}
+        resources = sorted({digest(["owned-file", path.casefold()]) for path in native_paths})
     return {"request_digest": digest(operation), "binding_digest": digest(binding),
             "effect": desc["effect"], "resources": resources}
 

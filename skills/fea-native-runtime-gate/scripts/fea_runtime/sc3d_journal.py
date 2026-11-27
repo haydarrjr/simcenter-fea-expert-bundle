@@ -4,6 +4,7 @@ import json
 import os
 from pathlib import Path
 import re
+import sys
 
 import NXOpen
 import NXOpen.CAE
@@ -127,6 +128,12 @@ def main():
         result = import_model(session, request)
     elif request["action"] in {"read", "export"}:
         result = read_model(session, request)
+    elif request["action"] in {"scale-force", "inspect-force", "refine-region", "inspect-region"}:
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        from sc3d_mutations import nodal_force, regional_mesh
+
+        run = nodal_force if request["action"] in {"scale-force", "inspect-force"} else regional_mesh
+        result = run(session, request, save_part)
     else:
         raise RuntimeError("unsupported isolated NXOpen operation")
     with Path(request["receipt"]).open("x", encoding="utf-8") as stream:
