@@ -1,10 +1,12 @@
 """Regression tests for candidate parity, managed installs and MCP admission."""
 from datetime import datetime, timezone
 import importlib.util
+import hashlib
 import io
 import json
 from pathlib import Path
 import re
+import subprocess
 import sys
 import tempfile
 import tomllib
@@ -109,6 +111,45 @@ class ProjectChannels(unittest.TestCase):
         cls.other_out = cls.root / 'other-candidate'
         build(cls.other_out)
 
+    def test_runtime_cli_from_every_extracted_channel(self):
+        for channel, metadata in self.identity['channels'].items():
+            files = read_zip(self.out / metadata['archive'])
+            with tempfile.TemporaryDirectory(prefix='fea project ü ', dir=self.root) as directory:
+                project = Path(directory)
+                for name, content in files.items():
+                    path = project / name
+                    path.parent.mkdir(parents=True, exist_ok=True)
+                    path.write_bytes(content)
+                candidates = [name for name in files if name.endswith('/scripts/fea_cli.py')]
+                with self.subTest(channel=channel):
+                    self.assertEqual(len(candidates), 1)
+                    cli = project / candidates[0]
+                    notice = cli.parent / 'fea_runtime/engineering/NOTICE.txt'
+                    self.assertTrue(notice.is_file())
+                    self.assertTrue((notice.parent / 'LICENSE-APACHE.txt').is_file())
+                    def entrypoint(*args):
+                        return subprocess.run([sys.executable, '-E', '-B', '-X', 'utf8', str(cli), *args],
+                                              cwd=project, capture_output=True, check=True, encoding='utf-8')
+                    self.assertIn('capabilities', entrypoint('--help').stdout)
+                    report = json.loads(entrypoint('capabilities', 'describe', 'nastran.deck.inspect').stdout)
+                    self.assertEqual(report['descriptor']['backend'], 'local')
+                    self.assertFalse((project / '.work').exists())
+                    raw = (ROOT / 'tests/fixtures/sol101-axial-bar.txt').read_bytes()
+                    (project / 'seed.dat').write_bytes(raw)
+                    target = {'kind': 'file', 'path': 'seed.dat', 'schema': 'nastran.deck',
+                              'sha256': hashlib.sha256(raw).hexdigest()}
+                    request = {'operation': {'version': 1, 'run_id': 'standalone', 'operation_id': 'read',
+                               'capability': 'nastran.deck.inspect', 'target': target,
+                               'args': {'deck': 'seed.dat', 'input_scope': '.'}, 'dependencies': [],
+                               'output_scope': '.', 'expected': {'sol': {'op': 'exact', 'value': 101}}},
+                               'binding': {'target': target, 'evidence_ref': 'fixture-input',
+                                           'observed_at': datetime.now(timezone.utc).isoformat()}}
+                    (project / 'request.json').write_text(json.dumps(request), encoding='utf-8')
+                    observed = json.loads(entrypoint('nastran', 'inspect', '--root', '.',
+                                                       '--request', 'request.json').stdout)
+                    self.assertEqual(observed['execution_status'], 'ACCEPTED')
+                    self.assertEqual(observed['deck']['sequence'], 101)
+
     def test_shared_candidate_and_canonical_skill_bytes(self):
         self.assertEqual((self.out / 'SHA256SUMS.txt').read_bytes(),
                          (self.other_out / 'SHA256SUMS.txt').read_bytes())
@@ -137,10 +178,12 @@ class ProjectChannels(unittest.TestCase):
             if name.startswith('skills/') and name.endswith('.md'):
                 self.assertNotRegex(
                     raw.decode('utf-8').lower(),
-                    r'\b(?:fea_capabilities|fea_get_example|fea_inspect_artifact|fea_agent|pynastran|'
+                    r'\b(?:fea_capabilities|fea_get_example|fea_inspect_artifact|fea_agent|'
                     r'calculix|opensees|scikit-fem|gmsh|pylife)\b',
                     name,
                 )
+                if name != 'skills/fea-native-runtime-gate/references/engineering-provenance.md':
+                    self.assertNotRegex(raw.decode('utf-8').lower(), r'\bpynastran\b', name)
         for _, filename in PROJECTS.values():
             files = read_zip(self.out / filename)
             root = next(name.split('/')[0] for name in files if name.endswith('/fea-workflow.md'))

@@ -7,7 +7,7 @@ metadata:
 
 # Native runtime gate
 
-Use the host-owned profile and current schema. Bind the exact release, session, model, owner and revision. The [controller](scripts/fea_controller.py) records operation state around an existing invocation and readback. Its [adapters](references/official-mcp-adapter.md) use the host's existing MCP connection. Use one controller directory for a dependent sequence in a native session.
+Use the host-owned profile, current schema and exact target. The [shared CLI](references/runtime-cli.md) and [controller](scripts/fea_controller.py) record dispatch and independent readback in one task-owned runtime root. Direct calls use the configured official tool. Use the [host adapters](references/official-mcp-adapter.md) when the host provides programmatic calling.
 
 1. Prepare the normalized operation with fresh binding evidence and measurable witnesses. For an effect, include a distinct baseline and authorization bound to the operation digest.
 2. Reserve using the same binding and digest, then dispatch the returned arguments through the existing tool. Send only fields allowed by its schema.

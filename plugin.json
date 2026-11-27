@@ -9,7 +9,7 @@
   },
   "homepage": "https://github.com/haydarrjr/simcenter-fea-expert-bundle",
   "repository": "https://github.com/haydarrjr/simcenter-fea-expert-bundle",
-  "license": "MIT",
+  "license": "MIT AND Apache-2.0",
   "keywords": [
     "simcenter",
     "fea",

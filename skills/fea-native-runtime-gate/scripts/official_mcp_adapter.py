@@ -52,6 +52,27 @@ class OfficialMcpAdapter:
                     break
         return receipts
 
+    @staticmethod
+    async def execute_operation(controller, operation, binding, session, preflight, readback, authority=None):
+        """Use an already-authorized programmatic host session with the v1 ledger."""
+        async with _LOCKS.setdefault(session, asyncio.Lock()):
+            prepared = controller.transition("prepare", operation=operation, binding=binding, authority=authority)
+            names = {key: operation[key] for key in ("run_id", "operation_id")}
+            witness = await preflight(operation) if prepared["effect"] != "PURE_READ" else None
+            controller.transition("reserve", **names, request_digest=prepared["request_digest"],
+                                  binding=binding, authority=authority, preflight=witness)
+            try:
+                reply = await session.call_tool(binding["tool"], arguments=operation["args"])
+                raw = reply if isinstance(reply, dict) else reply.model_dump(mode="json", by_alias=True)
+            except BaseException as exc:
+                controller.transition("record", **names, transport_error=str(exc)[:4096] or type(exc).__name__)
+                raise
+            receipt = controller.transition("record", **names, raw=raw)
+            if receipt["status"] == "READ_FAILED":
+                return receipt
+            observation = await readback(operation)
+            return controller.transition("observe", **names, observation=observation)
+
     async def _invoke(self, profile, tool, arguments):
         reply = await self.session.call_tool(tool, arguments=arguments)
         return reply if isinstance(reply, dict) else reply.model_dump(mode='json', by_alias=True)

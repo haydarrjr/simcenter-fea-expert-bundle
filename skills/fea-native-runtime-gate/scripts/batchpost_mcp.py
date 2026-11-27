@@ -73,7 +73,7 @@ def run(base, timeout):
     with owned_process([str(worker), '--mcp', *pipe_args], env=env, stdin=subprocess.PIPE,
                        stdout=subprocess.PIPE, stderr=subprocess.STDOUT) as backend:
         await_pipe(backend, pipe, timeout, start)
-        message(f'worker ready after {monotonic() - start:.2f} s; attaching official connector')
+        message(f'worker ready after {monotonic() - start:.2f} s; native pid={backend.pid}; attaching official connector')
         with owned_process([str(connector), *pipe_args], env=env, stdin=subprocess.PIPE) as server:
             def forward():
                 try:

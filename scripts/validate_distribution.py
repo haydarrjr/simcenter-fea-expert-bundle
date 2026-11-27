@@ -2,6 +2,7 @@
 import json
 from pathlib import Path
 import re
+import stat
 import tomllib
 from ruamel.yaml import YAML
 
@@ -44,8 +45,8 @@ def distribution_files(root=ROOT):
             continue
         candidates = path.rglob('*') if path.is_dir() else [path]
         for p in candidates:
-            if p.is_symlink():
-                raise ValueError('symlink in distribution: ' + str(p))
+            if p.is_symlink() or getattr(p.lstat(), 'st_file_attributes', 0) & stat.FILE_ATTRIBUTE_REPARSE_POINT:
+                raise ValueError('alias or reparse point in distribution: ' + str(p))
             if '__pycache__' in p.parts:
                 continue
             if p.is_file():
@@ -87,8 +88,12 @@ def validate(root=ROOT):
           (bundle['id'], str(recipe['version']), bundle['description'], bundle['homepage'],
            bundle['homepage'], bundle['tags']) and bundle['version'] == plugin['version'],
           'portable plugin and bundle metadata differ')
-    check(plugin['license'] == 'MIT' and (root / 'LICENSE').read_text(encoding='utf-8').startswith('MIT License'),
-          'portable plugin license differs from repository license')
+    engineering = root / 'skills/fea-native-runtime-gate/scripts/fea_runtime/engineering'
+    check(plugin['license'] == 'MIT AND Apache-2.0'
+          and (root / 'LICENSE').read_text(encoding='utf-8').startswith('MIT License')
+          and 'Apache License' in (engineering / 'LICENSE-APACHE.txt').read_text(encoding='utf-8')
+          and (engineering / 'NOTICE.txt').is_file(),
+          'portable aggregate license or retained license notices differ')
     check(plugin['extensions']['com.openai']['interface']['displayName'] == bundle['name'],
           'Codex display name differs from bundle title')
     check(codex_market['name'] == copilot_market['name'] and

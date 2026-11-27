@@ -265,11 +265,12 @@ CASE_ASSIGNMENT = re.compile(r"([A-Z][A-Z0-9]*)(?:\s*\(([^()]*)\))?\s*=\s*(.+)",
 TEXT_CONTROL = {"TITLE", "SUBTITLE", "LABEL"}
 OUTPUT_CONTROL = {
     "DISPLACEMENT", "SPCFORCES", "MPCFORCES", "STRESS", "STRAIN", "FORCE",
-    "OLOAD", "GPFORCE", "ACCELERATION", "VELOCITY", "ESE",
+    "OLOAD", "GPFORCE", "ACCELERATION", "VELOCITY", "ESE", "BCRESULTS",
 }
 SELECTORS = {
     "METHOD", "CMETHOD", "SPC", "MPC", "LOAD", "DLOAD", "STATSUB", "TEMPERATURE",
     "SUPORT1", "TSTEP", "TSTEPNL", "NLPARM", "IC", "BOLTLD", "BCSET", "FREQUENCY",
+    "NLCNTL", "RANDOM",
 }
 PROFILE_SOLIDS = {"CTETRA", "CPENTA", "CPYRAM", "CHEXA"}
 PROFILE_DEFINITIONS = {
@@ -293,7 +294,8 @@ def _case_control(source, text):
     name = match[1].upper()
     value = match[3].strip()
     options = tuple(option.strip().upper() for option in match[2].split(",")) if match[2] is not None else ()
-    if not value or ";" in value or any(not re.fullmatch(r"[A-Z0-9]+", option) for option in options):
+    if not value or ";" in value or any(not (re.fullmatch(r"[A-Z0-9]+", option)
+            or name == "RANDOM" and re.fullmatch(r"RPOSTS1=[1-9][0-9]*", option)) for option in options):
         raise source.error("unsupported Case Control value or option")
     if name in SELECTORS:
         if not POSITIVE_INT.fullmatch(value) and value.upper() not in {"NONE", "ALL"}:
@@ -301,12 +303,18 @@ def _case_control(source, text):
     elif name in OUTPUT_CONTROL:
         if not POSITIVE_INT.fullmatch(value) and value.upper() not in {"NONE", "ALL"}:
             raise source.error(f"unsupported {name} output selector")
+    elif name in {"RESVEC", "SEQDEP"}:
+        if value.upper() not in {"YES", "NO"}:
+            raise source.error(f"unsupported {name} value")
+    elif name == "ANALYSIS":
+        if value.upper() not in {"STATICS", "MODES", "DFREQ", "MFREQ", "RANDOM"}:
+            raise source.error("unsupported ANALYSIS value")
     elif name == "ECHO":
         if value.upper() not in {"NONE", "SORT", "UNSORT", "BOTH"}:
             raise source.error("unsupported ECHO value")
     elif name not in TEXT_CONTROL:
         raise source.error(f"unsupported Case Control keyword {name}")
-    if options and name not in OUTPUT_CONTROL | {"STATSUB", "TEMPERATURE"}:
+    if options and name not in OUTPUT_CONTROL | {"STATSUB", "TEMPERATURE", "RANDOM"}:
         raise source.error(f"unsupported options on {name}")
     key = f"{name}({','.join(options)})" if options and name in SELECTORS else name
     return key, Control(value, options, source)

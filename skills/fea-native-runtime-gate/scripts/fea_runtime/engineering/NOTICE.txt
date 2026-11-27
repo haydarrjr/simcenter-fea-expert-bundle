@@ -1,0 +1,37 @@
+FEA Expert Agent Plugin
+
+schemas/vendor/agent-plugins-1.0.0.schema.json is an unmodified schema from
+agentplugins/agent-plugins-spec at ff8ab5e392cc87bd88d87c060815a87490e51003.
+Copyright belongs to the Agent Plugins contributors. Software schemas are
+licensed under Apache-2.0; see the preserved root LICENSE and upstream
+https://github.com/agentplugins/agent-plugins-spec/blob/ff8ab5e392cc87bd88d87c060815a87490e51003/LICENSE.md
+The specification text and Siemens manuals are not redistributed here.
+
+
+schemas/vendor/agent-plugins-mcp-1.0.0.schema.json is the unmodified published
+Agent Plugins 1.0.0 MCP schema from
+https://agent-plugins.org/schemas/1.0.0/mcp.schema.json (accessed 2026-10-28).
+SHA256: 6539175bfcdf43085855183e86da40ea94b166547a72b47ae9a0a390516d3acb
+Copyright belongs to the Agent Plugins contributors; software schema Apache-2.0.
+
+Optional dependencies are installed separately, not included in the source ZIP:
+NumPy and SciPy (BSD-3-Clause), pyNastran (BSD-3-Clause), meshio (MIT),
+MCP Python SDK (MIT), Gmsh (GPL-2.0-or-later with the upstream linking exception),
+h5py (BSD-3-Clause), netCDF4-Python (MIT), pyuff (MIT),
+and independent scikit-fem (BSD-3-Clause) and OpenSeesPy/OpenSees under their
+upstream license terms. See requirements files and source-method ledgers for
+versions, data licenses and exact accessed references. No dependency license is
+replaced by this repository's Apache-2.0 license. No vendor SDK, manual, native
+solver binary or proprietary engineering model is redistributed.
+
+Version 4 optional execution also uses pandas (BSD-3-Clause), pyLife (Apache-2.0),
+and a separately installed official CalculiX 2.23 executable (GPL-2.0-or-later).
+The reproducible Linux setup downloads exact hashed upstream archives and
+extracts an isolated Ubuntu libgfortran4 runtime under its upstream GNU runtime
+license and GCC Runtime Library Exception; it does not bundle these bytes or
+change the system runtime. Consult the packages' own notices before reuse.
+Original public STEP datasets are downloaded to excluded qualification caches;
+the portable archive carries source URLs/hashes and authored analysis code,
+not an implied license grant for third-party geometry. Published benchmark
+equations are independently implemented; Siemens/FKM/NAFEMS manuals are not
+copied into the plugin and no standards certification is claimed.

@@ -8,7 +8,9 @@ import json
 import os
 from pathlib import Path, PureWindowsPath
 import re
+import stat
 import tempfile
+import time
 
 
 EFFECTS = {
@@ -31,6 +33,33 @@ def canonical(value):
                       separators=(',', ':')).encode('utf-8', errors='strict')
 
 
+def strict_json_load(path, max_bytes):
+    def unique(entries):
+        result = {}
+        for key, value in entries:
+            if key in result:
+                raise ValueError(f'duplicate JSON key: {key}')
+            result[key] = value
+        return result
+
+    with Path(path).open('rb') as stream:
+        data = stream.read(max_bytes + 1)
+    if len(data) > max_bytes:
+        raise ValueError('JSON document exceeds the supported size')
+    value = json.loads(data.decode('utf-8'), object_pairs_hook=unique)
+    canonical(value)
+    return value
+
+
+def reject_alias(path):
+    try:
+        info = path.lstat()
+    except FileNotFoundError:
+        return
+    if stat.S_ISLNK(info.st_mode) or getattr(info, 'st_file_attributes', 0) & stat.FILE_ATTRIBUTE_REPARSE_POINT:
+        raise ValueError('controller file must not be an alias or reparse point')
+
+
 def digest(value):
     return hashlib.sha256(canonical(value)).hexdigest()
 
@@ -43,6 +72,8 @@ def response_failed(raw):
     if not isinstance(raw, dict) or raw.get('isError') or 'error' in raw:
         return True
     payloads = [raw, raw.get('structuredContent')]
+    if not isinstance(raw.get('content', []), list):
+        return True
     for block in raw.get('content', []):
         if isinstance(block, dict) and block.get('type') == 'text':
             try:
@@ -139,18 +170,60 @@ class Controller:
         self.root = Path(directory).resolve(strict=True)
         self.state = self.root / 'controller-state.json'
 
+    def snapshot(self):
+        path = self.state
+        reject_alias(path)
+        if not path.exists():
+            return {'operations': {}}
+        state = strict_json_load(path, max_bytes=64 * 1024 * 1024)
+        if (type(state) is not dict or type(state.get('operations')) is not dict
+                or set(state) - {'operations', 'identity', 'license_stop', 'runtime_v1'}):
+            raise ValueError('unrecognized controller state')
+        if any(type(record) is not dict or 'status' not in record for record in state['operations'].values()):
+            raise ValueError('corrupt legacy controller state')
+        return state
+
     @contextmanager
     def edit(self):
-        with (self.root / 'controller.lock').open('a+b') as lock:
-            if os.name == 'nt':
-                import msvcrt
-                msvcrt.locking(lock.fileno(), msvcrt.LK_NBLCK, 1)
-            else:
-                import fcntl
-                fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-            state = json.loads(self.state.read_bytes()) if self.state.exists() else {'operations': {}}
+        path = self.root / 'controller.lock'
+        reject_alias(path)
+        with path.open('a+b') as lock:
+            deadline = time.monotonic() + 5
+            lock.seek(0)
+            while True:
+                try:
+                    if os.name == 'nt':
+                        import msvcrt
+                        msvcrt.locking(lock.fileno(), msvcrt.LK_NBLCK, 1)
+                    else:
+                        import fcntl
+                        fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                    break
+                except OSError as exc:
+                    if time.monotonic() >= deadline:
+                        raise TimeoutError('controller ledger lock is busy') from exc
+                    time.sleep(0.025)
+            state = self.snapshot()
             yield state
+            if len(canonical(state)) + 1 > 64 * 1024 * 1024:
+                raise ValueError('controller ledger has reached its size limit')
             save(self.state, state)
+
+    def transition(self, action, **payload):
+        """Admit v1 operations using this controller's existing ledger and lock."""
+        from fea_runtime import operations
+
+        handlers = {'prepare': operations.prepare, 'reserve': operations.reserve,
+                    'record': operations.record_response, 'observe': operations.observe,
+                    'reconcile': operations.observe}
+        if action == 'reconcile':
+            payload['reconcile'] = True
+        return handlers[action](self, **payload)
+
+    @staticmethod
+    def _legacy_writer(state):
+        if state.get('runtime_v1', {}).get('operations'):
+            raise ValueError('legacy dispatch is disabled after v1 admission in this root')
 
     def prepare(self, operation, binding, authorization=None):
         name = operation['operation_id']
@@ -207,6 +280,7 @@ class Controller:
                     or not operation.get('baseline') or operation['expected'] == operation['baseline']):
                 raise ValueError('effectful calls require hash-bound authorization and distinct witnesses')
         with self.edit() as state:
+            self._legacy_writer(state)
             identity = {k: target[k] for k in ('session', 'release', 'owner', 'model')}
             if state.get('identity', identity) != identity:
                 raise ValueError('controller is bound to another native target')
@@ -225,6 +299,7 @@ class Controller:
 
     def reserve(self, name, binding, request_digest):
         with self.edit() as state:
+            self._legacy_writer(state)
             records = state['operations']
             record = records[name]
             if state.get('license_stop') or any(r['status'] in PENDING for r in records.values()):
